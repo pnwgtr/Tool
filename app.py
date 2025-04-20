@@ -86,13 +86,4 @@ wedges, texts, autotexts = ax2.pie(
 for text in texts + autotexts:
     text.set_color('white')
 
-ax2.axis("equal")
-st.pyplot(fig2, transparent=True)
-ax2.axis("equal")
-st.pyplot(fig2, transparent=True)
-st.markdown("### Breach Cost Breakdown")
-st.write(f" Base SLE: ${base_sle / 1_000_000:.2f}M")
-st.write(f" Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
-
 
