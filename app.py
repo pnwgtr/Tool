@@ -95,11 +95,11 @@ ale_after_pct = (ale_after / revenue) * 100 if revenue > 0 else 0
 risk_reduction_pct = (risk_reduction / revenue) * 100 if revenue > 0 else 0
 
 # === BREACH COST BREAKDOWN ===
-st.markdown("## 💥 Breach Cost Breakdown")
-st.write(f"📊 **Base SLE:** ${base_sle / 1_000_000:.2f}M")
-st.write(f"👥 **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"🛑 **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
-st.write(f"🧮 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
+st.markdown("##  Breach Cost Breakdown")
+st.write(f" **Base SLE:** ${base_sle / 1_000_000:.2f}M")
+st.write(f" **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f" **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
+st.write(f" **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
 
 st.divider()
 
