@@ -67,7 +67,7 @@ cost_per_day = st.sidebar.number_input(
     step=5000,
     help="Estimated daily revenue loss or cost due to operational disruption."
 )
-
+downtime_cost = downtime_days * cost_per_day
 # SLE input
 sle_m = st.sidebar.number_input("Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, value=6.0)
 base_sle = sle_m * 1_000_000
