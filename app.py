@@ -90,7 +90,7 @@ This calculator models the potential financial impact of a significant cyber eve
 
 **Key Factors in Our Risk Surface:**
 - **{user_count:,} user accounts** containing sensitive personal data
-- **Mission-critical systems** that cannot be down for extended periods
+- **Critical systems** that cannot be down for extended periods
 - **Third-party integrations** and vendor dependencies
 - **${revenue:,.0f} in annual revenue**, reliant on continuous uptime
 - **Preventative control spend of ${controls_cost:,.0f} annually**
