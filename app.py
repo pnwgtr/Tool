@@ -29,11 +29,11 @@ Understanding this surface helps ensure the model’s outputs are grounded in bu
     """.format(user_count, revenue, controls_cost))
 
 # === BREACH COST BREAKDOWN AT TOP ===
-st.markdown("## 💥 Breach Cost Breakdown")
-st.write(f"📊 **Base SLE:** ${base_sle / 1_000_000:.2f}M")
-st.write(f"👥 **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"🛑 **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
-st.write(f"🧮 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
+st.markdown("##  Breach Cost Breakdown")
+st.write(f" **Base SLE:** ${base_sle / 1_000_000:.2f}M")
+st.write(f" **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f" **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
+st.write(f" **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
 
 st.divider()
 
