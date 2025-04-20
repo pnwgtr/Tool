@@ -82,25 +82,6 @@ wedges, texts, autotexts = ax2.pie(
     wedgeprops=dict(edgecolor='black')
 )
 
-for text in texts + autotexts:
-    text.set_color('white')
-
-ax2.axis("equal")
-st.pyplot(fig2, transparent=True)
-
-
-# Custom text style
-text_props = {'color': 'white', 'fontsize': 12}
-
-wedges, texts, autotexts = ax2.pie(
-    cost_data["Amount (Millions $)"],
-    labels=cost_data["Category"],
-    autopct="%1.1f%%",
-    startangle=90,
-    textprops=text_props,
-    wedgeprops=dict(edgecolor='black')
-)
-
 # Optional: Adjust layout
 for text in texts + autotexts:
     text.set_color('white')
