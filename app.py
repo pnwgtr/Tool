@@ -80,7 +80,6 @@ for text in texts + autotexts:
 
 ax2.axis("equal")
 st.pyplot(fig2, transparent=True)
-)
 ax2.axis("equal")
 st.pyplot(fig2, transparent=True)
 st.markdown("### Breach Cost Breakdown")
