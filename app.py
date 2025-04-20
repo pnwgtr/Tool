@@ -10,6 +10,14 @@ st.title("Cyber Risk ROI Calculator")
 
 
 # === SIDEBAR INPUTS ===
+
+st.sidebar.markdown("### Program Maturity Level")
+maturity_level = st.sidebar.select_slider(
+    "Cybersecurity Program Maturity",
+    options=["Initial", "Developing", "Defined", "Managed", "Optimized"],
+    value="Defined",
+    help="Indicates the overall maturity of your cybersecurity program, based on people, process, and technology."
+)
 st.sidebar.header("Input Parameters")
 
 controls_cost_m = st.sidebar.number_input(
@@ -63,6 +71,18 @@ aro_after_percent = st.sidebar.slider(
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
 
+# Apply maturity modifier to ARO
+maturity_modifiers = {
+    "Initial": 1.3,
+    "Developing": 1.15,
+    "Defined": 1.0,
+    "Managed": 0.85,
+    "Optimized": 0.7
+}
+aro_modifier = maturity_modifiers[maturity_level]
+aro_before *= aro_modifier
+aro_after *= aro_modifier
+
 # === RISK SURFACE OVERVIEW ===
 with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
     st.markdown(f"""
@@ -82,6 +102,8 @@ These factors contribute to a heightened risk profile and help define the variab
 - **Controls cost** = annual spend to reduce likelihood and impact
 
 Understanding this surface helps ensure the model’s outputs are grounded in business reality.
+
+- **Program maturity rated as _{maturity_level}_**, influencing how likely incidents are to occur
     """)
 
 # === CALCULATIONS ===
@@ -95,15 +117,24 @@ ale_after_pct = (ale_after / revenue) * 100 if revenue > 0 else 0
 risk_reduction_pct = (risk_reduction / revenue) * 100 if revenue > 0 else 0
 
 # === BREACH COST BREAKDOWN ===
-st.markdown("##  Breach Cost Breakdown")
-st.write(f" **Base SLE:** ${base_sle / 1_000_000:.2f}M")
-st.write(f" **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f" **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
-st.write(f" **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
+st.markdown("## 💥 Breach Cost Breakdown")
+st.write(f"📊 **Base SLE:** ${base_sle / 1_000_000:.2f}M")
+st.write(f"👥 **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f"🛑 **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
+st.write(f"🧮 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
 
 st.divider()
 
 # === METRICS OUTPUT ===
+maturity_colors = {
+    "Initial": "red",
+    "Developing": "orange",
+    "Defined": "yellow",
+    "Managed": "lightgreen",
+    "Optimized": "green"
+}
+maturity_color = maturity_colors[maturity_level]
+st.markdown(f"### Program Maturity: <span style='color:{maturity_color}; font-weight:bold'>{maturity_level}</span>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 col1.metric("ALE Before Controls", f"${ale_before/1_000_000:.2f}M")
 col2.metric("ALE After Controls", f"${ale_after/1_000_000:.2f}M")
