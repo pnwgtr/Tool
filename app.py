@@ -5,6 +5,7 @@ import pandas as pd
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
 # === TITLE ===
+st.title("Cyber Risk ROI Calculator")
 
 # === RISK SURFACE OVERVIEW ===
 with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
@@ -25,8 +26,7 @@ These factors contribute to a heightened risk profile and help define the variab
 - **Controls cost** = annual spend to reduce likelihood and impact
 
 Understanding this surface helps ensure the model’s outputs are grounded in business reality.
-    """)
-st.title("Cyber Risk ROI Calculator")
+    """)"Cyber Risk ROI Calculator")
 
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
