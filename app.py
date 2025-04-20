@@ -59,19 +59,27 @@ ale_df = pd.DataFrame({
 st.bar_chart(ale_df.set_index("Scenario"))
 
 # === PIE CHART: Cost vs Risk Reduction ===
-st.subheader("Cost vs Risk Reduction Breakdown")
-cost_data = pd.DataFrame({
-    "Category": ["Preventative Controls Cost", "Risk Reduction"],
-    "Amount (Millions $)": [controls_cost/1_000_000, risk_reduction/1_000_000]
-})
-fig2, ax2 = plt.subplots(facecolor='none')  # removes background
-ax2.set_facecolor('none')  # removes axes background too
-ax2.pie(
+fig2, ax2 = plt.subplots(facecolor='none')
+ax2.set_facecolor('none')
+
+# Custom text style
+text_props = {'color': 'white', 'fontsize': 12}
+
+wedges, texts, autotexts = ax2.pie(
     cost_data["Amount (Millions $)"],
     labels=cost_data["Category"],
     autopct="%1.1f%%",
     startangle=90,
+    textprops=text_props,
     wedgeprops=dict(edgecolor='black')
+)
+
+# Optional: Adjust layout
+for text in texts + autotexts:
+    text.set_color('white')
+
+ax2.axis("equal")
+st.pyplot(fig2, transparent=True)
 )
 ax2.axis("equal")
 st.pyplot(fig2, transparent=True)
