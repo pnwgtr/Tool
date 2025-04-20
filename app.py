@@ -64,10 +64,17 @@ cost_data = pd.DataFrame({
     "Category": ["Preventative Controls Cost", "Risk Reduction"],
     "Amount (Millions $)": [controls_cost/1_000_000, risk_reduction/1_000_000]
 })
-fig2, ax2 = plt.subplots()
-ax2.pie(cost_data["Amount (Millions $)"], labels=cost_data["Category"], autopct="%1.1f%%", startangle=90)
+fig2, ax2 = plt.subplots(facecolor='none')  # removes background
+ax2.set_facecolor('none')  # removes axes background too
+ax2.pie(
+    cost_data["Amount (Millions $)"],
+    labels=cost_data["Category"],
+    autopct="%1.1f%%",
+    startangle=90,
+    wedgeprops=dict(edgecolor='black')
+)
 ax2.axis("equal")
-st.pyplot(fig2)
+st.pyplot(fig2, transparent=True)
 st.markdown("### Breach Cost Breakdown")
 st.write(f" Base SLE: ${base_sle / 1_000_000:.2f}M")
 st.write(f" Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
