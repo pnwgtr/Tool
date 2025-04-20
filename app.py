@@ -54,9 +54,13 @@ downtime_days = st.sidebar.slider(
     "Estimated Days of Downtime", min_value=5, max_value=30, value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
+default_cost_per_day = round(revenue / 365)
 cost_per_day = st.sidebar.number_input(
-    "Estimated Cost per Day of Downtime ($)", min_value=0, value=250000, step=5000,
-    help="Estimated daily revenue loss or cost due to operational disruption."
+    "Estimated Cost per Day of Downtime ($)",
+    min_value=0,
+    value=default_cost_per_day,
+    step=5000,
+    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${default_cost_per_day:,}."
 )
 downtime_cost = downtime_days * cost_per_day
 
@@ -90,7 +94,7 @@ This calculator models the potential financial impact of a significant cyber eve
 
 **Key Factors in Our Risk Surface:**
 - **{user_count:,} user accounts** containing sensitive personal data
-- **Critical systems** that cannot be down for extended periods
+- **Mission-critical systems** that cannot be down for extended periods
 - **Third-party integrations** and vendor dependencies
 - **${revenue:,.0f} in annual revenue**, reliant on continuous uptime
 - **Preventative control spend of ${controls_cost:,.0f} annually**
@@ -125,6 +129,13 @@ st.write(f"🧮 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
 
 st.divider()
 
+# === VISUAL COMPARISON: Cost Per Day ===
+min_cost_per_day = revenue / 365
+if cost_per_day < min_cost_per_day:
+    st.warning(f"⚠️ Your estimated daily cost of downtime (${cost_per_day:,}) is **below** the baseline (${min_cost_per_day:,.0f}). This may underestimate the true business impact.")
+else:
+    st.success(f"✅ Your estimated daily cost of downtime (${cost_per_day:,}) meets or exceeds the minimum (${min_cost_per_day:,.0f}) based on your revenue.")
+
 # === METRICS OUTPUT ===
 maturity_colors = {
     "Initial": "red",
@@ -134,7 +145,7 @@ maturity_colors = {
     "Optimized": "green"
 }
 maturity_color = maturity_colors[maturity_level]
-st.markdown(f"### Program Maturity: <span style='color:{maturity_color}; font-weight:bold'>{maturity_level}</span>", unsafe_allow_html=True)
+st.markdown(f"### Program Maturity: <span style='color:{maturity_color}; font-weight:bold' title='Maturity reflects the strength of your cybersecurity program. Higher maturity reduces the likelihood of significant incidents.'>{maturity_level}</span>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 col1.metric("ALE Before Controls", f"${ale_before/1_000_000:.2f}M")
 col2.metric("ALE After Controls", f"${ale_after/1_000_000:.2f}M")
