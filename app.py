@@ -58,9 +58,43 @@ ale_df = pd.DataFrame({
 })
 st.bar_chart(ale_df.set_index("Scenario"))
 
-# === PIE CHART: Cost vs Risk Reduction ===
+# ==== ROI Pie Chart: Cost vs Risk Reduction ====
+
+# Make sure this comes right before the chart
+cost_data = pd.DataFrame({
+    "Category": ["Preventative Controls Cost", "Risk Reduction"],
+    "Amount (Millions $)": [controls_cost / 1_000_000, risk_reduction / 1_000_000]
+})
+
+st.subheader("Cost vs Risk Reduction Breakdown")
+
+# Build the pie chart
 fig2, ax2 = plt.subplots(facecolor='none')
 ax2.set_facecolor('none')
+
+# Text style
+text_props = {'color': 'white', 'fontsize': 12}
+
+# Create the pie chart
+wedges, texts, autotexts = ax2.pie(
+    cost_data["Amount (Millions $)"],
+    labels=cost_data["Category"],
+    autopct="%1.1f%%",
+    startangle=90,
+    textprops=text_props,
+    wedgeprops=dict(edgecolor='black')
+)
+
+# Extra safety to enforce white labels (redundant but safe)
+for text in texts + autotexts:
+    text.set_color('white')
+
+# Make it circular
+ax2.axis("equal")
+
+# Render the chart
+st.pyplot(fig2, transparent=True)
+
 
 # Custom text style
 text_props = {'color': 'white', 'fontsize': 12}
