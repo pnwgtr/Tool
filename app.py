@@ -18,13 +18,12 @@ user_breach_cost = user_count * monitoring_cost_per_user
 
 controls_cost_m = st.sidebar.number_input("Cost of Preventative Controls ($M)", min_value=0.0, value=1.1)
 sle_m = st.sidebar.number_input("Single Loss Expectancy (SLE) - Incident Cost ($M)", min_value=0.0, value=6.0)
-aro_before = st.sidebar.slider("Likelihood of Incident BEFORE Controls", 0.0, 1.0, 0.2)
-aro_after = st.sidebar.slider("Likelihood of Incident AFTER Controls", 0.0, 1.0, 0.1)
+aro_before_percent = st.sidebar.slider("Likelihood of Incident BEFORE Controls (%)", 0, 100, 20)
+aro_after_percent = st.sidebar.slider("Likelihood of Incident AFTER Controls (%)", 0, 100, 10)
 
-# Convert to full dollar amounts
-controls_cost = controls_cost_m * 1_000_000
-base_sle = sle_m * 1_000_000
-sle = base_sle + user_breach_cost
+# Convert to decimal (for math)
+aro_before = aro_before_percent / 100
+aro_after = aro_after_percent / 100
 
 # === CALCULATIONS ===
 ale_before = sle * aro_before
