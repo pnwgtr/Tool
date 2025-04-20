@@ -27,103 +27,10 @@ user_count = st.sidebar.number_input(
     "Estimated Affected Users", min_value=0, value=600000, step=10000,
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
-nitoring_cost_per_user = st.sidebar.number_input(
+monitoring_cost_per_user = st.sidebar.number_input(
     "Cost per User for Credit Monitoring ($)", min_value=0, value=10, step=1,
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
-user_breach_cost = user_count * monitoring_cost_per_user
-
-sle_m = st.sidebar.number_input(
-    "Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, value=6.0,
-    help="Estimated cost of a significant cyber incident, not including per-user costs."
-)
-base_sle = sle_m * 1_000_000
-
-st.sidebar.markdown("### Downtime Impact Assumptions")
-downtime_days = st.sidebar.slider(
-    "Estimated Days of Downtime", min_value=5, max_value=30, value=5,
-    help="Estimated number of days your business would be partially or fully down due to a major incident."
-)
-cost_per_day = st.sidebar.number_input(
-    "Estimated Cost per Day of Downtime ($)", min_value=0, value=250000, step=5000,
-    help="Estimated daily revenue loss or cost due to operational disruption."
-)
-downtime_cost = downtime_days * cost_per_day
-
-aro_before_percent = st.sidebar.slider(
-    "Likelihood of Incident BEFORE Controls (%)", 0, 100, 20,
-    help="Estimated likelihood of a significant incident occurring without controls in place."
-)
-aro_after_percent = st.sidebar.slider(
-    "Likelihood of Incident AFTER Controls (%)", 0, 100, 10,
-    help="Estimated likelihood of a significant incident occurring after controls are implemented."
-)
-aro_before = aro_before_percent / 100
-aro_after = aro_after_percent / 100
-
-# === RISK SURFACE OVERVIEW ===
-with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
-    st.markdown(f"""
-This calculator models the potential financial impact of a significant cyber event based on our organization's digital footprint and business operations.
-
-**Key Factors in Our Risk Surface:**
-- **{user_count:,} user accounts** containing sensitive personal data
-- **Critical systems** that cannot be down for extended periods
-- **Third-party integrations** and vendor dependencies
-- **${revenue:,.0f} in annual revenue**, reliant on continuous uptime
-- **Preventative control spend of ${controls_cost:,.0f} annually**
-
-These factors contribute to a heightened risk profile and help define the variables below:
-- **SLE** (Single Loss Expectancy) = estimated loss from one significant incident (base + user + downtime costs)
-- **ARO** (Annual Rate of Occurrence) = estimated yearly likelihood of a breach
-- **Downtime cost** = based on expected outage days × cost per day
-- **Controls cost** = annual spend to reduce likelihood and impact
-
-Understanding this surface helps ensure the model’s outputs are grounded in business reality.
-    """)
-
-# === CALCULATIONS ===
-sle = base_sle + user_breach_cost + downtime_cost
-ale_before = sle * aro_before
-ale_after = sle * aro_after
-risk_reduction = ale_before - ale_after
-roi = (risk_reduction / controls_cost) if controls_cost > 0 else 0
-ale_before_pct = (ale_before / revenue) * 100 if revenue > 0 else 0
-ale_after_pct = (ale_after / revenue) * 100 if revenue > 0 else 0
-risk_reduction_pct = (risk_reduction / revenue) * 100 if revenue > 0 else 0
-cost_vs_risk_ratio = (controls_cost / risk_reduction) if risk_reduction > 0 else float("inf")
-
-# === BREACH COST BREAKDOWN AT TOP ===
-st.markdown("## 💥 Breach Cost Breakdown")
-st.write(f"📊 **Base SLE:** ${base_sle / 1_000_000:.2f}M")
-st.write(f"👥 **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"🛑 **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
-st.write(f"🧮 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
-
-st.divider()
-
-# === METRICS ===
-col1, col2, col3 = st.columns(3)
-col1.metric("ALE Before Controls", f"${ale_before/1_000_000:.2f}M")
-col2.metric("ALE After Controls", f"${ale_after/1_000_000:.2f}M")
-col3.metric("Annual Risk Reduction", f"${risk_reduction/1_000_000:.2f}M")
-
-st.metric("ROI", f"{roi * 100:.1f}%")
-st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.")
-
-st.markdown("### Impact as % of Annual Revenue")
-col4, col5, col6 = st.columns(3)
-col4.metric("ALE Before Controls", f"{ale_before_pct:.2f}% of revenue")
-col5.metric("ALE After Controls", f"{ale_after_pct:.2f}% of revenue")
-col6.metric("Risk Reduction", f"{risk_reduction_pct:.2f}% of revenue")
-
-# === BAR CHART ===
-st.subheader("Annual Loss Exposure: Before vs After Controls")
-ale_df = pd.DataFrame({
-    "Scenario": ["Before Controls", "After Controls"],
-    "ALE (Millions $)": [ale_before / 1_000_000, ale_after / 1_000_000]
-})
-st.bar_chart(ale_df.set_index("Scenario"))
 
 # === PIE CHART ===
 st.subheader("Cost vs Risk Reduction Breakdown")
