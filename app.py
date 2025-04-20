@@ -69,8 +69,8 @@ ax2.pie(cost_data["Amount (Millions $)"], labels=cost_data["Category"], autopct=
 ax2.axis("equal")
 st.pyplot(fig2)
 st.markdown("### Breach Cost Breakdown")
-st.write(f"📊 Base SLE: ${base_sle / 1_000_000:.2f}M")
-st.write(f"👥 Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"🧮 Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
+st.write(f" Base SLE: ${base_sle / 1_000_000:.2f}M")
+st.write(f" Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f"Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
 
 
