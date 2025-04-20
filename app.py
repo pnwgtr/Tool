@@ -68,14 +68,11 @@ cost_data = pd.DataFrame({
 
 st.subheader("Cost vs Risk Reduction Breakdown")
 
-# Build the pie chart
 fig2, ax2 = plt.subplots(facecolor='none')
 ax2.set_facecolor('none')
 
-# Text style
 text_props = {'color': 'white', 'fontsize': 12}
 
-# Create the pie chart
 wedges, texts, autotexts = ax2.pie(
     cost_data["Amount (Millions $)"],
     labels=cost_data["Category"],
@@ -85,14 +82,10 @@ wedges, texts, autotexts = ax2.pie(
     wedgeprops=dict(edgecolor='black')
 )
 
-# Extra safety to enforce white labels (redundant but safe)
 for text in texts + autotexts:
     text.set_color('white')
 
-# Make it circular
 ax2.axis("equal")
-
-# Render the chart
 st.pyplot(fig2, transparent=True)
 
 
