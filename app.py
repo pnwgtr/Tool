@@ -7,6 +7,14 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 # === TITLE ===
 st.title("Cyber Risk ROI Calculator")
 
+# === BREACH COST BREAKDOWN ===
+st.markdown("### Breach Cost Breakdown")
+st.write(f"📊 Base SLE: ${base_sle / 1_000_000:.2f}M")
+st.write(f"👥 Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f"🛑 Downtime Cost ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
+st.write(f"🧮 Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
+
+
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
 st.sidebar.number_input("SLE ($M)", help="Single Loss Expectancy: The cost of one significant security incident.")
@@ -36,12 +44,6 @@ The cost to provide services (like credit monitoring) to users affected by a bre
 Want to go deeper? [Check out FAIR methodology →](https://www.fairinstitute.org/fair-model)
     """)
 
-# === BREACH COST BREAKDOWN ===
-st.markdown("### Breach Cost Breakdown")
-st.write(f"📊 Base SLE: ${base_sle / 1_000_000:.2f}M")
-st.write(f"👥 Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"🛑 Downtime Cost ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
-st.write(f"🧮 Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
 
 # Controls cost input
 controls_cost_m = st.sidebar.number_input("Cost of Preventative Controls ($M)", min_value=0.0, value=1.1)
