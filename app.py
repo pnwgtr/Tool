@@ -7,87 +7,71 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 # === TITLE ===
 st.title("Cyber Risk ROI Calculator")
 
-# === BREACH COST BREAKDOWN ===
-st.markdown("### Breach Cost Breakdown")
-st.write(f"📊 Base SLE: ${base_sle / 1_000_000:.2f}M")
-st.write(f"👥 Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"🛑 Downtime Cost ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
-st.write(f"🧮 Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
-
+# === BREACH COST BREAKDOWN AT TOP ===
+st.markdown("## 💥 Breach Cost Breakdown")
+st.markdown("""
+This section breaks down the total cost of a significant cyber incident based on:
+- Baseline loss
+- User remediation costs (e.g., credit monitoring)
+- Downtime and operational disruption
+""")
 
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
-st.sidebar.number_input("SLE ($M)", help="Single Loss Expectancy: The cost of one significant security incident.")
-with st.sidebar.expander("📘 What Do These Terms Mean?", expanded=False):
-    st.markdown("""
-**SLE (Single Loss Expectancy):**  
-Estimated cost of one significant cyber event (e.g., a ransomware attack or data breach).  
 
-**ARO (Annualized Rate of Occurrence):**  
-The estimated probability that a significant incident will happen in a given year.  
-
-**ALE (Annualized Loss Expectancy):**  
-The expected yearly financial loss due to cyber incidents.  
-**Formula:** `ALE = SLE × ARO`
-
-**ROI (Return on Investment):**  
-How much financial value is gained from investing in controls.  
-**Formula:** `(Risk Reduction ÷ Control Cost) × 100`
-
-**Cost vs. Risk Reduction Ratio:**  
-Shows how efficiently you’re spending to reduce risk. A ratio < 1 is generally considered effective.
-
-**User Breach Cost:**  
-The cost to provide services (like credit monitoring) to users affected by a breach.
-
----
-Want to go deeper? [Check out FAIR methodology →](https://www.fairinstitute.org/fair-model)
-    """)
-
-
-# Controls cost input
-controls_cost_m = st.sidebar.number_input("Cost of Preventative Controls ($M)", min_value=0.0, value=1.1)
+controls_cost_m = st.sidebar.number_input(
+    "Cost of Preventative Controls ($M)", min_value=0.0, value=1.1,
+    help="Annual cost of security measures implemented to prevent significant cyber incidents."
+)
 controls_cost = controls_cost_m * 1_000_000
 
-# Revenue input
-revenue_m = st.sidebar.number_input("Annual Revenue ($M)", min_value=0.0, value=500.0)
+revenue_m = st.sidebar.number_input(
+    "Annual Revenue ($M)", min_value=0.0, value=500.0,
+    help="Your organization’s annual gross revenue."
+)
 revenue = revenue_m * 1_000_000
 
-# User breach impact
 st.sidebar.markdown("### Breach Impact Assumptions")
-user_count = st.sidebar.number_input("Estimated Affected Users", min_value=0, value=600000, step=10000)
-monitoring_cost_per_user = st.sidebar.number_input("Cost per User for Credit Monitoring ($)", min_value=0.0, value=10.0)
+user_count = st.sidebar.number_input(
+    "Estimated Affected Users", min_value=0, value=600000, step=10000,
+    help="Estimated number of users who would require credit monitoring in the event of a breach."
+)
+monitoring_cost_per_user = st.sidebar.number_input(
+    "Cost per User for Credit Monitoring ($)", min_value=0.0, value=10.0,
+    help="Estimated cost per user to provide credit monitoring after a breach."
+)
 user_breach_cost = user_count * monitoring_cost_per_user
-st.sidebar.markdown("### Downtime Impact Assumptions")
 
+sle_m = st.sidebar.number_input(
+    "Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, value=6.0,
+    help="Estimated cost of a significant cyber incident, not including per-user costs."
+)
+base_sle = sle_m * 1_000_000
+
+st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider(
-    "Estimated Days of Downtime",
-    min_value=5,
-    max_value=30,
-    value=5,
+    "Estimated Days of Downtime", min_value=5, max_value=30, value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
-
 cost_per_day = st.sidebar.number_input(
-    "Estimated Cost per Day of Downtime ($)",
-    min_value=0,
-    value=250000,
-    step=5000,
+    "Estimated Cost per Day of Downtime ($)", min_value=0, value=250000, step=5000,
     help="Estimated daily revenue loss or cost due to operational disruption."
 )
 downtime_cost = downtime_days * cost_per_day
-# SLE input
-sle_m = st.sidebar.number_input("Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, value=6.0)
-base_sle = sle_m * 1_000_000
-sle = base_sle + user_breach_cost + downtime_cost
 
-# ARO sliders using percent
-aro_before_percent = st.sidebar.slider("Likelihood of Incident BEFORE Controls (%)", 0, 100, 20)
-aro_after_percent = st.sidebar.slider("Likelihood of Incident AFTER Controls (%)", 0, 100, 10)
+aro_before_percent = st.sidebar.slider(
+    "Likelihood of Incident BEFORE Controls (%)", 0, 100, 20,
+    help="Estimated likelihood of a significant incident occurring without controls in place."
+)
+aro_after_percent = st.sidebar.slider(
+    "Likelihood of Incident AFTER Controls (%)", 0, 100, 10,
+    help="Estimated likelihood of a significant incident occurring after controls are implemented."
+)
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
 
 # === CALCULATIONS ===
+sle = base_sle + user_breach_cost + downtime_cost
 ale_before = sle * aro_before
 ale_after = sle * aro_after
 risk_reduction = ale_before - ale_after
@@ -97,7 +81,15 @@ ale_after_pct = (ale_after / revenue) * 100 if revenue > 0 else 0
 risk_reduction_pct = (risk_reduction / revenue) * 100 if revenue > 0 else 0
 cost_vs_risk_ratio = (controls_cost / risk_reduction) if risk_reduction > 0 else float("inf")
 
-# === METRICS OUTPUT ===
+# === DISPLAY BREACH BREAKDOWN ===
+st.write(f"📊 **Base SLE:** ${base_sle / 1_000_000:.2f}M")
+st.write(f"👥 **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f"🛑 **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
+st.write(f"🧶 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
+
+st.divider()
+
+# === METRICS ===
 col1, col2, col3 = st.columns(3)
 col1.metric("ALE Before Controls", f"${ale_before/1_000_000:.2f}M")
 col2.metric("ALE After Controls", f"${ale_after/1_000_000:.2f}M")
@@ -112,8 +104,7 @@ col4.metric("ALE Before Controls", f"{ale_before_pct:.2f}% of revenue")
 col5.metric("ALE After Controls", f"{ale_after_pct:.2f}% of revenue")
 col6.metric("Risk Reduction", f"{risk_reduction_pct:.2f}% of revenue")
 
-
-# === BAR CHART: ALE Before vs After ===
+# === BAR CHART ===
 st.subheader("Annual Loss Exposure: Before vs After Controls")
 ale_df = pd.DataFrame({
     "Scenario": ["Before Controls", "After Controls"],
@@ -121,7 +112,7 @@ ale_df = pd.DataFrame({
 })
 st.bar_chart(ale_df.set_index("Scenario"))
 
-# === PIE CHART: Cost vs Risk Reduction ===
+# === PIE CHART ===
 st.subheader("Cost vs Risk Reduction Breakdown")
 cost_data = pd.DataFrame({
     "Category": ["Preventative Controls Cost", "Risk Reduction"],
@@ -147,3 +138,33 @@ for text in texts + autotexts:
 
 ax2.axis("equal")
 st.pyplot(fig2, transparent=True)
+
+# === FAQ ===
+with st.sidebar.expander("📘 What Do These Terms Mean?", expanded=False):
+    st.markdown("""
+**SLE (Single Loss Expectancy):**  
+Estimated cost of one significant cyber event.
+
+**ARO (Annualized Rate of Occurrence):**  
+Estimated probability that a significant incident will happen in a year.
+
+**ALE (Annualized Loss Expectancy):**  
+Expected yearly financial loss due to cyber incidents.  
+**Formula:** `ALE = SLE × ARO`
+
+**ROI (Return on Investment):**  
+How much value you get from investing in controls.  
+**Formula:** `(Risk Reduction ÷ Control Cost) × 100`
+
+**Cost vs. Risk Reduction Ratio:**  
+A ratio < 1 means your spend is efficient for the risk reduced.
+
+**User Breach Cost:**  
+Cost of providing credit monitoring to affected users.
+
+**Downtime Cost:**  
+Lost revenue or costs due to operational disruption.
+
+---
+Want to go deeper? [Check out FAIR methodology →](https://www.fairinstitute.org/fair-model)
+    """)
