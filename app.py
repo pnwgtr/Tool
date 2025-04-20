@@ -132,7 +132,7 @@ st.divider()
 # === VISUAL COMPARISON: Cost Per Day ===
 min_cost_per_day = revenue / 365
 if cost_per_day < min_cost_per_day:
-    st.warning(f"⚠️ Your estimated daily cost of downtime (${cost_per_day:,}) is **below** the baseline (${min_cost_per_day:,.0f}). This may underestimate the true business impact.")
+    st.warning(f"⚠️ Your estimated daily cost of downtime (${cost_per_day:,}) is **below** the  baseline (${min_cost_per_day:,.0f}). This may underestimate the true business impact.")
 else:
     st.success(f"✅ Your estimated daily cost of downtime (${cost_per_day:,}) meets or exceeds the minimum (${min_cost_per_day:,.0f}) based on your revenue.")
 
