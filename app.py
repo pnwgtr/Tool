@@ -32,6 +32,15 @@ monitoring_cost_per_user = st.sidebar.number_input(
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
 
+# === PLACEHOLDER VARIABLES ===
+sle_m = 6.0  # Base SLE in millions (can be made an input if needed)
+sle = sle_m * 1_000_000 + (user_count * monitoring_cost_per_user)
+aro_before = 0.2  # Likelihood before controls (can be made an input)
+aro_after = 0.1   # Likelihood after controls (can be made an input)
+ale_before = sle * aro_before
+ale_after = sle * aro_after
+risk_reduction = ale_before - ale_after
+
 # === PIE CHART ===
 st.subheader("Cost vs Risk Reduction Breakdown")
 cost_data = pd.DataFrame({
