@@ -27,8 +27,8 @@ user_count = st.sidebar.number_input(
     "Estimated Affected Users", min_value=0, value=600000, step=10000,
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
-monitoring_cost_per_user = st.sidebar.number_input(
-    "Cost per User for Credit Monitoring ($)", min_value=0.0, value=10.0,
+nitoring_cost_per_user = st.sidebar.number_input(
+    "Cost per User for Credit Monitoring ($)", min_value=0, value=10, step=1,
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
 user_breach_cost = user_count * monitoring_cost_per_user
