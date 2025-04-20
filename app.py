@@ -82,8 +82,10 @@ wedges, texts, autotexts = ax2.pie(
     wedgeprops=dict(edgecolor='black')
 )
 
-# Optional: Adjust layout
 for text in texts + autotexts:
     text.set_color('white')
+
+ax2.axis("equal")
+st.pyplot(fig2, transparent=True)
 
 
