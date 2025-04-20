@@ -26,7 +26,7 @@ These factors contribute to a heightened risk profile and help define the variab
 - **Controls cost** = annual spend to reduce likelihood and impact
 
 Understanding this surface helps ensure the model’s outputs are grounded in business reality.
-    """)"Cyber Risk ROI Calculator")
+    """)
 
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
