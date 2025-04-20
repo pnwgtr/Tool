@@ -9,6 +9,33 @@ st.title("Cyber Risk ROI Calculator")
 
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
+st.sidebar.number_input("SLE ($M)", help="Single Loss Expectancy: The cost of one significant security incident.")
+with st.sidebar.expander("📘 What Do These Terms Mean?", expanded=False):
+    st.markdown("""
+**SLE (Single Loss Expectancy):**  
+Estimated cost of one significant cyber event (e.g., a ransomware attack or data breach).  
+
+**ARO (Annualized Rate of Occurrence):**  
+The estimated probability that a significant incident will happen in a given year.  
+
+**ALE (Annualized Loss Expectancy):**  
+The expected yearly financial loss due to cyber incidents.  
+**Formula:** `ALE = SLE × ARO`
+
+**ROI (Return on Investment):**  
+How much financial value is gained from investing in controls.  
+**Formula:** `(Risk Reduction ÷ Control Cost) × 100`
+
+**Cost vs. Risk Reduction Ratio:**  
+Shows how efficiently you’re spending to reduce risk. A ratio < 1 is generally considered effective.
+
+**User Breach Cost:**  
+The cost to provide services (like credit monitoring) to users affected by a breach.
+
+---
+Want to go deeper? [Check out FAIR methodology →](https://www.fairinstitute.org/fair-model)
+    """)
+
 
 # Controls cost input
 controls_cost_m = st.sidebar.number_input("Cost of Preventative Controls ($M)", min_value=0.0, value=1.1)
