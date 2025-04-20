@@ -9,17 +9,27 @@ st.title("Cyber Risk ROI Calculator")
 
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
+
+# Revenue
 revenue_m = st.sidebar.number_input("Annual Revenue ($M)", min_value=0.0, value=500.0)
 revenue = revenue_m * 1_000_000
+
+# User breach impact
 st.sidebar.markdown("### Breach Impact Assumptions")
 user_count = st.sidebar.number_input("Estimated Affected Users", min_value=0, value=600000, step=10000)
 monitoring_cost_per_user = st.sidebar.number_input("Cost per User for Credit Monitoring ($)", min_value=0.0, value=10.0)
 user_breach_cost = user_count * monitoring_cost_per_user
 
-controls_cost_m = st.sidebar.number_input("Cost of Preventative Controls ($M)", min_value=0.0, value=1.1)
-sle_m = st.sidebar.number_input("Single Loss Expectancy (SLE) - Incident Cost ($M)", min_value=0.0, value=6.0)
+# SLE input
+sle_m = st.sidebar.number_input("Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, value=6.0)
+base_sle = sle_m * 1_000_000
+sle = base_sle + user_breach_cost
+
+# ARO sliders (now using percent)
 aro_before_percent = st.sidebar.slider("Likelihood of Incident BEFORE Controls (%)", 0, 100, 20)
 aro_after_percent = st.sidebar.slider("Likelihood of Incident AFTER Controls (%)", 0, 100, 10)
+aro_before = aro_before_percent / 100
+aro_after = aro_after_percent / 100
 
 # Convert to decimal (for math)
 aro_before = aro_before_percent / 100
