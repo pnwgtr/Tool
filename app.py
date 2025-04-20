@@ -8,9 +8,14 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 st.title("Cyber Risk ROI Calculator")
 
 # === SIDEBAR INPUTS ===
+user_breach_cost = user_count * monitoring_cost_per_user
 st.sidebar.header("Input Parameters")
 revenue_m = st.sidebar.number_input("Annual Revenue ($M)", min_value=0.0, value=500.0)
 revenue = revenue_m * 1_000_000
+st.sidebar.markdown("### Breach Impact Assumptions")
+user_count = st.sidebar.number_input("Estimated Affected Users", min_value=0, value=600000, step=10000)
+monitoring_cost_per_user = st.sidebar.number_input("Cost per User for Credit Monitoring ($)", min_value=0.0, value=10.0)
+
 
 controls_cost_m = st.sidebar.number_input("Cost of Preventative Controls ($M)", min_value=0.0, value=1.1)
 sle_m = st.sidebar.number_input("Single Loss Expectancy (SLE) - Incident Cost ($M)", min_value=0.0, value=6.0)
@@ -19,7 +24,8 @@ aro_after = st.sidebar.slider("Likelihood of Incident AFTER Controls", 0.0, 1.0,
 
 # Convert to full dollar amounts
 controls_cost = controls_cost_m * 1_000_000
-sle = sle_m * 1_000_000
+base_sle = sle_m * 1_000_000
+sle = base_sle + user_breach_cost
 
 # === CALCULATIONS ===
 ale_before = sle * aro_before
@@ -63,5 +69,9 @@ fig2, ax2 = plt.subplots()
 ax2.pie(cost_data["Amount (Millions $)"], labels=cost_data["Category"], autopct="%1.1f%%", startangle=90)
 ax2.axis("equal")
 st.pyplot(fig2)
+st.markdown("### Breach Cost Breakdown")
+st.write(f"📊 Base SLE: ${base_sle / 1_000_000:.2f}M")
+st.write(f"👥 Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f"🧮 Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
 
 
