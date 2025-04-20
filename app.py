@@ -10,7 +10,11 @@ st.title("Cyber Risk ROI Calculator")
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
 
-# Revenue
+# Controls cost input
+controls_cost_m = st.sidebar.number_input("Cost of Preventative Controls ($M)", min_value=0.0, value=1.1)
+controls_cost = controls_cost_m * 1_000_000
+
+# Revenue input
 revenue_m = st.sidebar.number_input("Annual Revenue ($M)", min_value=0.0, value=500.0)
 revenue = revenue_m * 1_000_000
 
@@ -25,13 +29,9 @@ sle_m = st.sidebar.number_input("Base SLE (Excluding Users) - Incident Cost ($M)
 base_sle = sle_m * 1_000_000
 sle = base_sle + user_breach_cost
 
-# ARO sliders (now using percent)
+# ARO sliders using percent
 aro_before_percent = st.sidebar.slider("Likelihood of Incident BEFORE Controls (%)", 0, 100, 20)
 aro_after_percent = st.sidebar.slider("Likelihood of Incident AFTER Controls (%)", 0, 100, 10)
-aro_before = aro_before_percent / 100
-aro_after = aro_after_percent / 100
-
-# Convert to decimal (for math)
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
 
@@ -53,29 +53,33 @@ col3.metric("Annual Risk Reduction", f"${risk_reduction/1_000_000:.2f}M")
 
 st.metric("ROI", f"{roi * 100:.1f}%")
 st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.")
+
 st.markdown("### Impact as % of Annual Revenue")
 col4, col5, col6 = st.columns(3)
 col4.metric("ALE Before Controls", f"{ale_before_pct:.2f}% of revenue")
 col5.metric("ALE After Controls", f"{ale_after_pct:.2f}% of revenue")
 col6.metric("Risk Reduction", f"{risk_reduction_pct:.2f}% of revenue")
 
+# === BREACH COST BREAKDOWN ===
+st.markdown("### Breach Cost Breakdown")
+st.write(f"📊 Base SLE: ${base_sle / 1_000_000:.2f}M")
+st.write(f"👥 Credit Monitoring for Users: ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f"🧮 Total Incident Cost (SLE): ${sle / 1_000_000:.2f}M")
+
 # === BAR CHART: ALE Before vs After ===
 st.subheader("Annual Loss Exposure: Before vs After Controls")
 ale_df = pd.DataFrame({
     "Scenario": ["Before Controls", "After Controls"],
-    "ALE (Millions $)": [ale_before/1_000_000, ale_after/1_000_000]
+    "ALE (Millions $)": [ale_before / 1_000_000, ale_after / 1_000_000]
 })
 st.bar_chart(ale_df.set_index("Scenario"))
 
-# ==== ROI Pie Chart: Cost vs Risk Reduction ====
-
-# Make sure this comes right before the chart
+# === PIE CHART: Cost vs Risk Reduction ===
+st.subheader("Cost vs Risk Reduction Breakdown")
 cost_data = pd.DataFrame({
     "Category": ["Preventative Controls Cost", "Risk Reduction"],
     "Amount (Millions $)": [controls_cost / 1_000_000, risk_reduction / 1_000_000]
 })
-
-st.subheader("Cost vs Risk Reduction Breakdown")
 
 fig2, ax2 = plt.subplots(facecolor='none')
 ax2.set_facecolor('none')
@@ -96,5 +100,3 @@ for text in texts + autotexts:
 
 ax2.axis("equal")
 st.pyplot(fig2, transparent=True)
-
-
