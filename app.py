@@ -7,26 +7,7 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 # === TITLE ===
 st.title("Cyber Risk ROI Calculator")
 
-# === RISK SURFACE OVERVIEW ===
-with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
-    st.markdown(f"""
-This calculator models the potential financial impact of a significant cyber event based on our organization's digital footprint and business operations.
 
-**Key Factors in Our Risk Surface:**
-- **{user_count:,} user accounts** containing sensitive personal data
-- **Mission-critical systems** that cannot be down for extended periods
-- **Third-party integrations** and vendor dependencies
-- **${revenue:,.0f} in annual revenue**, reliant on continuous uptime
-- **Preventative control spend of ${controls_cost:,.0f} annually**
-
-These factors contribute to a heightened risk profile and help define the variables below:
-- **SLE** (Single Loss Expectancy) = estimated loss from one significant incident (base + user + downtime costs)
-- **ARO** (Annual Rate of Occurrence) = estimated yearly likelihood of a breach
-- **Downtime cost** = based on expected outage days × cost per day
-- **Controls cost** = annual spend to reduce likelihood and impact
-
-Understanding this surface helps ensure the model’s outputs are grounded in business reality.
-    """)
 
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
@@ -81,6 +62,27 @@ aro_after_percent = st.sidebar.slider(
 )
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
+
+# === RISK SURFACE OVERVIEW ===
+with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
+    st.markdown(f"""
+This calculator models the potential financial impact of a significant cyber event based on our organization's digital footprint and business operations.
+
+**Key Factors in Our Risk Surface:**
+- **{user_count:,} user accounts** containing sensitive personal data
+- **Mission-critical systems** that cannot be down for extended periods
+- **Third-party integrations** and vendor dependencies
+- **${revenue:,.0f} in annual revenue**, reliant on continuous uptime
+- **Preventative control spend of ${controls_cost:,.0f} annually**
+
+These factors contribute to a heightened risk profile and help define the variables below:
+- **SLE** (Single Loss Expectancy) = estimated loss from one significant incident (base + user + downtime costs)
+- **ARO** (Annual Rate of Occurrence) = estimated yearly likelihood of a breach
+- **Downtime cost** = based on expected outage days × cost per day
+- **Controls cost** = annual spend to reduce likelihood and impact
+
+Understanding this surface helps ensure the model’s outputs are grounded in business reality.
+    """)
 
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
