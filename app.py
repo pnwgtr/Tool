@@ -51,6 +51,7 @@ user_count = st.sidebar.number_input("Estimated Affected Users", min_value=0, va
 monitoring_cost_per_user = st.sidebar.number_input("Cost per User for Credit Monitoring ($)", min_value=0.0, value=10.0)
 user_breach_cost = user_count * monitoring_cost_per_user
 st.sidebar.markdown("### Downtime Impact Assumptions")
+
 downtime_days = st.sidebar.slider(
     "Estimated Days of Downtime",
     min_value=5,
@@ -58,7 +59,6 @@ downtime_days = st.sidebar.slider(
     value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
-downtime_cost = downtime_days * cost_per_day
 
 cost_per_day = st.sidebar.number_input(
     "Estimated Cost per Day of Downtime ($)",
@@ -66,6 +66,7 @@ cost_per_day = st.sidebar.number_input(
     value=250000,
     step=5000,
     help="Estimated daily revenue loss or cost due to operational disruption."
+)
 
 # SLE input
 sle_m = st.sidebar.number_input("Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, value=6.0)
