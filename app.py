@@ -7,36 +7,6 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 # === TITLE ===
 st.title("Cyber Risk ROI Calculator")
 
-# === RISK SURFACE OVERVIEW ===
-with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
-    st.markdown("""
-This calculator models the potential financial impact of a significant cyber event based on our organization's digital footprint and business operations.
-
-**Key Factors in Our Risk Surface:**
-- **{:,} user accounts** containing sensitive personal data
-- **Mission-critical systems** that cannot be down for extended periods
-- **Third-party integrations** and vendor dependencies
-- **${:,.0f} in annual revenue**, reliant on continuous uptime
-- **Preventative control spend of ${:,.0f} annually**
-
-These factors contribute to a heightened risk profile and help define the variables below:
-- **SLE** (Single Loss Expectancy) = estimated loss from one significant incident (base + user + downtime costs)
-- **ARO** (Annual Rate of Occurrence) = estimated yearly likelihood of a breach
-- **Downtime cost** = based on expected outage days × cost per day
-- **Controls cost** = annual spend to reduce likelihood and impact
-
-Understanding this surface helps ensure the model’s outputs are grounded in business reality.
-    """.format(user_count, revenue, controls_cost))
-
-# === BREACH COST BREAKDOWN AT TOP ===
-st.markdown("## 💥 Breach Cost Breakdown")
-st.write(f"📊 **Base SLE:** ${base_sle / 1_000_000:.2f}M")
-st.write(f"👥 **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
-st.write(f"🛑 **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
-st.write(f"🧮 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
-
-st.divider()
-
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
 
@@ -91,6 +61,27 @@ aro_after_percent = st.sidebar.slider(
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
 
+# === RISK SURFACE OVERVIEW ===
+with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
+    st.markdown(f"""
+This calculator models the potential financial impact of a significant cyber event based on our organization's digital footprint and business operations.
+
+**Key Factors in Our Risk Surface:**
+- **{user_count:,} user accounts** containing sensitive personal data
+- **Mission-critical systems** that cannot be down for extended periods
+- **Third-party integrations** and vendor dependencies
+- **${revenue:,.0f} in annual revenue**, reliant on continuous uptime
+- **Preventative control spend of ${controls_cost:,.0f} annually**
+
+These factors contribute to a heightened risk profile and help define the variables below:
+- **SLE** (Single Loss Expectancy) = estimated loss from one significant incident (base + user + downtime costs)
+- **ARO** (Annual Rate of Occurrence) = estimated yearly likelihood of a breach
+- **Downtime cost** = based on expected outage days × cost per day
+- **Controls cost** = annual spend to reduce likelihood and impact
+
+Understanding this surface helps ensure the model’s outputs are grounded in business reality.
+    """)
+
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
 ale_before = sle * aro_before
@@ -101,6 +92,15 @@ ale_before_pct = (ale_before / revenue) * 100 if revenue > 0 else 0
 ale_after_pct = (ale_after / revenue) * 100 if revenue > 0 else 0
 risk_reduction_pct = (risk_reduction / revenue) * 100 if revenue > 0 else 0
 cost_vs_risk_ratio = (controls_cost / risk_reduction) if risk_reduction > 0 else float("inf")
+
+# === BREACH COST BREAKDOWN AT TOP ===
+st.markdown("## 💥 Breach Cost Breakdown")
+st.write(f"📊 **Base SLE:** ${base_sle / 1_000_000:.2f}M")
+st.write(f"👥 **User Credit Monitoring:** ${user_breach_cost / 1_000_000:.2f}M")
+st.write(f"🛑 **Downtime Cost** ({downtime_days} days @ ${cost_per_day:,}/day): ${downtime_cost / 1_000_000:.2f}M")
+st.write(f"🧮 **Total Incident Cost (SLE):** ${sle / 1_000_000:.2f}M")
+
+st.divider()
 
 # === METRICS ===
 col1, col2, col3 = st.columns(3)
