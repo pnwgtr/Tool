@@ -73,22 +73,25 @@ downtime_days = st.sidebar.slider(
     min_value=5, max_value=30, value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
-default_cost_per_day = revenue / 365
-# Daily downtime cost in millions
+# Default daily downtime cost in millions
+default_cost_per_day_m = revenue_m / 365
+# Slider for daily downtime cost (in $M), up to twice the baseline to allow experimentation
+dcost_max = default_cost_per_day_m * 2
 cost_per_day_m = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($M)",
     min_value=0.0,
-    max_value=revenue_m,
-    value=default_cost_per_day/1_000_000,
+    max_value=dcost_max,
+    value=default_cost_per_day_m,
     step=0.1,
     format="%0.1fM",
-    help=f"Estimated daily revenue loss or cost due to operational disruption. Baseline: ${default_cost_per_day/1_000_000:.2f}M."
+    help=f"Estimated daily revenue loss due to operational disruption. Baseline: ${default_cost_per_day_m:.2f}M; max set to ${dcost_max:.2f}M to allow scenario testing."
 )
 st.sidebar.markdown(
-    f"<div style='font-size:12px;color:gray;'>📍 Minimum daily cost based on revenue: ${default_cost_per_day/1_000_000:.2f}M</div>",
+    f"<div style='font-size:12px;color:gray;'>📍 Baseline daily cost based on revenue: ${default_cost_per_day_m:.2f}M</div>",
     unsafe_allow_html=True
 )
 cost_per_day = cost_per_day_m * 1_000_000
+
 
 downtime_cost = downtime_days * cost_per_day
 
