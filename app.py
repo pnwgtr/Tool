@@ -1,15 +1,17 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
-# Attempt to import Plotly, fallback if unavailable
+
+# Attempt to import Plotly; enable fallback
+PLOTLY_AVAILABLE = False
 try:
     import plotly.express as px
     PLOTLY_AVAILABLE = True
 except ImportError:
-    PLOTLY_AVAILABLE = False
+    # Plotly not installed; will use Streamlit’s built-in charts
+    pass
 
-
-st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
+st.set_page_config(page_title="Cyber Risk ROI", layout="wide")(page_title="Cyber Risk ROI", layout="wide")
 
 # === TITLE ===
 st.title("Cyber Risk ROI Calculator")
