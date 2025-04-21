@@ -1,6 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.express as px
 
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
