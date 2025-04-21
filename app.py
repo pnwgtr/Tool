@@ -59,7 +59,7 @@ monitoring_cost_per_user = st.sidebar.slider(
 
 sle_m = st.sidebar.slider(
     "Base SLE (Excluding Users) - Incident Cost ($M)",
-    min_value=0.0, max_value=20.0, value=6.0, step=1.0,, value=6.0, step=1.0,
+    min_value=0.0, max_value=20.0, value=6.0, step=1.0, value=6.0, step=1.0,
     help="Single Loss Expectancy: core cost of one significant incident (e.g., forensic, legal, remediation), excluding per-user credit monitoring and downtime losses."
 )
 base_sle = sle_m * 1_000_000
