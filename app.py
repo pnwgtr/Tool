@@ -7,10 +7,6 @@ try:
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
-import plotly.express as px
-import pandas as pd
-import plotly.express as px
-
 
 
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
