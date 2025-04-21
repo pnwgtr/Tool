@@ -195,9 +195,33 @@ ale_df = pd.DataFrame({
     "Scenario": ["Before Controls", "After Controls"],
     "ALE (Millions $)": [ale_before / 1_000_000, ale_after / 1_000_000]
 })
-st.bar_chart(ale_df.set_index("Scenario"))
+fig_bar = px.bar(
+    ale_df,
+    x="Scenario",
+    y="ALE (Millions $)",
+    text=ale_df["ALE (Millions $)"].map(lambda x: f"${x:.2f}M"),
+    color="Scenario",
+    color_discrete_map={"Before Controls": "#636EFA", "After Controls": "#EF553B"}
+)
+fig_bar.update_layout(showlegend=False, yaxis_title="ALE (Millions $)")
+st.plotly_chart(fig_bar, use_container_width=True)
 
 # === PIE CHART ===
+st.subheader("Cost vs Risk Reduction Breakdown")
+cost_data = pd.DataFrame({
+    "Category": ["Preventative Controls Cost", "Risk Reduction"],
+    "Amount (Millions $)": [controls_cost / 1_000_000, risk_reduction / 1_000_000]
+})
+fig_pie = px.pie(
+    cost_data,
+    names="Category",
+    values="Amount (Millions $)",
+    hole=0.4,
+    color_discrete_sequence=px.colors.qualitative.Pastel
+)
+fig_pie.update_traces(textinfo="percent+label", textposition="inside")
+fig_pie.update_layout(showlegend=True)
+st.plotly_chart(fig_pie, use_container_width=True)
 st.subheader("Cost vs Risk Reduction Breakdown")
 cost_data = pd.DataFrame({
     "Category": ["Preventative Controls Cost", "Risk Reduction"],
