@@ -23,6 +23,8 @@ st.sidebar.header("Input Parameters")
 controls_cost_m = st.sidebar.slider(
     "Cost of Preventative Controls ($M)", min_value=0.0, max_value=20.0, value=1.1, step=0.1,
     help="Annual cost of security measures implemented to prevent significant cyber incidents."
+)", min_value=0.0, max_value=20.0, value=1.1, step=0.1,
+    help="Annual cost of security measures implemented to prevent significant cyber incidents."
 )", min_value=0.0, value=1.1,
     help="Annual cost of security measures implemented to prevent significant cyber incidents."
 )
@@ -30,6 +32,8 @@ controls_cost = controls_cost_m * 1_000_000
 
 revenue_m = st.sidebar.slider(
     "Annual Revenue ($M)", min_value=0.0, max_value=5000.0, value=500.0, step=10.0,
+    help="Your organization’s annual gross revenue."
+)", min_value=0.0, max_value=5000.0, value=500.0, step=10.0,
     help="Your organization’s annual gross revenue."
 )", min_value=0.0, value=500.0,
     help="Your organization’s annual gross revenue."
@@ -44,12 +48,16 @@ user_count = st.sidebar.slider(
 monitoring_cost_per_user = st.sidebar.slider(
     "Cost per User for Credit Monitoring ($)", min_value=0, max_value=100, value=10, step=1,
     help="Estimated cost per user to provide credit monitoring after a breach."
+)", min_value=0, max_value=100, value=10, step=1,
+    help="Estimated cost per user to provide credit monitoring after a breach."
 )", min_value=0, value=10, step=1,
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
 
 sle_m = st.sidebar.slider(
     "Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, max_value=100.0, value=6.0, step=1.0,
+    help="Estimated cost of a significant cyber incident, not including per-user costs."
+) - Incident Cost ($M)", min_value=0.0, max_value=100.0, value=6.0, step=1.0,
     help="Estimated cost of a significant cyber incident, not including per-user costs."
 ) - Incident Cost ($M)", min_value=0.0, value=6.0,
     help="Estimated cost of a significant cyber incident, not including per-user costs."
@@ -65,6 +73,12 @@ downtime_days = st.sidebar.slider(
 default_cost_per_day = round(revenue / 365)
 cost_per_day = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($)",
+    min_value=0,
+    max_value=int(revenue),
+    value=default_cost_per_day,
+    step=5000,
+    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${default_cost_per_day:,}."
+)",
     min_value=0,
     max_value=int(revenue),
     value=default_cost_per_day,
