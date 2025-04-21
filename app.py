@@ -97,9 +97,13 @@ downtime_cost = downtime_days * cost_per_day
 
 # ARO Sliders
 aro_before_percent = st.sidebar.slider(
-    "Likelihood of Incident BEFORE Controls (%)", 0, 100, 20,
-    help="Estimated likelihood of a significant incident occurring without controls in place."
-)
+    "Likelihood of Incident BEFORE Controls (%)",
+    0,
+    100,
+    30,
+    help="Estimated annual likelihood of a significant incident before controls (Default: 30%, based on industry benchmarks such as Verizon DBIR, Sophos ransomware stats, and UK Cyber Security Breaches Survey)."
+)", 0, 100, 20,
+
 aro_after_percent = st.sidebar.slider(
     "Likelihood of Incident AFTER Controls (%)", 0, 100, 10,
     help="Estimated likelihood of a significant incident occurring after controls are implemented."
