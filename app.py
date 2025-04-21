@@ -40,8 +40,8 @@ user_count = st.sidebar.slider(
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
 monitoring_cost_per_user = st.sidebar.slider(
-    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=100, value=10, step=1,
-    help="Estimated cost per user to provide credit monitoring after a breach."
+    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=30, value=10, step=1,
+    help="Estimated cost per user to provide credit monitoring after a breach. Average cost is $12"
 )
 
 sle_m = st.sidebar.slider(
