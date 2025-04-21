@@ -158,9 +158,9 @@ risk_reduction_pct = (risk_reduction / revenue) * 100 if revenue > 0 else 0
 # === VISUAL COMPARISON: Cost Per Day ===
 min_cost_per_day = revenue / 365
 if cost_per_day < min_cost_per_day:
-    st.warning(f"⚠️ Your estimated daily cost of downtime (${cost_per_day:,}) is **below** the baseline (${min_cost_per_day:,.0f}).")
+    st.warning(f"⚠️ Your estimated daily cost of downtime (${cost_per_day:,.0f}) is **below** the baseline (${min_cost_per_day:,.0f}).").")
 else:
-    st.success(f"✅ Your estimated daily cost of downtime (${cost_per_day:,}) meets or exceeds the minimum (${min_cost_per_day:,.0f}).")
+    st.success(f"✅ Your estimated daily cost of downtime (${cost_per_day:,.0f}) meets or exceeds the minimum (${min_cost_per_day:,.0f}).")
 
 # === METRICS OUTPUT ===
 maturity_colors = {
