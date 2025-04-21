@@ -8,7 +8,6 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 st.title("Cyber Risk ROI Calculator")
 
 # === SIDEBAR INPUTS ===
-
 # Program Maturity
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
@@ -60,7 +59,7 @@ monitoring_cost_per_user = st.sidebar.slider(
 
 sle_m = st.sidebar.slider(
     "Base SLE (Excluding Users) - Incident Cost ($M)",
-    min_value=0.0, max_value=20.0, value=6.0, step=1.0,
+    min_value=0.0, max_value=100.0, value=6.0, step=1.0,
     help="Single Loss Expectancy: core cost of one significant incident (e.g., forensic, legal, remediation), excluding per-user credit monitoring and downtime losses."
 )
 base_sle = sle_m * 1_000_000
@@ -73,7 +72,6 @@ downtime_days = st.sidebar.slider(
     min_value=5, max_value=30, value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
-# Default daily downtime cost in millions
 default_cost_per_day_m = revenue_m / 365
 # Slider for daily downtime cost (in $M), up to twice the baseline to allow experimentation
 dcost_max = default_cost_per_day_m * 2
@@ -91,8 +89,6 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 cost_per_day = cost_per_day_m * 1_000_000
-
-
 downtime_cost = downtime_days * cost_per_day
 
 # ARO Sliders
@@ -108,9 +104,6 @@ aro_after_percent = st.sidebar.slider(
     0,
     100,
     10,
-    help="Estimated likelihood of a significant incident occurring after controls are implemented."
-)(
-    "Likelihood of Incident AFTER Controls (%)", 0, 100, 10,
     help="Estimated likelihood of a significant incident occurring after controls are implemented."
 )
 aro_before = aro_before_percent / 100
@@ -250,4 +243,4 @@ Lost revenue due to operational disruption.
 
 ---
 Want to go deeper? [Learn FAIR methodology →](https://www.fairinstitute.org/fair-model)
-    """)
+    """ )
