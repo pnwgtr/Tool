@@ -11,7 +11,8 @@ except ImportError:
     # Plotly not installed; will use Streamlit’s built-in charts
     pass
 
-st.set_page_config(page_title="Cyber Risk ROI", layout="wide")(page_title="Cyber Risk ROI", layout="wide")
+st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
+
 
 
 # === TITLE ===
