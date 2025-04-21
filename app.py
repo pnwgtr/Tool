@@ -40,8 +40,8 @@ user_count = st.sidebar.slider(
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
 monitoring_cost_per_user = st.sidebar.slider(
-    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=30, value=10, step=1,
-    help="Estimated cost per user to provide credit monitoring after a breach. Average cost is $12"
+    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=20, value=10, step=1,
+    help="Estimated cost per user to provide credit monitoring after a breach. Average cost is $8"
 )
 
 sle_m = st.sidebar.slider(
@@ -59,7 +59,7 @@ downtime_days = st.sidebar.slider(
 cost_per_day = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($)",
     min_value=0,
-    max_value=int(revenue),
+    max_value=1_000_000_000,  # 🔥 This is the updated max value (1 billion)
     value=default_cost_per_day,
     step=5000,
     help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${default_cost_per_day:,}."
