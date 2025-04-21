@@ -206,7 +206,7 @@ fig_bar = px.bar(
 fig_bar.update_layout(showlegend=False, yaxis_title="ALE (Millions $)")
 st.plotly_chart(fig_bar, use_container_width=True)
 
-# === PIE CHART ===
+# === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction Breakdown")
 cost_data = pd.DataFrame({
     "Category": ["Preventative Controls Cost", "Risk Reduction"],
@@ -222,25 +222,8 @@ fig_pie = px.pie(
 fig_pie.update_traces(textinfo="percent+label", textposition="inside")
 fig_pie.update_layout(showlegend=True)
 st.plotly_chart(fig_pie, use_container_width=True)
-st.subheader("Cost vs Risk Reduction Breakdown")
-cost_data = pd.DataFrame({
-    "Category": ["Preventative Controls Cost", "Risk Reduction"],
-    "Amount (Millions $)": [controls_cost / 1_000_000, risk_reduction / 1_000_000]
-})
-fig2, ax2 = plt.subplots(facecolor='none')
-ax2.set_facecolor('none')
-wedges, texts, autotexts = ax2.pie(
-    cost_data["Amount (Millions $)"],
-    labels=cost_data["Category"],
-    autopct="%1.1f%%",
-    startangle=90,
-    textprops={'color':'white','fontsize':12},
-    wedgeprops=dict(edgecolor='black')
-)
-for text in texts + autotexts:
-    text.set_color('white')
-ax2.axis("equal")
-st.pyplot(fig2, transparent=True)
+
+# === FAQ ===
 
 # === FAQ ===
 with st.sidebar.expander("📘 What Do These Terms Mean?", expanded=False):
