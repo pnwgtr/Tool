@@ -27,7 +27,7 @@ controls_cost_m = st.sidebar.slider(
 controls_cost = controls_cost_m * 1_000_000
 
 revenue_m = st.sidebar.slider(
-    "Annual Revenue ($M)", min_value=0.0, max_value=1000.0, value=500.0, step=10.0,
+    "Annual Revenue ($M)", min_value=0.0, max_value=5000.0, value=500.0, step=10.0,
     help="Your organization’s annual gross revenue."
 )
 revenue = revenue_m * 1_000_000
@@ -40,8 +40,8 @@ user_count = st.sidebar.slider(
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
 monitoring_cost_per_user = st.sidebar.slider(
-    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=20, value=10, step=1,
-    help="Estimated cost per user to provide credit monitoring after a breach. Average cost is $8"
+    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=100, value=10, step=1,
+    help="Estimated cost per user to provide credit monitoring after a breach."
 )
 
 sle_m = st.sidebar.slider(
@@ -56,15 +56,24 @@ downtime_days = st.sidebar.slider(
     "Estimated Days of Downtime", min_value=5, max_value=30, value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
-cost_per_day = st.sidebar.slider(
-    "Estimated Cost per Day of Downtime ($K)",
+cost_per_day_k = st.sidebar.slider(
+    "Estimated Cost per Day of Downtime",
     min_value=0,
-    max_value=300,
+    max_value=1000,
     value=int(default_cost_per_day / 1000),
+    step=5,
+    format="%dK" if int(default_cost_per_day / 1000) < 1000 else "%0.1fM",
+    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${int(default_cost_per_day / 1000)}K."
+),
+    step=5,
+    format="%dK",
+    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${int(default_cost_per_day / 1000)}K."
+)
+cost_per_day = cost_per_day_k * 1000,
     step=5,
     help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${int(default_cost_per_day / 1000):,}k."
 )
-cost_per_day = cost_per_day * 1000
+cost_per_day = cost_per_day_k * 1000 if cost_per_day_k < 1000 else cost_per_day_k * 1_000_000
 downtime_cost = downtime_days * cost_per_day
 
 aro_before_percent = st.sidebar.slider(
