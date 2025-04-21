@@ -1,8 +1,16 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+import pandas as pd
+# Attempt to import Plotly, fallback if unavailable
+try:
+    import plotly.express as px
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
 import plotly.express as px
 import pandas as pd
 import plotly.express as px
+
 
 
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
