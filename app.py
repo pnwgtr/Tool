@@ -62,7 +62,7 @@ sle_m = st.sidebar.slider(
     min_value=0.0,
     max_value=20.0,
     value=6.0,
-    step=1.0,
+    step=.25,
     help="Single Loss Expectancy: core cost of one significant incident (e.g., forensic, legal, remediation), excluding per-user credit monitoring and downtime losses."
 )
 base_sle = sle_m * 1_000_000
