@@ -9,6 +9,7 @@ st.title("Cyber Risk ROI Calculator")
 
 # === SIDEBAR INPUTS ===
 
+# Program Maturity
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
     "Cybersecurity Program Maturity",
@@ -17,75 +18,75 @@ maturity_level = st.sidebar.select_slider(
     help="Indicates the overall maturity of your cybersecurity program, based on people, process, and technology."
 )
 
+# Controls Cost
 st.sidebar.header("Input Parameters")
 controls_cost_m = st.sidebar.slider(
-    "Cost of Preventative Controls ($M)", min_value=0.0, max_value=20.0, value=1.1, step=0.1,
+    "Cost of Preventative Controls ($M)",
+    min_value=0.0, max_value=20.0, value=1.1, step=0.1,
     help="Annual cost of security measures implemented to prevent significant cyber incidents."
 )
 controls_cost = controls_cost_m * 1_000_000
 
+# Revenue
 revenue_m = st.sidebar.slider(
-    "Annual Revenue ($M)", min_value=0.0, max_value=5000.0, value=500.0, step=10.0,
+    "Annual Revenue ($M)",
+    min_value=0.0, max_value=5000.0, value=500.0, step=10.0,
     help="Your organization’s annual gross revenue."
 )
 revenue = revenue_m * 1_000_000
 
-default_cost_per_day = round(revenue / 365)
-
+# Breach Impact: Users
 st.sidebar.markdown("### Breach Impact Assumptions")
 user_count_k = st.sidebar.slider(
     "Estimated Affected Users",
-    min_value=0,
-    max_value=1000,
-    value=600,
-    step=10,
+    min_value=0, max_value=1000, value=600, step=10,
     format="%dK",
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
 st.sidebar.markdown(
-    f"<div style='font-size: 12px; color: gray;'>📍 Minimum daily cost based on revenue: ${int(default_cost_per_day / 1000)}K</div>",
+    f"<div style='font-size:12px;color:gray;'>📍 Based on current data, expected user count is around {user_count_k}K</div>",
     unsafe_allow_html=True
 )
-
 user_count = user_count_k * 1000
+
+# Per‑user monitoring cost
 monitoring_cost_per_user = st.sidebar.slider(
-    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=20, value=10, step=1,
+    "Cost per User for Credit Monitoring ($)",
+    min_value=0, max_value=20, value=10, step=1,
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
 
+# Base SLE
 sle_m = st.sidebar.slider(
-    "Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, max_value=100.0, value=6.0, step=1.0,
+    "Base SLE (Excluding Users) - Incident Cost ($M)",
+    min_value=0.0, max_value=100.0, value=6.0, step=1.0,
     help="Estimated cost of a significant cyber incident, not including per-user costs."
 )
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
 
+# Downtime Impact
 st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider(
-    "Estimated Days of Downtime", min_value=5, max_value=30, value=5,
+    "Estimated Days of Downtime",
+    min_value=5, max_value=30, value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
+default_cost_per_day = round(revenue / 365)
 cost_per_day_k = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($K)",
-    min_value=0,
-    max_value=1000,
-    value=int(default_cost_per_day / 1000),
-    step=5,
+    min_value=0, max_value=1000, value=int(default_cost_per_day/1000), step=5,
     format="%dK",
-    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${int(default_cost_per_day / 1000)}K."
+    help=f"Estimated daily revenue loss due to operational disruption. Baseline: ${int(default_cost_per_day/1000)}K."
 )
-st.markdown(f"<div style='font-size: 12px; color: gray;'>📍 Minimum daily cost based on revenue: ${int(default_cost_per_day / 1000)}K</div>", unsafe_allow_html=True)",
-    min_value=0,
-    max_value=1000,
-    value=int(default_cost_per_day / 1000),
-    step=5,
-    format="%dK",
-    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${int(default_cost_per_day / 1000)}K."
+st.sidebar.markdown(
+    f"<div style='font-size:12px;color:gray;'>📍 Minimum daily cost based on revenue: ${int(default_cost_per_day/1000)}K</div>",
+    unsafe_allow_html=True
 )
 cost_per_day = cost_per_day_k * 1000
-
 downtime_cost = downtime_days * cost_per_day
 
+# ARO sliders
 aro_before_percent = st.sidebar.slider(
     "Likelihood of Incident BEFORE Controls (%)", 0, 100, 20,
     help="Estimated likelihood of a significant incident occurring without controls in place."
@@ -97,7 +98,7 @@ aro_after_percent = st.sidebar.slider(
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
 
-# Apply maturity modifier to ARO
+# Apply maturity modifier
 maturity_modifiers = {
     "Initial": 1.3,
     "Developing": 1.15,
@@ -122,11 +123,11 @@ This calculator models the potential financial impact of a significant cyber eve
 - **Preventative control spend of ${controls_cost:,.0f} annually**
 
 These factors contribute to a heightened risk profile and help define the variables below:
-- **SLE** (Single Loss Expectancy) = estimated loss from one significant incident (base + user + downtime costs)
-- **ARO** (Annual Rate of Occurrence) = estimated yearly likelihood of a breach
-- **Downtime cost** = based on expected outage days × cost per day
-- **Controls cost** = annual spend to reduce likelihood and impact
-- **Program maturity rated as _{maturity_level}_**, influencing how likely incidents are to occur
+- **SLE** (Single Loss Expectancy) = base + user + downtime costs
+- **ARO** (Annual Rate of Occurrence) = yearly likelihood of a breach
+- **Downtime cost** = outage days × daily cost
+- **Controls cost** = annual spend
+- **Program maturity** = _{maturity_level}_ (adjusts ARO)
     """)
 
 # === CALCULATIONS ===
@@ -142,96 +143,4 @@ risk_reduction_pct = (risk_reduction / revenue) * 100 if revenue > 0 else 0
 # === VISUAL COMPARISON: Cost Per Day ===
 min_cost_per_day = revenue / 365
 if cost_per_day < min_cost_per_day:
-    st.warning(f"⚠️ Your estimated daily cost of downtime (${cost_per_day:,}) is **below** the baseline (${min_cost_per_day:,.0f}). This may underestimate the true business impact.")
-else:
-    st.success(f"✅ Your estimated daily cost of downtime (${cost_per_day:,}) meets or exceeds the minimum (${min_cost_per_day:,.0f}) based on your revenue.")
-
-# === METRICS OUTPUT ===
-maturity_colors = {
-    "Initial": "red",
-    "Developing": "orange",
-    "Defined": "yellow",
-    "Managed": "lightgreen",
-    "Optimized": "green"
-}
-maturity_color = maturity_colors[maturity_level]
-st.markdown(f"### Program Maturity: <span style='color:{maturity_color}; font-weight:bold' title='Maturity reflects the strength of your cybersecurity program. Higher maturity reduces the likelihood of significant incidents.'>{maturity_level}</span>", unsafe_allow_html=True)
-
-col1, col2, col3 = st.columns(3)
-col1.metric("ALE Before Controls", f"${ale_before/1_000_000:.2f}M")
-col2.metric("ALE After Controls", f"${ale_after/1_000_000:.2f}M")
-col3.metric("Annual Risk Reduction", f"${risk_reduction/1_000_000:.2f}M")
-
-st.metric("ROI", f"{roi * 100:.1f}%")
-st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.")
-
-st.markdown("### Impact as % of Annual Revenue")
-col4, col5, col6 = st.columns(3)
-col4.metric("ALE Before Controls", f"{ale_before_pct:.2f}% of revenue")
-col5.metric("ALE After Controls", f"{ale_after_pct:.2f}% of revenue")
-col6.metric("Risk Reduction", f"{risk_reduction_pct:.2f}% of revenue")
-
-# === BAR CHART ===
-st.subheader("Annual Loss Exposure: Before vs After Controls")
-ale_df = pd.DataFrame({
-    "Scenario": ["Before Controls", "After Controls"],
-    "ALE (Millions $)": [ale_before / 1_000_000, ale_after / 1_000_000]
-})
-st.bar_chart(ale_df.set_index("Scenario"))
-
-# === PIE CHART ===
-st.subheader("Cost vs Risk Reduction Breakdown")
-cost_data = pd.DataFrame({
-    "Category": ["Preventative Controls Cost", "Risk Reduction"],
-    "Amount (Millions $)": [controls_cost / 1_000_000, risk_reduction / 1_000_000]
-})
-
-fig2, ax2 = plt.subplots(facecolor='none')
-ax2.set_facecolor('none')
-
-text_props = {'color': 'white', 'fontsize': 12}
-
-wedges, texts, autotexts = ax2.pie(
-    cost_data["Amount (Millions $)"],
-    labels=cost_data["Category"],
-    autopct="%1.1f%%",
-    startangle=90,
-    textprops=text_props,
-    wedgeprops=dict(edgecolor='black')
-)
-
-for text in texts + autotexts:
-    text.set_color('white')
-
-ax2.axis("equal")
-st.pyplot(fig2, transparent=True)
-
-# === FAQ ===
-with st.sidebar.expander("📘 What Do These Terms Mean?", expanded=False):
-    st.markdown("""
-**SLE (Single Loss Expectancy):**  
-Estimated cost of one significant cyber event.
-
-**ARO (Annualized Rate of Occurrence):**  
-Estimated probability that a significant incident will happen in a year.
-
-**ALE (Annualized Loss Expectancy):**  
-Expected yearly financial loss due to cyber incidents.  
-**Formula:** `ALE = SLE × ARO`
-
-**ROI (Return on Investment):**  
-How much value you get from investing in controls.  
-**Formula:** `(Risk Reduction ÷ Control Cost) × 100`
-
-**Cost vs. Risk Reduction Ratio:**  
-A ratio < 1 means your spend is efficient for the risk reduced.
-
-**User Breach Cost:**  
-Cost of providing credit monitoring to affected users.
-
-**Downtime Cost:**  
-Lost revenue or costs due to operational disruption.
-
----
-Want to go deeper? [Check out FAIR methodology →](https://www.fairinstitute.org/fair-model)
-    """)
+    st.warning(f"⚠️ Your estimated daily cost of downtime (${cost_per_day:,}) is **below** the baseline (${min_cost_per_day:,.0
