@@ -20,30 +20,38 @@ maturity_level = st.sidebar.select_slider(
 )
 st.sidebar.header("Input Parameters")
 
-controls_cost_m = st.sidebar.number_input(
-    "Cost of Preventative Controls ($M)", min_value=0.0, value=1.1,
+controls_cost_m = st.sidebar.slider(
+    "Cost of Preventative Controls ($M)", min_value=0.0, max_value=20.0, value=1.1, step=0.1,
+    help="Annual cost of security measures implemented to prevent significant cyber incidents."
+)", min_value=0.0, value=1.1,
     help="Annual cost of security measures implemented to prevent significant cyber incidents."
 )
 controls_cost = controls_cost_m * 1_000_000
 
-revenue_m = st.sidebar.number_input(
-    "Annual Revenue ($M)", min_value=0.0, value=500.0,
+revenue_m = st.sidebar.slider(
+    "Annual Revenue ($M)", min_value=0.0, max_value=5000.0, value=500.0, step=10.0,
+    help="Your organization’s annual gross revenue."
+)", min_value=0.0, value=500.0,
     help="Your organization’s annual gross revenue."
 )
 revenue = revenue_m * 1_000_000
 
 st.sidebar.markdown("### Breach Impact Assumptions")
-user_count = st.sidebar.number_input(
-    "Estimated Affected Users", min_value=0, value=600000, step=10000,
+user_count = st.sidebar.slider(
+    "Estimated Affected Users", min_value=0, max_value=1000000, value=600000, step=10000,
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
-monitoring_cost_per_user = st.sidebar.number_input(
-    "Cost per User for Credit Monitoring ($)", min_value=0, value=10, step=1,
+monitoring_cost_per_user = st.sidebar.slider(
+    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=100, value=10, step=1,
+    help="Estimated cost per user to provide credit monitoring after a breach."
+)", min_value=0, value=10, step=1,
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
 
-sle_m = st.sidebar.number_input(
-    "Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, value=6.0,
+sle_m = st.sidebar.slider(
+    "Base SLE (Excluding Users) - Incident Cost ($M)", min_value=0.0, max_value=100.0, value=6.0, step=1.0,
+    help="Estimated cost of a significant cyber incident, not including per-user costs."
+) - Incident Cost ($M)", min_value=0.0, value=6.0,
     help="Estimated cost of a significant cyber incident, not including per-user costs."
 )
 base_sle = sle_m * 1_000_000
@@ -55,8 +63,14 @@ downtime_days = st.sidebar.slider(
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
 default_cost_per_day = round(revenue / 365)
-cost_per_day = st.sidebar.number_input(
+cost_per_day = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($)",
+    min_value=0,
+    max_value=int(revenue),
+    value=default_cost_per_day,
+    step=5000,
+    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${default_cost_per_day:,}."
+)",
     min_value=0,
     value=default_cost_per_day,
     step=5000,
@@ -74,6 +88,7 @@ aro_after_percent = st.sidebar.slider(
 )
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
+
 
 # Apply maturity modifier to ARO
 maturity_modifiers = {
