@@ -27,7 +27,7 @@ controls_cost_m = st.sidebar.slider(
 controls_cost = controls_cost_m * 1_000_000
 
 revenue_m = st.sidebar.slider(
-    "Annual Revenue ($M)", min_value=0.0, max_value=5000.0, value=500.0, step=10.0,
+    "Annual Revenue ($M)", min_value=0.0, max_value=1000.0, value=500.0, step=10.0,
     help="Your organization’s annual gross revenue."
 )
 revenue = revenue_m * 1_000_000
