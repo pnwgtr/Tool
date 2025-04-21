@@ -2,16 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Attempt to import Plotly; enable fallback
-PLOTLY_AVAILABLE = False
-try:
-    import plotly.express as px
-    PLOTLY_AVAILABLE = True
-except ImportError:
-    # Plotly not installed; will use Streamlit’s built-in charts
-    pass
-
-st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
+st.set_page_config(page_title="Cyber Risk ROI", layout="wide")(page_title="Cyber Risk ROI", layout="wide")
 
 
 
@@ -206,16 +197,8 @@ ale_df = pd.DataFrame({
     "Scenario": ["Before Controls", "After Controls"],
     "ALE (Millions $)": [ale_before / 1_000_000, ale_after / 1_000_000]
 })
-fig_bar = px.bar(
-    ale_df,
-    x="Scenario",
-    y="ALE (Millions $)",
-    text=ale_df["ALE (Millions $)"].map(lambda x: f"${x:.2f}M"),
-    color="Scenario",
-    color_discrete_map={"Before Controls": "#636EFA", "After Controls": "#EF553B"}
-)
-fig_bar.update_layout(showlegend=False, yaxis_title="ALE (Millions $)")
-st.plotly_chart(fig_bar, use_container_width=True)
+# Use Streamlit built-in bar chart
+st.bar_chart(ale_df.set_index("Scenario"))
 
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction Breakdown")
@@ -223,20 +206,25 @@ cost_data = pd.DataFrame({
     "Category": ["Preventative Controls Cost", "Risk Reduction"],
     "Amount (Millions $)": [controls_cost / 1_000_000, risk_reduction / 1_000_000]
 })
-fig_pie = px.pie(
-    cost_data,
-    names="Category",
-    values="Amount (Millions $)",
-    hole=0.4,
-    color_discrete_sequence=px.colors.qualitative.Pastel
+# Matplotlib donut chart
+fig2, ax2 = plt.subplots(facecolor='none')
+ax2.set_facecolor('none')
+text_props = {'color':'white','fontsize':12}
+wedges, texts, autotexts = ax2.pie(
+    cost_data["Amount (Millions $)"],
+    labels=cost_data["Category"],
+    autopct="%1.1f%%",
+    startangle=90,
+    textprops=text_props,
+    wedgeprops=dict(edgecolor='black')
 )
-fig_pie.update_traces(textinfo="percent+label", textposition="inside")
-fig_pie.update_layout(showlegend=True)
-st.plotly_chart(fig_pie, use_container_width=True)
+for text in texts + autotexts:
+    text.set_color('white')
+ax2.axis('equal')
+st.pyplot(fig2, transparent=True)
 
 # === FAQ ===
 
-# === FAQ ===
 with st.sidebar.expander("📘 What Do These Terms Mean?", expanded=False):
     st.markdown("""
 **SLE (Single Loss Expectancy):**  
