@@ -33,12 +33,19 @@ revenue = revenue_m * 1_000_000
 default_cost_per_day = round(revenue / 365)
 
 st.sidebar.markdown("### Breach Impact Assumptions")
-user_count = st.sidebar.slider(
-    "Estimated Affected Users", min_value=0, max_value=1000000, value=600000, step=10000,
+user_count_k = st.sidebar.slider(
+    "Estimated Affected Users",
+    min_value=0,
+    max_value=1000,
+    value=600,
+    step=10,
+    format="%dK",
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
+st.markdown(f"<div style='font-size: 12px; color: gray;'>📍 Based on current data, expected user count is around {user_count_k}K</div>", unsafe_allow_html=True)
+user_count = user_count_k * 1000
 monitoring_cost_per_user = st.sidebar.slider(
-    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=100, value=10, step=1,
+    "Cost per User for Credit Monitoring ($)", min_value=0, max_value=20, value=10, step=1,
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
 
@@ -56,6 +63,14 @@ downtime_days = st.sidebar.slider(
 )
 cost_per_day_k = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($K)",
+    min_value=0,
+    max_value=1000,
+    value=int(default_cost_per_day / 1000),
+    step=5,
+    format="%dK",
+    help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${int(default_cost_per_day / 1000)}K."
+)
+st.markdown(f"<div style='font-size: 12px; color: gray;'>📍 Minimum daily cost based on revenue: ${int(default_cost_per_day / 1000)}K</div>", unsafe_allow_html=True)",
     min_value=0,
     max_value=1000,
     value=int(default_cost_per_day / 1000),
@@ -96,7 +111,7 @@ with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
 This calculator models the potential financial impact of a significant cyber event based on our organization's digital footprint and business operations.
 
 **Key Factors in Our Risk Surface:**
-- **{user_count:,} user accounts** containing sensitive personal data
+- **{user_count_k}K user accounts** containing sensitive personal data
 - **Mission-critical systems** that cannot be down for extended periods
 - **Third-party integrations** and vendor dependencies
 - **${revenue:,.0f} in annual revenue**, reliant on continuous uptime
