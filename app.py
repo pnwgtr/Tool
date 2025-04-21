@@ -57,11 +57,12 @@ downtime_days = st.sidebar.slider(
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
 cost_per_day = st.sidebar.slider(
-    "Estimated Cost per Day of Downtime ($",
+    "Estimated Cost per Day of Downtime ($)",
     min_value=0,
     max_value=300_000,
     value=default_cost_per_day,
     step=5000,
+    format="$%dk",
     help=f"Estimated daily revenue loss or cost due to operational disruption. Based on revenue, the minimum estimated daily cost is ${default_cost_per_day:,}."
 )
 downtime_cost = downtime_days * cost_per_day
