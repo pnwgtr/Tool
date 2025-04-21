@@ -42,7 +42,11 @@ user_count_k = st.sidebar.slider(
     format="%dK",
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
-st.markdown(f"<div style='font-size: 12px; color: gray;'>📍 Based on current data, expected user count is around {user_count_k}K</div>", unsafe_allow_html=True)
+st.sidebar.markdown(
+    f"<div style='font-size: 12px; color: gray;'>📍 Minimum daily cost based on revenue: ${int(default_cost_per_day / 1000)}K</div>",
+    unsafe_allow_html=True
+)
+
 user_count = user_count_k * 1000
 monitoring_cost_per_user = st.sidebar.slider(
     "Cost per User for Credit Monitoring ($)", min_value=0, max_value=20, value=10, step=1,
