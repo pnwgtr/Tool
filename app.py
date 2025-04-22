@@ -216,7 +216,7 @@ wedges, texts, autotexts = ax_donut.pie(
 # ax_donut.add_artist(centre_circle)
 # Add total in centre removed
 
-)
+
 # Make edge invisible
 for wedge in wedges:
     wedge.set_edgecolor('none')
