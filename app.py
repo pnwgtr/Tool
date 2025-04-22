@@ -62,8 +62,9 @@ st.sidebar.markdown(
 user_count = user_count_k * 1000
 
 monitoring_cost_per_user = st.sidebar.slider(
-     "💵 Cost per User for Credit Monitoring ($)",
+    "$ Cost per User for Credit Monitoring",
     min_value=0, max_value=20, value=10, step=1,
+    format="$%d",
     help="Estimated cost per user to provide credit monitoring after a breach."
 )
 
