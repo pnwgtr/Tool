@@ -165,16 +165,13 @@ col1, col2, col3 = st.columns(3)
 col1.metric("ALE Before", f"${ale_before/1_000_000:.2f}M")
 col2.metric("ALE After", f"${ale_after/1_000_000:.2f}M")
 col3.metric("Risk Reduction", f"${risk_reduction/1_000_000:.2f}M")
+# ROI with tooltip
 st.markdown(
     f"### ROI: <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{(roi*100):.1f}%</span>",
     unsafe_allow_html=True
 )
 
-st.markdown(
-    f"### ROI: <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{(roi*100):.1f}%</span>",
-    unsafe_allow_html=True
-)
-st.markdown(
+st.markdown("### Impact as % of Revenue"))
 col4, col5, col6 = st.columns(3)
 col4.metric("ALE Before", f"{ale_before_pct:.2f}%")
 col5.metric("ALE After", f"{ale_after_pct:.2f}%")
