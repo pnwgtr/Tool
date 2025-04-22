@@ -195,16 +195,33 @@ bar_ax.spines['bottom'].set_color('white')
 st.pyplot(bar_fig, transparent=True)
 
 # === DONUT CHART ===
-st.subheader("Cost vs Risk Reduction")
-cost_df = pd.DataFrame({"Category": ["Controls", "Reduction"], "M": [controls_cost/1_000_000, risk_reduction/1_000_000]})
-fig, ax = plt.subplots(facecolor='none')
-ax.set_facecolor('none')
-wedges, texts, autotexts = ax.pie(cost_df['M'], labels=cost_df['Category'], autopct="%1.1f%%", startangle=90, wedgeprops=dict(edgecolor='black'))
-for t in texts+autotexts:
-    t.set_color('white')
-ax.axis('equal')
-st.pyplot(fig, transparent=True)
-
+st.subheader("Cost vs Risk Reduction (Donut View)")
+cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"],
+                        "M": [controls_cost / 1_000_000, risk_reduction / 1_000_000]})
+fig_donut, ax_donut = plt.subplots(figsize=(6, 4), facecolor='none')
+ax_donut.set_facecolor('none')
+colors_donut = ['#636EFA', '#00CC96']
+wedges, texts, autotexts = ax_donut.pie(
+    cost_df['M'],
+    labels=cost_df['Category'],
+    autopct='%1.1f%%',
+    startangle=90,
+    pctdistance=0.75,
+    colors=colors_donut,
+    textprops={'color': 'white', 'weight': 'bold'}
+)
+# Draw centre circle for donut effect
+centre_circle = plt.Circle((0, 0), 0.60, fc='none', edgecolor='white', linewidth=1.5)
+ax_donut.add_artist(centre_circle)
+# Add total in centre
+total_val = cost_df['M'].sum()
+ax_donut.text(0, 0, f"Total
+{total_val:.2f}M", ha='center', va='center', color='white', size=12, weight='bold')
+# Make edge invisible
+for wedge in wedges:
+    wedge.set_edgecolor('none')
+ax_donut.axis('equal')
+st.pyplot(fig_donut, transparent=True)
 
 # === COST COMPONENT BREAKDOWN ===
 st.subheader("Cost Component Breakdown")
