@@ -69,7 +69,7 @@ monitoring_cost_per_user = st.sidebar.slider(
 
 sle_m = st.sidebar.slider(
     "Base SLE (Excluding Users) - Incident Cost ($M)",
-    min_value=0.0, max_value=10.0, value=6.0, step=.1,
+    min_value=0.0, max_value=20.0, value=6.0, step=1.0,
     format="%0.1fM",
     help="Single Loss Expectancy: core cost of one significant incident (e.g., forensic, legal, remediation), excluding per-user and downtime costs."
 )
@@ -212,16 +212,15 @@ wedges, texts, autotexts = ax_donut.pie(
 )
 # Draw centre circle for donut effect
 centre_circle = plt.Circle((0, 0), 0.60, fc='none', edgecolor='white', linewidth=1.5)
-ax_donut.text(
-    0, 0,
-    f"Total\\n{total_val:.2f}M",
-    ha='center', va='center',
-    color='white', size=12, weight='bold'
-)
+ax_donut.add_artist(centre_circle)
 # Add total in centre
 total_val = cost_df['M'].sum()
-ax_donut.text(0, 0, f"Total
-{total_val:.2f}M", ha='center', va='center', color='white', size=12, weight='bold')
+ax_donut.text(
+    0, 0,
+    f"Total
+{total_val:.2f}M",
+    ha='center', va='center', color='white', size=12, weight='bold'
+)
 # Make edge invisible
 for wedge in wedges:
     wedge.set_edgecolor('none')
