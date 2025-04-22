@@ -188,6 +188,14 @@ for t in texts+autotexts:
 ax.axis('equal')
 st.pyplot(fig, transparent=True)
 
+# === COST COMPONENT BREAKDOWN ===
+st.subheader("Cost Component Breakdown")
+cost_comp_df = pd.DataFrame({
+    "Component": ["Preventative Controls", "User Breach Cost", "Downtime Cost"],
+    "Amount (Millions $)": [controls_cost/1_000_000, user_breach_cost/1_000_000, downtime_cost/1_000_000]
+})
+st.bar_chart(cost_comp_df.set_index("Component"))(fig, transparent=True)
+
 # === FAQ ===
 with st.sidebar.expander("📘 What These Mean", expanded=False):
     st.markdown("""
