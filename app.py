@@ -152,16 +152,12 @@ risk_red_pct = risk_reduction / revenue * 100 if revenue else 0
 min_cost_per_day = default_cost_per_day
 if cost_per_day < min_cost_per_day:
     st.warning(
-        f"⚠️ Your estimated daily downtime cost of ${cost_per_day:,.0f} "
-        f"is below the expected baseline of ${min_cost_per_day:,.0f} (revenue/365). "
-        "Underestimating downtime costs can leave you unprepared for recovery expenses "
-        "and broader business impact. Consider revising this value."
+        f"⚠️ Your estimated daily downtime cost of ${cost_per_day:,.0f} is below the expected baseline of ${min_cost_per_day:,.0f} (revenue/365). "
+        "Underestimating downtime costs can leave you unprepared for recovery expenses and broader business impact. Consider revising this value."
     )
 else:
     st.success(
-        f"✅ Your estimated daily downtime cost of ${cost_per_day:,.0f} "
-        f"meets or exceeds the baseline of ${min_cost_per_day:,.0f}, indicating "
-        "a realistic assessment of potential outage impact."
+        f"✅ Your estimated daily downtime cost of ${cost_per_day:,.0f} meets or exceeds the baseline of ${min_cost_per_day:,.0f}, indicating a realistic assessment of potential outage impact."
     )
 
 # === METRICS OUTPUT ===
