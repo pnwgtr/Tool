@@ -170,7 +170,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown("### Impact as % of Revenue")
+st.markdown(
 col4, col5, col6 = st.columns(3)
 col4.metric("ALE Before", f"{ale_before_pct:.2f}%")
 col5.metric("ALE After", f"{ale_after_pct:.2f}%")
