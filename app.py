@@ -172,10 +172,27 @@ st.markdown(
 )
 st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.")
 
-# === BAR CHART ===
-st.subheader("Annual Loss Exposure")
-ale_df = pd.DataFrame({"Scenario": ["Before", "After"], "ALE_M": [ale_before/1_000_000, ale_after/1_000_000]})
-st.bar_chart(ale_df.set_index("Scenario"))
+# === ANNUAL LOSS EXPOSURE CHART ===
+st.subheader("Annual Loss Exposure (Before vs After Controls)")
+bar_fig, bar_ax = plt.subplots(facecolor='none')
+bar_ax.set_facecolor('none')
+scenarios = ["Before Controls", "After Controls"]
+values = [ale_before/1_000_000, ale_after/1_000_000]
+bar_colors = ['#EF553B', '#636EFA']
+bar_container = bar_ax.bar(scenarios, values, color=bar_colors)
+# Annotate bars
+for bar, v in zip(bar_container, values):
+    bar_ax.text(bar.get_x() + bar.get_width() / 2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
+# Style axes
+bar_ax.set_ylabel('ALE (Millions $)', color='white')
+bar_ax.set_ylim(0, max(values)*1.25)
+for label in bar_ax.get_xticklabels() + bar_ax.get_yticklabels():
+    label.set_color('white')
+bar_ax.spines['top'].set_visible(False)
+bar_ax.spines['right'].set_visible(False)
+bar_ax.spines['left'].set_color('white')
+bar_ax.spines['bottom'].set_color('white')
+st.pyplot(bar_fig, transparent=True)
 
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction")
