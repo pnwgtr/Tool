@@ -2,6 +2,16 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 
+hide_streamlit_style = """
+<style>
+/* hide top-right menu (hamburger) */
+#MainMenu {visibility: hidden;}
+/* hide “Made with Streamlit” footer */
+footer {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # Set page configuration
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
