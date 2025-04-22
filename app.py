@@ -217,8 +217,7 @@ ax_donut.add_artist(centre_circle)
 total_val = cost_df['M'].sum()
 ax_donut.text(
     0, 0,
-    f"Total
-{total_val:.2f}M",
+    f"Total\\n{total_val:.2f}M",
     ha='center', va='center', color='white', size=12, weight='bold'
 )
 # Make edge invisible
