@@ -188,28 +188,46 @@ for t in texts+autotexts:
 ax.axis('equal')
 st.pyplot(fig, transparent=True)
 
-# === COST COMPONENT BREAKDOWN ===
+
 # === COST COMPONENT BREAKDOWN ===
 st.subheader("Cost Component Breakdown")
 cost_comp_df = pd.DataFrame({
-    "Component": ["Preventative Controls", "User Breach Cost", "Downtime Cost"],
-    "Amount (Millions $)": [controls_cost/1_000_000, user_breach_cost/1_000_000, downtime_cost/1_000_000]
+    "Component": ["Preventative Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+    "Amount (Millions $)": [
+        controls_cost / 1_000_000,
+        user_breach_cost / 1_000_000,
+        downtime_cost / 1_000_000,
+        sle / 1_000_000
+    ]
 })
 # Matplotlib horizontal bar chart for clear comparison
 fig3, ax3 = plt.subplots(facecolor='none')
 ax3.set_facecolor('none')
 components = cost_comp_df['Component']
 amounts = cost_comp_df['Amount (Millions $)']
-colors = ['#636EFA', '#EF553B', '#00CC96']
+colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
 bars = ax3.barh(components, amounts, color=colors)
 # Annotate values at end of bars
 max_amount = amounts.max()
 for bar, v in zip(bars, amounts):
-    ax3.text(v + max_amount * 0.01, bar.get_y() + bar.get_height()/2,
-             f"{v:.2f}M", va='center')
+    ax3.text(
+        v + max_amount * 0.01,
+        bar.get_y() + bar.get_height()/2,
+        f"{v:.2f}M",
+        va='center',
+        color='white'
+    )
+# Set axis text to white
+for label in ax3.get_xticklabels() + ax3.get_yticklabels():
+    label.set_color('white')
+ax3.xaxis.label.set_color('white')
+# Hide spines for a cleaner look
+for spine in ax3.spines.values():
+    spine.set_color('none')
 ax3.set_xlabel('Amount (Millions $)')
 ax3.invert_yaxis()
 st.pyplot(fig3, transparent=True)
+
 # === FAQ ===
 with st.sidebar.expander("📘 What These Mean", expanded=False):
     st.markdown("""
