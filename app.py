@@ -18,7 +18,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 st.title("Cyber Risk ROI Calculator")
 
 # === SIDEBAR INPUTS ===
-# Program Maturity
+# Program Maturity Level
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
     "Cybersecurity Program Maturity",
@@ -56,7 +56,7 @@ user_count_k = st.sidebar.slider(
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
 st.sidebar.markdown(
-    f"<div style='font-size:12px;color:gray;'>📍 Based on current data, expected user count is around {user_count_k}K</div>",
+    f"<div style='font-size:12px;color:gray;'>📍 Expected user count ~{user_count_k}K</div>",
     unsafe_allow_html=True
 )
 user_count = user_count_k * 1000
@@ -83,8 +83,7 @@ downtime_days = st.sidebar.slider(
     min_value=5, max_value=30, value=5,
     help="Estimated number of days your business would be partially or fully down due to a major incident."
 )
-# Slider for daily downtime cost in millions, up to 2× baseline
-dcost_max_m = (revenue / 365) / 1_000_000 * 2
+dcost_max_m = (default_cost_per_day / 1_000_000) * 2
 cost_per_day_m = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($M)",
     min_value=0.0,
@@ -92,7 +91,7 @@ cost_per_day_m = st.sidebar.slider(
     value=(default_cost_per_day / 1_000_000),
     step=0.1,
     format="%0.1fM",
-    help="Estimated daily revenue loss due to disruption. Baseline: ${(default_cost_per_day/1_000_000):.2f}M; max set to 2× baseline for testing."
+    help=f"Estimated daily revenue loss. Baseline: ${(default_cost_per_day/1_000_000):.2f}M; max 2× baseline."
 )
 st.sidebar.markdown(
     f"<div style='font-size:12px;color:gray;'>📍 Baseline daily cost: ${(default_cost_per_day/1_000_000):.2f}M</div>",
@@ -101,46 +100,43 @@ st.sidebar.markdown(
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
 
-# ARO Sliders
+# Incident Likelihood (ARO)
 st.sidebar.markdown("### Incident Likelihood")
 aro_before_percent = st.sidebar.slider(
     "Likelihood of Incident BEFORE Controls (%)",
     0, 100, 30,
-    help="Estimated inherent annual likelihood of a significant cyber incident before controls (default 30%, based on industry benchmarks)."
+    help="Inherent annual likelihood of a significant incident before controls (default 30%)."
 )
 aro_after_percent = st.sidebar.slider(
     "Likelihood of Incident AFTER Controls (%)",
     0, 100, 10,
-    help="Estimated annual likelihood of a significant cyber incident after controls."
+    help="Annual likelihood of a significant incident after controls."
 )
 aro_before = aro_before_percent / 100
 aro_after = aro_after_percent / 100
 
 # Adjust for maturity
-modifiers = {"Initial":1.3,"Developing":1.15,"Defined":1.0,"Managed":0.85,"Optimized":0.7}
+modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7}
 aro_before *= modifiers[maturity_level]
 aro_after *= modifiers[maturity_level]
 
 # === RISK SURFACE OVERVIEW ===
 with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
     st.markdown(f"""
-This calculator models the potential financial impact of a significant cyber event based on our organization's digital footprint and business operations.
+This calculator models the potential financial impact of a significant cyber event.
 
-**Key Factors:**
-- **{user_count_k}K user accounts** with sensitive data
-- **Mission-critical systems** needing high uptime
-- **Vendor and integration exposures**
-- **${revenue:,.0f} annual revenue** at risk
-- **${controls_cost:,.0f} controls spend** per year
+**Risk Surface:**
+- **{user_count_k}K user accounts**
+- **${revenue:,.0f} in revenue**
+- **${controls_cost:,.0f} in controls spend**
+- **Program maturity:** _{maturity_level}_
 
-Variables:
-- **SLE** = base + users + downtime costs
-- **ARO** = probability of an event (adjusted for maturity)
-- **Controls Cost** = preventive spend
-- **Downtime Cost** = outage days × daily cost
-
-Program maturity (_{maturity_level}_) influences the likelihood inputs.    
-    """)
+Variables feed calculations below:
+- **SLE** = base + user breach + downtime
+- **ARO** = likelihood (adjusted by maturity)
+- **Controls cost** = preventive spend
+- **Downtime cost** = days × daily cost
+""")
 
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
@@ -148,58 +144,50 @@ ale_before = sle * aro_before
 ale_after = sle * aro_after
 risk_reduction = ale_before - ale_after
 roi = risk_reduction / controls_cost if controls_cost else 0
-ale_before_pct = (ale_before / revenue) * 100 if revenue else 0
-ale_after_pct = (ale_after / revenue) * 100 if revenue else 0
-risk_red_pct = (risk_reduction / revenue) * 100 if revenue else 0
+ale_before_pct = ale_before / revenue * 100 if revenue else 0
+ale_after_pct = ale_after / revenue * 100 if revenue else 0
+risk_red_pct = risk_reduction / revenue * 100 if revenue else 0
 
 # === VISUAL COMPARISON ===
-min_cost_per_day = revenue / 365
+min_cost_per_day = default_cost_per_day
 if cost_per_day < min_cost_per_day:
     st.warning(f"⚠️ Estimated daily cost (${cost_per_day:,.0f}) is below baseline (${min_cost_per_day:,.0f}).")
 else:
     st.success(f"✅ Estimated daily cost (${cost_per_day:,.0f}) ≥ baseline (${min_cost_per_day:,.0f}).")
 
 # === METRICS OUTPUT ===
-colors = {"Initial":"red","Developing":"orange","Defined":"yellow","Managed":"lightgreen","Optimized":"green"}
 col1, col2, col3 = st.columns(3)
 col1.metric("ALE Before", f"${ale_before/1_000_000:.2f}M")
 col2.metric("ALE After", f"${ale_after/1_000_000:.2f}M")
 col3.metric("Risk Reduction", f"${risk_reduction/1_000_000:.2f}M")
-# ROI with tooltip
+# ROI with tooltip and tip
 st.markdown(
     f"### ROI: <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{(roi*100):.1f}%</span>",
     unsafe_allow_html=True
 )
-st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.") × 100'>{(roi*100):.1f}%</span>",
-    unsafe_allow_html=True
-)
-
-st.markdown("### Impact as % of Revenue")
-col4, col5, col6 = st.columns(3)
-col4.metric("ALE Before", f"{ale_before_pct:.2f}%")
-col5.metric("ALE After", f"{ale_after_pct:.2f}%")
-col6.metric("Reduction", f"{risk_red_pct:.2f}%")
+st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.")
 
 # === BAR CHART ===
 st.subheader("Annual Loss Exposure")
-ale_df = pd.DataFrame({"Scenario":["Before","After"],"ALE_M":[ale_before/1_000_000,ale_after/1_000_000]})
+ale_df = pd.DataFrame({"Scenario": ["Before", "After"], "ALE_M": [ale_before/1_000_000, ale_after/1_000_000]})
 st.bar_chart(ale_df.set_index("Scenario"))
 
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction")
-cost_df = pd.DataFrame({"Category":["Controls","Reduction"],"M":[controls_cost/1_000_000,risk_reduction/1_000_000]})
+cost_df = pd.DataFrame({"Category": ["Controls", "Reduction"], "M": [controls_cost/1_000_000, risk_reduction/1_000_000]})
 fig, ax = plt.subplots(facecolor='none')
 ax.set_facecolor('none')
 wedges, texts, autotexts = ax.pie(cost_df['M'], labels=cost_df['Category'], autopct="%1.1f%%", startangle=90, wedgeprops=dict(edgecolor='black'))
-for t in texts+autotexts: t.set_color('white')
+for t in texts+autotexts:
+    t.set_color('white')
 ax.axis('equal')
 st.pyplot(fig, transparent=True)
 
 # === FAQ ===
 with st.sidebar.expander("📘 What These Mean", expanded=False):
     st.markdown("""
-**SLE:** Cost per incident.  
-**ARO:** Likelihood of incident.  
-**ALE:** Annual expected loss.  
-**ROI:** Return on controls.  
+**SLE:** Cost per incident.
+**ARO:** Likelihood of incident.
+**ALE:** Annual expected loss.
+**ROI:** Return on controls.
 """)
