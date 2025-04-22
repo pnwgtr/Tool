@@ -170,6 +170,9 @@ st.markdown(
     f"### ROI: <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{(roi*100):.1f}%</span>",
     unsafe_allow_html=True
 )
+st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.") × 100'>{(roi*100):.1f}%</span>",
+    unsafe_allow_html=True
+)
 
 st.markdown("### Impact as % of Revenue")
 col4, col5, col6 = st.columns(3)
