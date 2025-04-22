@@ -194,7 +194,7 @@ cost_comp_df = pd.DataFrame({
     "Component": ["Preventative Controls", "User Breach Cost", "Downtime Cost"],
     "Amount (Millions $)": [controls_cost/1_000_000, user_breach_cost/1_000_000, downtime_cost/1_000_000]
 })
-st.bar_chart(cost_comp_df.set_index("Component"))(fig, transparent=True)
+st.bar_chart(cost_comp_df.set_index("Component"))
 
 # === FAQ ===
 with st.sidebar.expander("📘 What These Mean", expanded=False):
