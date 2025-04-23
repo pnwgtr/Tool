@@ -157,7 +157,7 @@ st.markdown(highlight_html, unsafe_allow_html=True)
 #)
 
 # === ANNUAL LOSS EXPOSURE CHART ===
-)
+
 
 # === ANNUAL LOSS EXPOSURE CHART ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
