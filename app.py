@@ -93,17 +93,17 @@ residual_risk = ale_after_pct - risk_appetite
 # === HIGHLIGHTED METRICS ===
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content: space-around; margin:20px 0;">
-  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; text-align:center;">
-    <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
-    <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
+  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <h3 style="color:#61dafb; white-space:nowrap; margin:0;">ALE Before</h3>
+    <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; text-align:center;">
-    <h3 style="color:#e06c75; margin:0;">ALE After</h3>
-    <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
+  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <h3 style="color:#e06c75; white-space:nowrap; margin:0;">ALE After</h3>
+    <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; text-align:center;">
-    <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
-    <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
+  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <h3 style="color:#98c379; white-space:nowrap; margin:0;">Risk Reduction</h3>
+    <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
   </div>
 </div>
 """
@@ -129,7 +129,7 @@ values = [ale_before/1e6, ale_after/1e6]
 bar_colors = ['#EF553B', '#636EFA']
 bars = bar_ax.bar(scenarios, values, color=bar_colors)
 for bar, v in zip(bars, values):
-    bar_ax.text(bar.get_x() + bar.get_width()/2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
+    bar_ax.text(bar.get_x() + bar.get_width() / 2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
 bar_ax.set_ylabel('ALE (Millions $)', color='white')
 bar_ax.set_ylim(0, max(values)*1.25)
 for lbl in bar_ax.get_xticklabels() + bar_ax.get_yticklabels(): lbl.set_color('white')
