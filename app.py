@@ -193,4 +193,58 @@ st.pyplot(bar_fig, transparent=True)
 
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
-cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"], "M": [controls_cost / 1_000_000, risk]})
+cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"],
+                        "M": [controls_cost / 1_000_000, risk_reduction / 1_000_000]})
+fig_donut, ax_donut = plt.subplots(figsize=(6, 4), facecolor='none')
+ax_donut.set_facecolor('none')
+wedges, texts, autotexts = ax_donut.pie(
+    cost_df['M'],
+    labels=cost_df['Category'],
+    autopct='%1.1f%%',
+    startangle=90,
+    pctdistance=0.75,
+    colors=['#636EFA', '#00CC96'],
+    textprops={'color': 'white', 'weight': 'bold'}
+)
+for wedge in wedges:
+    wedge.set_edgecolor('none')
+ax_donut.axis('equal')
+st.pyplot(fig_donut, transparent=True)
+
+# === COST COMPONENT BREAKDOWN ===
+st.subheader("Cost Component Breakdown")
+cost_comp_df = pd.DataFrame({
+    "Component": ["Preventative Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+    "Amount (Millions $)": [
+        controls_cost / 1_000_000,
+        user_breach_cost / 1_000_000,
+        downtime_cost / 1_000_000,
+        sle / 1_000_000
+    ]
+})
+fig3, ax3 = plt.subplots(facecolor='none')
+ax3.set_facecolor('none')
+components = cost_comp_df['Component']
+amounts = cost_comp_df['Amount (Millions $)']
+colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
+bars = ax3.barh(components, amounts, color=colors)
+max_amount = amounts.max()
+for bar, v in zip(bars, amounts):
+    ax3.text(v + max_amount * 0.01, bar.get_y() + bar.get_height()/2, f"{v:.2f}M", va='center', color='white')
+for label in ax3.get_xticklabels() + ax3.get_yticklabels():
+    label.set_color('white')
+for spine in ax3.spines.values():
+    spine.set_color('none')
+ax3.set_xlabel('Amount (Millions $)')
+ax3.invert_yaxis()
+st.pyplot(fig3, transparent=True)
+
+# === FAQ ===
+with st.sidebar.expander(" What These Mean", expanded=False):
+    st.markdown("""
+**SLE:** Cost per incident.
+**ARO:** Likelihood of incident.
+**ALE:** Annual expected loss.
+**ROI:** Return on controls.
+""")
+
