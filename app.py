@@ -15,7 +15,7 @@ footer {visibility: hidden;}
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # === TITLE ===
-st.title("Cyber Risk ROI Calculator")
+st.markdown("<h1 style='text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
 # === SIDEBAR INPUTS ===
 # Program Maturity Level
@@ -44,7 +44,6 @@ revenue_m = st.sidebar.slider(
     help="Your organization’s annual gross revenue."
 )
 revenue = revenue_m * 1_000_000
-
 default_cost_per_day = revenue / 365
 
 # Breach Impact Assumptions
@@ -56,7 +55,7 @@ user_count_k = st.sidebar.slider(
     help="Estimated number of users who would require credit monitoring in the event of a breach."
 )
 st.sidebar.markdown(
-    f"<div style='font-size:12px;color:gray;'>📍 Expected user count ~{user_count_k}K</div>",
+    f"<div style='font-size:12px;color:gray;'> Expected user count ~{user_count_k}K</div>",
     unsafe_allow_html=True
 )
 user_count = user_count_k * 1000
@@ -95,7 +94,7 @@ cost_per_day_m = st.sidebar.slider(
     help=f"Estimated daily revenue loss. Baseline: ${(default_cost_per_day/1_000_000):.2f}M; max 2× baseline."
 )
 st.sidebar.markdown(
-    f"<div style='font-size:12px;color:gray;'>📍 Baseline daily cost: ${(default_cost_per_day/1_000_000):.2f}M</div>",
+    f"<div style='font-size:12px;color:gray;'> Baseline daily cost: ${(default_cost_per_day/1_000_000):.2f}M</div>",
     unsafe_allow_html=True
 )
 cost_per_day = cost_per_day_m * 1_000_000
@@ -105,7 +104,7 @@ downtime_cost = downtime_days * cost_per_day
 st.sidebar.markdown("### Incident Likelihood")
 aro_before_percent = st.sidebar.slider(
     "Likelihood of Incident BEFORE Controls (%)",
-    0, 100, 30,
+     0, 100, 30,
     help="Inherent annual likelihood of a significant incident before controls (default 30%)."
 )
 aro_after_percent = st.sidebar.slider(
@@ -122,7 +121,7 @@ aro_before *= modifiers[maturity_level]
 aro_after *= modifiers[maturity_level]
 
 # === RISK SURFACE OVERVIEW ===
-with st.expander("🔍 Understanding Our Risk Surface", expanded=True):
+with st.expander(" Understanding Our Risk Surface", expanded=True):
     st.markdown(f"""
 This calculator models the potential financial impact of a significant cyber event.
 
@@ -137,7 +136,7 @@ Variables feed calculations below:
 - **ARO** = likelihood (adjusted by maturity)
 - **Controls cost** = preventive spend
 - **Downtime cost** = days × daily cost
-""")
+""", unsafe_allow_html=True)
 
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
@@ -153,12 +152,11 @@ risk_red_pct = risk_reduction / revenue * 100 if revenue else 0
 min_cost_per_day = default_cost_per_day
 if cost_per_day < min_cost_per_day:
     st.warning(
-        f"⚠️ Your estimated daily downtime cost of ${cost_per_day:,.0f} is below the expected baseline of ${min_cost_per_day:,.0f} (revenue/365). "
-        "Underestimating downtime costs can leave you unprepared for recovery expenses and broader business impact. Consider revising this value."
+        f"⚠️ Your estimated daily downtime cost of ${cost_per_day:,.0f} is below the expected baseline of ${min_cost_per_day:,.0f}. Underestimating downtime costs can leave you unprepared for recovery expenses."
     )
 else:
     st.success(
-        f"✅ Your estimated daily downtime cost of ${cost_per_day:,.0f} meets or exceeds the baseline of ${min_cost_per_day:,.0f}, indicating a realistic assessment of potential outage impact."
+        f"✅ Your estimated daily downtime cost of ${cost_per_day:,.0f} meets or exceeds the baseline of ${min_cost_per_day:,.0f}."
     )
 
 # === METRICS OUTPUT ===
@@ -166,10 +164,10 @@ col1, col2, col3 = st.columns(3)
 col1.metric("ALE Before", f"${ale_before/1_000_000:.2f}M")
 col2.metric("ALE After", f"${ale_after/1_000_000:.2f}M")
 col3.metric("Risk Reduction", f"${risk_reduction/1_000_000:.2f}M")
-# ROI with tooltip and tip
+
+# ROI display
 st.markdown(
-    f"### ROI: <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{(roi*100):.1f}%</span>",
-    unsafe_allow_html=True
+    f"### ROI: <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{(roi*100):.1f}%</span>", unsafe_allow_html=True
 )
 st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.")
 
@@ -181,10 +179,8 @@ scenarios = ["Before Controls", "After Controls"]
 values = [ale_before/1_000_000, ale_after/1_000_000]
 bar_colors = ['#EF553B', '#636EFA']
 bar_container = bar_ax.bar(scenarios, values, color=bar_colors)
-# Annotate bars
 for bar, v in zip(bar_container, values):
     bar_ax.text(bar.get_x() + bar.get_width() / 2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
-# Style axes
 bar_ax.set_ylabel('ALE (Millions $)', color='white')
 bar_ax.set_ylim(0, max(values)*1.25)
 for label in bar_ax.get_xticklabels() + bar_ax.get_yticklabels():
@@ -197,76 +193,4 @@ st.pyplot(bar_fig, transparent=True)
 
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
-cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"],
-                        "M": [controls_cost / 1_000_000, risk_reduction / 1_000_000]})
-fig_donut, ax_donut = plt.subplots(figsize=(6, 4), facecolor='none')
-ax_donut.set_facecolor('none')
-colors_donut = ['#636EFA', '#00CC96']
-wedges, texts, autotexts = ax_donut.pie(
-    cost_df['M'],
-    labels=cost_df['Category'],
-    autopct='%1.1f%%',
-    startangle=90,
-    pctdistance=0.75,
-    colors=colors_donut,
-    textprops={'color': 'white', 'weight': 'bold'}
-)
-# Removed centre circle for cleaner appearance
-# centre_circle = plt.Circle((0, 0), 0.60, fc='none', edgecolor='white', linewidth=1.5)
-# ax_donut.add_artist(centre_circle)
-# Add total in centre removed
-
-
-# Make edge invisible
-for wedge in wedges:
-    wedge.set_edgecolor('none')
-ax_donut.axis('equal')
-st.pyplot(fig_donut, transparent=True)
-
-# === COST COMPONENT BREAKDOWN ===
-st.subheader("Cost Component Breakdown")
-cost_comp_df = pd.DataFrame({
-    "Component": ["Preventative Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-    "Amount (Millions $)": [
-        controls_cost / 1_000_000,
-        user_breach_cost / 1_000_000,
-        downtime_cost / 1_000_000,
-        sle / 1_000_000
-    ]
-})
-# Matplotlib horizontal bar chart for clear comparison
-fig3, ax3 = plt.subplots(facecolor='none')
-ax3.set_facecolor('none')
-components = cost_comp_df['Component']
-amounts = cost_comp_df['Amount (Millions $)']
-colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
-bars = ax3.barh(components, amounts, color=colors)
-# Annotate values at end of bars
-max_amount = amounts.max()
-for bar, v in zip(bars, amounts):
-    ax3.text(
-        v + max_amount * 0.01,
-        bar.get_y() + bar.get_height()/2,
-        f"{v:.2f}M",
-        va='center',
-        color='white'
-    )
-# Set axis text to white
-for label in ax3.get_xticklabels() + ax3.get_yticklabels():
-    label.set_color('white')
-ax3.xaxis.label.set_color('white')
-# Hide spines for a cleaner look
-for spine in ax3.spines.values():
-    spine.set_color('none')
-ax3.set_xlabel('Amount (Millions $)')
-ax3.invert_yaxis()
-st.pyplot(fig3, transparent=True)
-
-# === FAQ ===
-with st.sidebar.expander("📘 What These Mean", expanded=False):
-    st.markdown("""
-**SLE:** Cost per incident.
-**ARO:** Likelihood of incident.
-**ALE:** Annual expected loss.
-**ROI:** Return on controls.
-""")
+cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"], "M": [controls_cost / 1_000_000, risk
