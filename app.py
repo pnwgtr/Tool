@@ -112,7 +112,7 @@ roi = risk_reduction / controls_cost if controls_cost else 0
 roi_pct = roi * 100
 ale_before_pct = (ale_before / revenue * 100) if revenue else 0
 ale_after_pct = (ale_after / revenue * 100) if revenue else 0
-residual_risk = ale_after_pct - risk_appetite
+#residual_risk = ale_after_pct - risk_appetite
 
 # Determine ROI color and tooltip
 if roi_pct < 100:
