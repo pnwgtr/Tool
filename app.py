@@ -15,11 +15,10 @@ tooltip_style = """
 """
 st.markdown(tooltip_style, unsafe_allow_html=True)
 
-# Hide Streamlit footer and menu for a clean UI
+# Hide Streamlit footer and menu
 hide_streamlit_style = """
 <style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
+#MainMenu {visibility: hidden;} footer {visibility: hidden;}
 </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -27,88 +26,44 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # === TITLE ===
 st.markdown("<h1 style='text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
-# === RISK SURFACE OVERVIEW ===
-with st.expander("Understanding Our Risk Surface", expanded=True):
-    st.markdown("""
-This calculator models the potential financial impact of a significant cyber event.
-
-**Risk Surface:**
-- Estimated user accounts
-- Revenue
-- Controls spend
-- Program maturity
-
-Variables feed calculations:
-- SLE = base + user breach + downtime
-- ARO = likelihood (adjusted by maturity)
-- Risk Reduction = difference in ALE before and after
-- ROI = (Risk Reduction ÷ Controls Cost) × 100
-""", unsafe_allow_html=True)
-
 # === SIDEBAR INPUTS ===
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
     "Cybersecurity Program Maturity",
-    options=["Initial", "Developing", "Defined", "Managed", "Optimized"],
-    value="Defined",
-    help="Indicates the overall maturity of your cybersecurity program."
+    options=["Initial","Developing","Defined","Managed","Optimized"],
+    value="Defined"
 )
 
 st.sidebar.header("Input Parameters")
-controls_cost_m = st.sidebar.slider(
-    "Cost of Preventative Controls ($M)", 0.0, 10.0, 1.1, 0.1, format="%0.1fM"
-)
+controls_cost_m = st.sidebar.slider("Cost of Preventative Controls ($M)", 0.0, 10.0, 1.1, 0.1, format="%0.1fM")
 controls_cost = controls_cost_m * 1_000_000
 
-revenue_m = st.sidebar.slider(
-    "Annual Revenue ($M)", 0.0, 1000.0, 500.0, 10.0, format="%0.0fM"
-)
+revenue_m = st.sidebar.slider("Annual Revenue ($M)", 0.0, 1000.0, 500.0, 10.0, format="%0.0fM")
 revenue = revenue_m * 1_000_000
 default_cost_per_day = revenue / 365
 
 st.sidebar.markdown("### Breach Impact Assumptions")
-user_count_k = st.sidebar.slider(
-    "Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK",
-    help="Users requiring credit monitoring."
-)
+user_count_k = st.sidebar.slider("Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK")
 user_count = user_count_k * 1000
-monitoring_cost_per_user = st.sidebar.slider(
-    "$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d",
-    help="Cost per user."
-)
+monitoring_cost_per_user = st.sidebar.slider("$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d")
 
-sle_m = st.sidebar.slider(
-    "Base SLE (Excluding Users) - Incident Cost ($M)", 0.0, 10.0, 6.0, 0.1, format="%0.1fM",
-    help="Core cost per incident, excluding user & downtime costs."
-)
+sle_m = st.sidebar.slider("Base SLE (Excl. Users) - Incident Cost ($M)", 0.0, 10.0, 6.0, 0.1, format="%0.1fM")
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
 
 st.sidebar.markdown("### Downtime Impact Assumptions")
-downtime_days = st.sidebar.slider(
-    "Estimated Days of Downtime", 5, 30, 5,
-    help="Days of partial/full downtime."
-)
+downtime_days = st.sidebar.slider("Estimated Days of Downtime", 5, 30, 5)
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
-cost_per_day_m = st.sidebar.slider(
-    "Estimated Cost per Day of Downtime ($M)", 0.0, dcost_max_m, default_cost_per_day/1_000_000, 0.1, format="%0.1fM",
-    help="Daily revenue loss cost."
-)
+cost_per_day_m = st.sidebar.slider("Cost per Day of Downtime ($M)", 0.0, dcost_max_m, default_cost_per_day/1_000_000, 0.1, format="%0.1fM")
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
 
 st.sidebar.markdown("### Incident Likelihood")
-aro_before_percent = st.sidebar.slider(
-    "Likelihood Before Controls (%)", 0, 100, 30,
-    help="Annual incident likelihood before controls."
-)
-aro_after_percent = st.sidebar.slider(
-    "Likelihood After Controls (%)", 0, 100, 10,
-    help="Annual incident likelihood after controls."
-)
-modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7}
-aro_before = (aro_before_percent / 100) * modifiers[maturity_level]
-aro_after = (aro_after_percent / 100) * modifiers[maturity_level]
+aro_before_pct = st.sidebar.slider("Likelihood Before Controls (%)", 0, 100, 30)
+aro_after_pct = st.sidebar.slider("Likelihood After Controls (%)", 0, 100, 10)
+modifiers = {"Initial":1.3,"Developing":1.15,"Defined":1.0,"Managed":0.85,"Optimized":0.7}
+aro_before = (aro_before_pct/100)*modifiers[maturity_level]
+aro_after = (aro_after_pct/100)*modifiers[maturity_level]
 
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
@@ -120,31 +75,48 @@ roi_pct = roi * 100
 
 # Determine ROI color and tooltip thresholds
 if roi_pct < 100:
-    roi_color = "#e06c75"
-    roi_tooltip = "ROI below expected (under 100%)."
+    roi_color, roi_tooltip = "#e06c75", "ROI below expected (<100%)."
 elif roi_pct < 200:
-    roi_color = "#e5c07b"
-    roi_tooltip = "ROI moderate (100–200%)."
+    roi_color, roi_tooltip = "#e5c07b", "ROI moderate (100–200%)."
 else:
-    roi_color = "#98c379"
-    roi_tooltip = "ROI strong (over 200%)."
+    roi_color, roi_tooltip = "#98c379", "ROI strong (>200%)."
+
+# === DYNAMIC RISK SURFACE OVERVIEW ===
+with st.expander("Understanding Our Risk Surface", expanded=True):
+    st.markdown(f"""
+This calculator models the potential financial impact of a significant cyber event.
+
+**Risk Surface:**
+- **{user_count_k}K user accounts**
+- **${revenue:,.0f} in revenue**
+- **${controls_cost:,.0f} in controls spend**
+- **Program maturity:** _{maturity_level}_
+
+**Variables:**
+- **SLE:** ${sle/1_000_000:.2f}M per incident
+- **ARO before:** {aro_before_pct:.1%}
+- **ARO after:** {aro_after_pct:.1%}
+- **Risk Reduction:** ${risk_reduction/1_000_000:.2f}M
+- **ROI:** {roi_pct:.1f}%
+""", unsafe_allow_html=True)
 
 # === HIGHLIGHTED METRICS ===
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
-  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
+  <div style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
     <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
+  <div style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
     <h3 style="color:#e06c75; margin:0;">ALE After</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
-  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
+  <div class="tooltip" style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
     <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
+    <span class="tooltiptext">Amount saved annually</span>
   </div>
-  <div class="tooltip" style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
+  <div class="tooltip" style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
     <h3 style="color:white; margin:0;">ROI</h3>
     <p style="font-size:24px; color:{roi_color}; margin:5px 0;">{roi_pct:.1f}%</p>
     <span class="tooltiptext">{roi_tooltip}</span>
@@ -157,21 +129,16 @@ st.markdown(highlight_html, unsafe_allow_html=True)
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
 bar_fig, bar_ax = plt.subplots(facecolor='none')
 bar_ax.set_facecolor('none')
-scenarios = ["Before Controls", "After Controls"]
-values = [ale_before/1e6, ale_after/1e6]
-colors = ['#EF553B', '#636EFA']
+scenarios, values = ["Before Controls","After Controls"], [ale_before/1e6, ale_after/1e6]
+colors = ['#EF553B','#636EFA']
 bars = bar_ax.bar(scenarios, values, color=colors)
-for bar, v in zip(bars, values):
-    bar_ax.text(bar.get_x()+bar.get_width()/2, v+max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
-bar_ax.set_ylabel('ALE (Millions $)', color='white')
-bar_ax.set_ylim(0, max(values)*1.25)
+for bar, v in zip(bars, values): bar_ax.text(bar.get_x()+bar.get_width()/2, v+max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
+bar_ax.set_ylabel('ALE (Millions $)', color='white'); bar_ax.set_ylim(0,max(values)*1.25)
 for lbl in bar_ax.get_xticklabels()+bar_ax.get_yticklabels(): lbl.set_color('white')
-bar_ax.spines['top'].set_visible(False)
-bar_ax.spines['right'].set_visible(False)
-bar_ax.spines['left'].set_color('white')
-bar_ax.spines['bottom'].set_color('white')
+bar_ax.spines['top'].set_visible(False); bar_ax.spines['right'].set_visible(False)
+bar_ax.spines['left'].set_color('white'); bar_ax.spines['bottom'].set_color('white')
 st.pyplot(bar_fig, transparent=True)
-# Continue with other charts unchanged
+
 
 # === Donut Chart ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
