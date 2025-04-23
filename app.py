@@ -32,16 +32,14 @@ st.sidebar.header("Input Parameters")
 controls_cost_m = st.sidebar.slider(
     "Cost of Preventative Controls ($M)",
     min_value=0.0, max_value=10.0, value=1.1, step=0.1,
-    format="%0.1fM",
-    help="Annual cost of security measures implemented to prevent significant cyber incidents."
+    format="%0.1fM"
 )
 controls_cost = controls_cost_m * 1_000_000
 
 revenue_m = st.sidebar.slider(
     "Annual Revenue ($M)",
     min_value=0.0, max_value=1000.0, value=500.0, step=10.0,
-    format="%0.0fM",
-    help="Your organization’s annual gross revenue."
+    format="%0.0fM"
 )
 revenue = revenue_m * 1_000_000
 default_cost_per_day = revenue / 365
@@ -49,29 +47,21 @@ default_cost_per_day = revenue / 365
 # Breach Impact Assumptions
 st.sidebar.markdown("### Breach Impact Assumptions")
 user_count_k = st.sidebar.slider(
-    "Estimated Affected Users",
+    "Estimated Affected Users (K)",
     min_value=0, max_value=1000, value=600, step=10,
-    format="%dK",
-    help="Estimated number of users who would require credit monitoring in the event of a breach."
-)
-st.sidebar.markdown(
-    f"<div style='font-size:12px;color:gray;'> Expected user count ~{user_count_k}K</div>",
-    unsafe_allow_html=True
+    format="%dK"
 )
 user_count = user_count_k * 1000
-
 monitoring_cost_per_user = st.sidebar.slider(
     "$ Cost per User for Credit Monitoring",
     min_value=0, max_value=20, value=10, step=1,
-    format="$%d",
-    help="Estimated cost per user to provide credit monitoring after a breach."
+    format="$%d"
 )
 
 sle_m = st.sidebar.slider(
     "Base SLE (Excluding Users) - Incident Cost ($M)",
-    min_value=0.0, max_value=10.0, value=6.0, step=.1,
-    format="%0.1fM",
-    help="Single Loss Expectancy: core cost of one significant incident (e.g., forensic, legal, remediation), excluding per-user and downtime costs."
+    min_value=0.0, max_value=10.0, value=6.0, step=0.1,
+    format="%0.1fM"
 )
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
@@ -80,22 +70,13 @@ user_breach_cost = user_count * monitoring_cost_per_user
 st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider(
     "Estimated Days of Downtime",
-    min_value=5, max_value=30, value=5,
-    help="Estimated number of days your business would be partially or fully down due to a major incident."
+    min_value=5, max_value=30, value=5
 )
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
 cost_per_day_m = st.sidebar.slider(
     "Estimated Cost per Day of Downtime ($M)",
-    min_value=0.0,
-    max_value=dcost_max_m,
-    value=(default_cost_per_day / 1_000_000),
-    step=0.1,
-    format="%0.1fM",
-    help=f"Estimated daily revenue loss. Baseline: ${(default_cost_per_day/1_000_000):.2f}M; max 2× baseline."
-)
-st.sidebar.markdown(
-    f"<div style='font-size:12px;color:gray;'> Baseline daily cost: ${(default_cost_per_day/1_000_000):.2f}M</div>",
-    unsafe_allow_html=True
+    min_value=0.0, max_value=dcost_max_m, value=(default_cost_per_day / 1_000_000), step=0.1,
+    format="%0.1fM"
 )
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
@@ -103,22 +84,27 @@ downtime_cost = downtime_days * cost_per_day
 # Incident Likelihood (ARO)
 st.sidebar.markdown("### Incident Likelihood")
 aro_before_percent = st.sidebar.slider(
-    "Likelihood of Incident BEFORE Controls (%)",
-     0, 100, 30,
-    help="Inherent annual likelihood of a significant incident before controls (default 30%)."
+    "Likelihood Before Controls (%)", 0, 100, 30
 )
 aro_after_percent = st.sidebar.slider(
-    "Likelihood of Incident AFTER Controls (%)",
-    0, 100, 10,
-    help="Annual likelihood of a significant incident after controls."
+    "Likelihood After Controls (%)", 0, 100, 10
 )
-aro_before = aro_before_percent / 100
-aro_after = aro_after_percent / 100
+aro_before = (aro_before_percent / 100) * {
+    "Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7
+}[maturity_level]
+aro_after = (aro_after_percent / 100) * {
+    "Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7
+}[maturity_level]
 
-# Adjust for maturity
-modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7}
-aro_before *= modifiers[maturity_level]
-aro_after *= modifiers[maturity_level]
+# Additional Industry Metrics Inputs
+st.sidebar.markdown("### Additional Industry Metrics")
+mttd = st.sidebar.number_input("MTTD (Mean Time to Detect) in hours", value=72.0)
+mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.0)
+vuln_rate = st.sidebar.slider("Vulnerability Remediation Rate (%)", 0, 100, 80)
+compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
+risk_appetite = st.sidebar.slider("Risk Appetite Threshold (%)", 0, 100, 20)
+cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1fM")
+cost_noncompliance = cost_noncompliance_m * 1_000_000
 
 # === RISK SURFACE OVERVIEW ===
 with st.expander(" Understanding Our Risk Surface", expanded=True):
@@ -131,11 +117,9 @@ This calculator models the potential financial impact of a significant cyber eve
 - **${controls_cost:,.0f} in controls spend**
 - **Program maturity:** _{maturity_level}_
 
-Variables feed calculations below:
+Variables feed calculations:
 - **SLE** = base + user breach + downtime
-- **ARO** = likelihood (adjusted by maturity)
-- **Controls cost** = preventive spend
-- **Downtime cost** = days × daily cost
+- **ARO** = likelihood (adjusted)
 """, unsafe_allow_html=True)
 
 # === CALCULATIONS ===
@@ -143,44 +127,46 @@ sle = base_sle + user_breach_cost + downtime_cost
 ale_before = sle * aro_before
 ale_after = sle * aro_after
 risk_reduction = ale_before - ale_after
-roi = risk_reduction / controls_cost if controls_cost else 0
-ale_before_pct = ale_before / revenue * 100 if revenue else 0
-ale_after_pct = ale_after / revenue * 100 if revenue else 0
-risk_red_pct = risk_reduction / revenue * 100 if revenue else 0
+roi = (risk_reduction / controls_cost) if controls_cost else 0
+ale_before_pct = (ale_before / revenue * 100) if revenue else 0
+ale_after_pct = (ale_after / revenue * 100) if revenue else 0
+residual_risk = ale_after_pct - risk_appetite
 
 # === VISUAL COMPARISON ===
-min_cost_per_day = default_cost_per_day
-if cost_per_day < min_cost_per_day:
-    st.warning(
-        f"⚠️ Your estimated daily downtime cost of ${cost_per_day:,.0f} is below the expected baseline of ${min_cost_per_day:,.0f}. Underestimating downtime costs can leave you unprepared for recovery expenses."
-    )
+if cost_per_day < default_cost_per_day:
+    st.warning(f"Underestimated daily downtime cost: ${cost_per_day:,.0f} < baseline ${default_cost_per_day:,.0f}.")
 else:
-    st.success(
-        f"✅ Your estimated daily downtime cost of ${cost_per_day:,.0f} meets or exceeds the baseline of ${min_cost_per_day:,.0f}."
-    )
+    st.success(f"Estimated daily downtime cost of ${cost_per_day:,.0f} meets baseline.")
 
 # === METRICS OUTPUT ===
+st.subheader("Core ROI Metrics")
 col1, col2, col3 = st.columns(3)
-col1.metric("ALE Before", f"${ale_before/1_000_000:.2f}M")
-col2.metric("ALE After", f"${ale_after/1_000_000:.2f}M")
-col3.metric("Risk Reduction", f"${risk_reduction/1_000_000:.2f}M")
+col1.metric("ALE Before", f"${ale_before/1e6:.2f}M")
+col2.metric("ALE After", f"${ale_after/1e6:.2f}M")
+col3.metric("Risk Reduction", f"${risk_reduction/1e6:.2f}M")
+st.markdown(f"**ROI:** {(roi*100):.1f}%")
 
-# ROI display
-st.markdown(
-    f"### ROI: <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{(roi*100):.1f}%</span>", unsafe_allow_html=True
-)
-st.caption("Tip: ROI > 200% and ratio < 1.0 generally indicate strong cybersecurity value.")
+# === ADDITIONAL METRICS OUTPUT ===
+st.subheader("Additional Industry Metrics")
+col4, col5, col6 = st.columns(3)
+col4.metric("MTTD (hrs)", f"{mttd:.1f}")
+col5.metric("MTTR (hrs)", f"{mttr:.1f}")
+col6.metric("Vuln Remediation Rate (%)", f"{vuln_rate}")
+col7, col8, col9 = st.columns(3)
+col7.metric("Compliance Score (%)", f"{compliance_score}")
+col8.metric("Residual Risk (%)", f"{residual_risk:.1f}")
+col9.metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
 
 # === ANNUAL LOSS EXPOSURE CHART ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
 bar_fig, bar_ax = plt.subplots(facecolor='none')
 bar_ax.set_facecolor('none')
 scenarios = ["Before Controls", "After Controls"]
-values = [ale_before/1_000_000, ale_after/1_000_000]
+values = [ale_before/1e6, ale_after/1e6]
 bar_colors = ['#EF553B', '#636EFA']
 bar_container = bar_ax.bar(scenarios, values, color=bar_colors)
 for bar, v in zip(bar_container, values):
-    bar_ax.text(bar.get_x() + bar.get_width() / 2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
+    bar_ax.text(bar.get_x() + bar.get_width()/2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
 bar_ax.set_ylabel('ALE (Millions $)', color='white')
 bar_ax.set_ylim(0, max(values)*1.25)
 for label in bar_ax.get_xticklabels() + bar_ax.get_yticklabels():
@@ -194,47 +180,34 @@ st.pyplot(bar_fig, transparent=True)
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
 cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"],
-                        "M": [controls_cost / 1_000_000, risk_reduction / 1_000_000]})
-fig_donut, ax_donut = plt.subplots(figsize=(6, 4), facecolor='none')
+                        "M": [controls_cost/1e6, risk_reduction/1e6]})
+fig_donut, ax_donut = plt.subplots(figsize=(6,4), facecolor='none')
 ax_donut.set_facecolor('none')
 wedges, texts, autotexts = ax_donut.pie(
-    cost_df['M'],
-    labels=cost_df['Category'],
-    autopct='%1.1f%%',
-    startangle=90,
-    pctdistance=0.75,
-    colors=['#636EFA', '#00CC96'],
-    textprops={'color': 'white', 'weight': 'bold'}
+    cost_df['M'], labels=cost_df['Category'], autopct='%1.1f%%', startangle=90,
+    pctdistance=0.75, colors=['#636EFA','#00CC96'], textprops={'color':'white','weight':'bold'}
 )
-for wedge in wedges:
-    wedge.set_edgecolor('none')
+for wedge in wedges: wedge.set_edgecolor('none')
 ax_donut.axis('equal')
 st.pyplot(fig_donut, transparent=True)
 
 # === COST COMPONENT BREAKDOWN ===
 st.subheader("Cost Component Breakdown")
 cost_comp_df = pd.DataFrame({
-    "Component": ["Preventative Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-    "Amount (Millions $)": [
-        controls_cost / 1_000_000,
-        user_breach_cost / 1_000_000,
-        downtime_cost / 1_000_000,
-        sle / 1_000_000
-    ]
+    "Component": ["Preventative Controls","User Breach Cost","Downtime Cost","Total Incident Cost"],
+    "Amount (Millions $)": [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
 })
 fig3, ax3 = plt.subplots(facecolor='none')
 ax3.set_facecolor('none')
 components = cost_comp_df['Component']
 amounts = cost_comp_df['Amount (Millions $)']
-colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
+colors = ['#636EFA','#EF553B','#00CC96','#AB63FA']
 bars = ax3.barh(components, amounts, color=colors)
 max_amount = amounts.max()
 for bar, v in zip(bars, amounts):
-    ax3.text(v + max_amount * 0.01, bar.get_y() + bar.get_height()/2, f"{v:.2f}M", va='center', color='white')
-for label in ax3.get_xticklabels() + ax3.get_yticklabels():
-    label.set_color('white')
-for spine in ax3.spines.values():
-    spine.set_color('none')
+    ax3.text(v + max_amount*0.01, bar.get_y()+bar.get_height()/2, f"{v:.2f}M", va='center', color='white')
+for label in ax3.get_xticklabels()+ax3.get_yticklabels(): label.set_color('white')
+for spine in ax3.spines.values(): spine.set_color('none')
 ax3.set_xlabel('Amount (Millions $)')
 ax3.invert_yaxis()
 st.pyplot(fig3, transparent=True)
@@ -246,5 +219,10 @@ with st.sidebar.expander(" What These Mean", expanded=False):
 **ARO:** Likelihood of incident.
 **ALE:** Annual expected loss.
 **ROI:** Return on controls.
-""")
-
+**MTTD:** Mean Time to Detect.
+**MTTR:** Mean Time to Respond.
+**Vulnerability Remediation Rate:** % patched within SLA.
+**Compliance Score:** Control compliance percentage.
+**Residual Risk:** ALE after controls vs appetite.
+**Cost of Non-Compliance:** Projected regulatory fines.
+""", unsafe_allow_html=True)
