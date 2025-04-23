@@ -25,7 +25,7 @@ footer {visibility: hidden;}
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # === TITLE ===
-st.markdown("<h1 style='text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
+st.markdown# === RISK SURFACE OVERVIEW ===
 
 # === RISK SURFACE OVERVIEW ===
 with st.expander("Understanding Our Risk Surface", expanded=True):
