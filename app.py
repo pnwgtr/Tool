@@ -56,8 +56,7 @@ st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider("Estimated Days of Downtime", 5, 30, 5)
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
 cost_per_day_m = st.sidebar.slider(
-    "Estimated Cost per Day of Downtime ($M)",
-    0.0, dcost_max_m, default_cost_per_day/1_000_000, 0.1, format="%0.1fM"
+   "Estimated Cost per Day of Downtime ($M)", 0.0, dcost_max_m, default_cost_per_day/1_000_000, 0.1, format="%0.1fM"
 )
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
@@ -97,12 +96,12 @@ highlight_html = f"""
     <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0; text-align:center;">${ale_before/1e6:.2f}M</p>
     <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-    <h3 style="color:#e06c75; white-space:nowrap; margin:0;">ALE After</h3>
+    <h3 style="color:#e06c75; white-space:nowrap; margin:0; text-align:center;">ALE After</h3>
+    <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0; text-align:center;">${ale_after/1e6:.2f}M</p>
     <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-    <h3 style="color:#98c379; white-space:nowrap; margin:0;">Risk Reduction</h3>
+  <h3 style="color:#98c379; white-space:nowrap; margin:0; text-align:center;">Risk Reduction</h3>
+    <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0; text-align:center;">${risk_reduction/1e6:.2f}M</p>
     <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
   </div>
 </div>
