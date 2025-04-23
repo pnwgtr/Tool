@@ -149,10 +149,20 @@ highlight_html = f"""
 """
 st.markdown(highlight_html, unsafe_allow_html=True)
 
-# === CORE ROI METRICS OUTPUT ===
-st.subheader("Core ROI Metrics and Controls")
+# === CORE ROI METRICS AND CONTROLS ===
 st.markdown(
-    f"<span class='tooltip'>**ROI:** {roi_pct:.1f}%<span class='tooltiptext'>Return on Investment: (Risk Reduction ÷ Control Cost) × 100</span></span>",
+    "<h2 style='text-align:center; color:#ffffff; margin-top:30px;'>Core ROI Metrics & Controls</h2>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    f"<div style='display:flex; justify-content:center; margin-bottom:20px;'>"
+    f"<div style='background:#20232A; padding:15px; border-radius:8px; min-width:220px;'>"
+    f"<span class='tooltip' style='font-size:24px; color:{roi_color}; font-weight:bold;'>"
+    f"{roi_pct:.1f}%"
+    f"<span class='tooltiptext'>Return on Investment: (Risk Reduction ÷ Control Cost) × 100</span>"
+    f"</span>"
+    f"</div>"
+    f"</div>",
     unsafe_allow_html=True
 )
 
