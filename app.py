@@ -93,14 +93,15 @@ modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "O
 aro_before = (aro_before_percent / 100) * modifiers[maturity_level]
 aro_after = (aro_after_percent / 100) * modifiers[maturity_level]
 
-st.sidebar.markdown("### Additional Industry Metrics")
-mttd = st.sidebar.number_input("MTTD (Mean Time to Detect) in hours", value=72.0)
-mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.0)
-vuln_rate = st.sidebar.slider("Vulnerability Remediation Rate (%)", 0, 100, 80)
-compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
-risk_appetite = st.sidebar.slider("Risk Appetite Threshold (%)", 0, 100, 20)
-cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f")
-cost_noncompliance = cost_noncompliance_m * 1_000_000
+#st.sidebar.markdown("### Additional Industry Metrics")
+#mttd = st.sidebar.number_input("MTTD (Mean Time to Detect) in hours", value=72.0)
+#mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.0)
+#vuln_rate = st.sidebar.slider("Vulnerability Remediation Rate (%)", 0, 100, 80)
+#compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
+#risk_appetite = st.sidebar.slider("Risk Appetite Threshold (%)", 0, 100, 20)
+#cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f")
+#cost_noncompliance = cost_noncompliance_m * 1_000_000
+
 
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
