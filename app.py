@@ -27,6 +27,26 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # === TITLE ===
 st.markdown("<h1 style='text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
+# === RISK SURFACE OVERVIEW ===
+with st.expander("Understanding Our Risk Surface", expanded=True):
+    st.markdown(f"""
+This calculator models the potential financial impact of a significant cyber event.
+
+**Risk Surface:**
+- **{user_count_k}K user accounts**
+- **${revenue:,.0f} in revenue**
+- **${controls_cost:,.0f} in controls spend**
+- **Program maturity:** _{maturity_level}_
+
+Variables feed calculations:
+- **SLE** = base + user breach + downtime
+- **ARO** = likelihood (adjusted by maturity)
+- **Risk Reduction** = difference in ALE before and after
+- **ROI** = (Risk Reduction ÷ Controls Cost) × 100
+""", unsafe_allow_html=True)
+
+# === SIDEBAR INPUTS ===
+("<h1 style='text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 # === SIDEBAR INPUTS ===
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
