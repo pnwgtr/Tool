@@ -59,14 +59,14 @@ monitoring_cost_per_user = st.sidebar.slider(
 )
 
 sle_m = st.sidebar.slider(
-    "Base SLE (Excluding Users) - Incident Cost ($M)",
+    "Base SLE (Excluding Users) - Incident Cost ($M)",
     min_value=0.0, max_value=10.0, value=6.0, step=0.1,
     format="%0.1fM"
 )
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
 
-# Downtime Impact Assumptions
+# Downtime Impact Assumptions
 st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider(
     "Estimated Days of Downtime",
@@ -81,7 +81,7 @@ cost_per_day_m = st.sidebar.slider(
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
 
-# Incident Likelihood (ARO)
+# Incident Likelihood (ARO)
 st.sidebar.markdown("### Incident Likelihood")
 aro_before_percent = st.sidebar.slider(
     "Likelihood Before Controls (%)", 0, 100, 30
@@ -97,17 +97,19 @@ aro_after = (aro_after_percent / 100) * {
 }[maturity_level]
 
 # Additional Industry Metrics Inputs
-st.sidebar.markdown("### Additional Industry Metrics")
+st.sidebar.markdown("### Additional Industry Metrics")
 mttd = st.sidebar.number_input("MTTD (Mean Time to Detect) in hours", value=72.0)
 mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.0)
 vuln_rate = st.sidebar.slider("Vulnerability Remediation Rate (%)", 0, 100, 80)
 compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
 risk_appetite = st.sidebar.slider("Risk Appetite Threshold (%)", 0, 100, 20)
-cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1fM")
+cost_noncompliance_m = st.sidebar.number_input(
+    "Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f"
+)
 cost_noncompliance = cost_noncompliance_m * 1_000_000
 
-# === RISK SURFACE OVERVIEW ===
-with st.expander(" Understanding Our Risk Surface", expanded=True):
+# === RISK SURFACE OVERVIEW ===
+with st.expander(" Understanding Our Risk Surface", expanded=True):
     st.markdown(f"""
 This calculator models the potential financial impact of a significant cyber event.
 
@@ -132,30 +134,30 @@ ale_before_pct = (ale_before / revenue * 100) if revenue else 0
 ale_after_pct = (ale_after / revenue * 100) if revenue else 0
 residual_risk = ale_after_pct - risk_appetite
 
-# === VISUAL COMPARISON ===
+# === VISUAL COMPARISON ===
 if cost_per_day < default_cost_per_day:
     st.warning(f"Underestimated daily downtime cost: ${cost_per_day:,.0f} < baseline ${default_cost_per_day:,.0f}.")
 else:
     st.success(f"Estimated daily downtime cost of ${cost_per_day:,.0f} meets baseline.")
 
-# === METRICS OUTPUT ===
-st.subheader("Core ROI Metrics")
+# === METRICS OUTPUT ===
+st.subheader("Core ROI Metrics")
 col1, col2, col3 = st.columns(3)
-col1.metric("ALE Before", f"${ale_before/1e6:.2f}M")
-col2.metric("ALE After", f"${ale_after/1e6:.2f}M")
-col3.metric("Risk Reduction", f"${risk_reduction/1e6:.2f}M")
+col1.metric("ALE Before", f"${ale_before/1e6:.2f}M")
+col2.metric("ALE After", f"${ale_after/1e6:.2f}M")
+col3.metric("Risk Reduction", f"${risk_reduction/1e6:.2f}M")
 st.markdown(f"**ROI:** {(roi*100):.1f}%")
 
-# === ADDITIONAL METRICS OUTPUT ===
-st.subheader("Additional Industry Metrics")
+# === ADDITIONAL METRICS OUTPUT ===
+st.subheader("Additional Industry Metrics")
 col4, col5, col6 = st.columns(3)
-col4.metric("MTTD (hrs)", f"{mttd:.1f}")
-col5.metric("MTTR (hrs)", f"{mttr:.1f}")
-col6.metric("Vuln Remediation Rate (%)", f"{vuln_rate}")
+col4.metric("MTTD (hrs)", f"{mttd:.1f}")
+col5.metric("MTTR (hrs)", f"{mttr:.1f}")
+col6.metric("Vuln Remediation Rate (%)", f"{vuln_rate}")
 col7, col8, col9 = st.columns(3)
-col7.metric("Compliance Score (%)", f"{compliance_score}")
-col8.metric("Residual Risk (%)", f"{residual_risk:.1f}")
-col9.metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
+col7.metric("Compliance Score (%)", f"{compliance_score}")
+col8.metric("Residual Risk (%)", f"{residual_risk:.1f}")
+col9.metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
 
 # === ANNUAL LOSS EXPOSURE CHART ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
