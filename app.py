@@ -99,7 +99,7 @@ mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.
 vuln_rate = st.sidebar.slider("Vulnerability Remediation Rate (%)", 0, 100, 80)
 compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
 risk_appetite = st.sidebar.slider("Risk Appetite Threshold (%)", 0, 100, 20)
-cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1fM")
+cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f")
 cost_noncompliance = cost_noncompliance_m * 1_000_000
 
 # === CALCULATIONS ===
