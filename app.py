@@ -68,11 +68,13 @@ default_cost_per_day = revenue / 365
 
 st.sidebar.markdown("### Breach Impact Assumptions")
 user_count_k = st.sidebar.slider(
-    "Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK", help="Users requiring credit monitoring."
+    "Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK",
+    help="Users requiring credit monitoring."
 )
 user_count = user_count_k * 1000
 monitoring_cost_per_user = st.sidebar.slider(
-    "$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d", help="Cost per user."
+    "$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d",
+    help="Cost per user."
 )
 
 sle_m = st.sidebar.slider(
@@ -84,7 +86,8 @@ user_breach_cost = user_count * monitoring_cost_per_user
 
 st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider(
-    "Estimated Days of Downtime", 5, 30, 5, help="Days of partial/full downtime."
+    "Estimated Days of Downtime", 5, 30, 5,
+    help="Days of partial/full downtime."
 )
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
 cost_per_day_m = st.sidebar.slider(
@@ -96,23 +99,16 @@ downtime_cost = downtime_days * cost_per_day
 
 st.sidebar.markdown("### Incident Likelihood")
 aro_before_percent = st.sidebar.slider(
-    "Likelihood Before Controls (%)", 0, 100, 30, help="Annual incident likelihood before controls."
+    "Likelihood Before Controls (%)", 0, 100, 30,
+    help="Annual incident likelihood before controls."
 )
 aro_after_percent = st.sidebar.slider(
-    "Likelihood After Controls (%)", 0, 100, 10, help="Annual incident likelihood after controls."
+    "Likelihood After Controls (%)", 0, 100, 10,
+    help="Annual incident likelihood after controls."
 )
 modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7}
 aro_before = (aro_before_percent / 100) * modifiers[maturity_level]
 aro_after = (aro_after_percent / 100) * modifiers[maturity_level]
-
-st.sidebar.markdown("### Additional Industry Metrics")
-mttd = st.sidebar.number_input("MTTD (hrs)", value=72.0)
-mttr = st.sidebar.number_input("MTTR (hrs)", value=48.0)
-vuln_rate = st.sidebar.slider("Vuln Remediation Rate (%)", 0, 100, 80)
-compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
-risk_appetite = st.sidebar.slider("Risk Appetite (%)", 0, 100, 20)
-cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f")
-cost_noncompliance = cost_noncompliance_m * 1_000_000
 
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
@@ -175,6 +171,7 @@ bar_ax.spines['right'].set_visible(False)
 bar_ax.spines['left'].set_color('white')
 bar_ax.spines['bottom'].set_color('white')
 st.pyplot(bar_fig, transparent=True)
+# Continue with other charts unchanged
 
 # === Donut Chart ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
