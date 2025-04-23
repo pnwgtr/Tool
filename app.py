@@ -93,8 +93,8 @@ residual_risk = ale_after_pct - risk_appetite
 # === HIGHLIGHTED METRICS ===
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content: space-around; margin:20px 0;">
-  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-    <h3 style="color:#61dafb; white-space:nowrap; margin:0;">ALE Before</h3>
+  <h3 style="color:#61dafb; white-space:nowrap; margin:0; text-align:center;">ALE Before</h3>
+    <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0; text-align:center;">${ale_before/1e6:.2f}M</p>
     <p style="font-size:24px; white-space:nowrap; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
   <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
