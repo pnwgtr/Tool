@@ -36,8 +36,9 @@ revenue_m = st.sidebar.slider(
 )
 revenue = revenue_m * 1_000_000
 
-# Breach Impact Assumptions
 default_cost_per_day = revenue / 365
+
+# Breach Impact
 st.sidebar.markdown("### Breach Impact Assumptions")
 user_count_k = st.sidebar.slider("Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK")
 user_count = user_count_k * 1000
@@ -51,7 +52,7 @@ sle_m = st.sidebar.slider(
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
 
-# Downtime Impact Assumptions
+# Downtime Impact
 st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider("Estimated Days of Downtime", 5, 30, 5)
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
@@ -61,7 +62,7 @@ cost_per_day_m = st.sidebar.slider(
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
 
-# Incident Likelihood (ARO)
+# Incident Likelihood
 st.sidebar.markdown("### Incident Likelihood")
 aro_before_percent = st.sidebar.slider("Likelihood Before Controls (%)", 0, 100, 30)
 aro_after_percent = st.sidebar.slider("Likelihood After Controls (%)", 0, 100, 10)
@@ -69,7 +70,7 @@ modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "O
 aro_before = (aro_before_percent / 100) * modifiers[maturity_level]
 aro_after = (aro_after_percent / 100) * modifiers[maturity_level]
 
-# Additional Industry Metrics Inputs
+# Additional Metrics Inputs
 st.sidebar.markdown("### Additional Industry Metrics")
 mttd = st.sidebar.number_input("MTTD (Mean Time to Detect) in hours", value=72.0)
 mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.0)
@@ -85,44 +86,48 @@ ale_before = sle * aro_before
 ale_after = sle * aro_after
 risk_reduction = ale_before - ale_after
 roi = risk_reduction / controls_cost if controls_cost else 0
+roi_pct = roi * 100
 ale_before_pct = (ale_before / revenue * 100) if revenue else 0
 ale_after_pct = (ale_after / revenue * 100) if revenue else 0
 residual_risk = ale_after_pct - risk_appetite
 
+# Determine ROI color and tooltip
+if roi_pct < 100:
+    roi_color = "#e06c75"  # red
+    roi_tooltip = "ROI below expected (under 100%)."
+elif roi_pct < 200:
+    roi_color = "#e5c07b"  # yellow
+    roi_tooltip = "ROI moderate (100–200%)."
+else:
+    roi_color = "#98c379"  # green
+    roi_tooltip = "ROI strong (over 200%)."
+
 # === HIGHLIGHTED METRICS SECTION ===
-# Using flex for perfect alignment and equal sizing
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
-  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
     <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
     <h3 style="color:#e06c75; margin:0;">ALE After</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
-  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
     <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
   </div>
-  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-    <h3 style="color:#d19a66; margin:0;">ROI</h3>
-    <p style="font-size:24px; color:white; margin:5px 0;">{(roi*100):.1f}%</p>
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;" title="{roi_tooltip}">
+    <h3 style="color:white; margin:0;">ROI</h3>
+    <p style="font-size:24px; color:{roi_color}; margin:5px 0;">{roi_pct:.1f}%</p>
   </div>
 </div>
 """
 st.markdown(highlight_html, unsafe_allow_html=True)
 
-# === ADDITIONAL METRICS OUTPUT ===
-#st.subheader("Additional Industry Metrics")
-#cols = st.columns(3)
-#cols[0].metric("MTTD (hrs)", f"{mttd:.1f}")
-#cols[1].metric("MTTR (hrs)", f"{mttr:.1f}")
-#cols[2].metric("Vulnerability Remediation Rate (%)", f"{vuln_rate}")
-#cols2 = st.columns(3)
-#cols2[0].metric("Compliance Score (%)", f"{compliance_score}")
-#cols2[1].metric("Residual Risk (%)", f"{residual_risk:.1f}")
-#ols2[2].metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
+# === CORE ROI METRICS OUTPUT ===
+st.subheader("Core ROI Metrics and Controls")
+st.markdown(f"**ROI:** <span title='Return on Investment: (Risk Reduction ÷ Control Cost) × 100'>{roi_pct:.1f}%</span>")
 
 # === ANNUAL LOSS EXPOSURE CHART ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
@@ -130,22 +135,17 @@ bar_fig, bar_ax = plt.subplots(facecolor='none')
 bar_ax.set_facecolor('none')
 scenarios = ["Before Controls", "After Controls"]
 values = [ale_before/1e6, ale_after/1e6]
-bar_container = bar_ax.bar(scenarios, values, color=['#EF553B', '#636EFA'])
-for bar, v in zip(bar_container, values): bar_ax.text(bar.get_x()+bar.get_width()/2, v+max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
+bar_ax.bar(scenarios, values, color=['#EF553B', '#636EFA'])
+for bar, v in zip(bar_ax.containers[0], values):
+    bar_ax.text(bar.get_x() + bar.get_width()/2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
 bar_ax.set_ylabel('ALE (Millions $)', color='white')
 bar_ax.set_ylim(0, max(values)*1.25)
-for txt in bar_ax.get_xticklabels()+bar_ax.get_yticklabels(): txt.set_color('white')
+for txt in bar_ax.get_xticklabels() + bar_ax.get_yticklabels(): txt.set_color('white')
 bar_ax.spines['top'].set_visible(False)
 bar_ax.spines['right'].set_visible(False)
 bar_ax.spines['left'].set_color('white')
 bar_ax.spines['bottom'].set_color('white')
 st.pyplot(bar_fig, transparent=True)
-bar_ax.spines['top'].set_visible(False)
-bar_ax.spines['right'].set_visible(False)
-bar_ax.spines['left'].set_color('white')
-bar_ax.spines['bottom'].set_color('white')
-st.pyplot(bar_fig, transparent=True)
-
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
 cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"],
