@@ -114,15 +114,15 @@ highlight_html = f"""
 st.markdown(highlight_html, unsafe_allow_html=True)
 
 # === ADDITIONAL METRICS OUTPUT ===
-st.subheader("Additional Industry Metrics")
-cols = st.columns(3)
-cols[0].metric("MTTD (hrs)", f"{mttd:.1f}")
-cols[1].metric("MTTR (hrs)", f"{mttr:.1f}")
-cols[2].metric("Vulnerability Remediation Rate (%)", f"{vuln_rate}")
-cols2 = st.columns(3)
-cols2[0].metric("Compliance Score (%)", f"{compliance_score}")
-cols2[1].metric("Residual Risk (%)", f"{residual_risk:.1f}")
-cols2[2].metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
+#st.subheader("Additional Industry Metrics")
+#cols = st.columns(3)
+#cols[0].metric("MTTD (hrs)", f"{mttd:.1f}")
+#cols[1].metric("MTTR (hrs)", f"{mttr:.1f}")
+#cols[2].metric("Vulnerability Remediation Rate (%)", f"{vuln_rate}")
+#cols2 = st.columns(3)
+#cols2[0].metric("Compliance Score (%)", f"{compliance_score}")
+#cols2[1].metric("Residual Risk (%)", f"{residual_risk:.1f}")
+#ols2[2].metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
 
 # === ANNUAL LOSS EXPOSURE CHART ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
