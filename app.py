@@ -193,4 +193,4 @@ st.pyplot(bar_fig, transparent=True)
 
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
-cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"], "M": [controls_cost / 1_000_000, risk]
+cost_df = pd.DataFrame({"Category": ["Preventative Controls", "Risk Reduction"], "M": [controls_cost / 1_000_000, risk]})
