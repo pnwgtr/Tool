@@ -46,8 +46,6 @@ Variables feed calculations:
 """, unsafe_allow_html=True)
 
 # === SIDEBAR INPUTS ===
-("<h1 style='text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
-# === SIDEBAR INPUTS ===
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
     "Cybersecurity Program Maturity",
@@ -66,7 +64,6 @@ revenue_m = st.sidebar.slider(
     "Annual Revenue ($M)", 0.0, 1000.0, 500.0, 10.0, format="%0.0fM"
 )
 revenue = revenue_m * 1_000_000
-
 default_cost_per_day = revenue / 365
 
 st.sidebar.markdown("### Breach Impact Assumptions")
@@ -113,16 +110,6 @@ modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "O
 aro_before = (aro_before_percent / 100) * modifiers[maturity_level]
 aro_after = (aro_after_percent / 100) * modifiers[maturity_level]
 
-#st.sidebar.markdown("### Additional Industry Metrics")
-#mttd = st.sidebar.number_input("MTTD (Mean Time to Detect) in hours", value=72.0)
-#mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.0)
-#vuln_rate = st.sidebar.slider("Vulnerability Remediation Rate (%)", 0, 100, 80)
-#compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
-#risk_appetite = st.sidebar.slider("Risk Appetite Threshold (%)", 0, 100, 20)
-#cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f")
-#cost_noncompliance = cost_noncompliance_m * 1_000_000
-
-
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
 ale_before = sle * aro_before
@@ -132,7 +119,7 @@ roi = risk_reduction / controls_cost if controls_cost else 0
 roi_pct = roi * 100
 ale_before_pct = (ale_before / revenue * 100) if revenue else 0
 ale_after_pct = (ale_after / revenue * 100) if revenue else 0
-#residual_risk = ale_after_pct - risk_appetite
+residual_risk = ale_after_pct - risk_appetite
 
 # Determine ROI color and tooltip
 if roi_pct < 100:
@@ -149,11 +136,11 @@ else:
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
   <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
-    <h3 style="color:#cc0000; margin:0;">ALE Before</h3>
+    <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
   <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
-    <h3 style="color:#61DAFB; margin:0;">ALE After</h3>
+    <h3 style="color:#e06c75; margin:0;">ALE After</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
   <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
@@ -161,23 +148,13 @@ highlight_html = f"""
     <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
   </div>
   <div class="tooltip" style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
-    <h3 style="color:#ffd966; margin:0;">ROI</h3>
+    <h3 style="color:white; margin:0;">ROI</h3>
     <p style="font-size:24px; color:{roi_color}; margin:5px 0;">{roi_pct:.1f}%</p>
     <span class="tooltiptext">{roi_tooltip}</span>
   </div>
 </div>
 """
 st.markdown(highlight_html, unsafe_allow_html=True)
-
-# === CORE ROI METRICS OUTPUT ===
-#st.subheader("Core ROI Metrics and Controls")
-#st.markdown(
-#    f"<span class='tooltip'>**ROI:** {roi_pct:.1f}%<span class='tooltiptext'>Return on Investment: (Risk Reduction ÷ Control Cost) × 100</span></span>",
-#    unsafe_allow_html=True
-#)
-
-# === ANNUAL LOSS EXPOSURE CHART ===
-
 
 # === ANNUAL LOSS EXPOSURE CHART ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
@@ -197,7 +174,6 @@ bar_ax.spines['right'].set_visible(False)
 bar_ax.spines['left'].set_color('white')
 bar_ax.spines['bottom'].set_color('white')
 st.pyplot(bar_fig, transparent=True)
-
 # === DONUT CHART ===
 st.subheader("Cost vs Risk Reduction (Donut View)")
 cost_df = pd.DataFrame({
