@@ -23,141 +23,99 @@ st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
     "Cybersecurity Program Maturity",
     options=["Initial", "Developing", "Defined", "Managed", "Optimized"],
-    value="Defined",
-    help="Indicates the overall maturity of your cybersecurity program, based on people, process, and technology."
+    value="Defined"
 )
 
 # Input Parameters
 st.sidebar.header("Input Parameters")
 controls_cost_m = st.sidebar.slider(
-    "Cost of Preventative Controls ($M)",
-    min_value=0.0, max_value=10.0, value=1.1, step=0.1,
-    format="%0.1fM"
+    "Cost of Preventative Controls ($M)", 0.0, 10.0, 1.1, 0.1, format="%0.1fM"
 )
 controls_cost = controls_cost_m * 1_000_000
 
 revenue_m = st.sidebar.slider(
-    "Annual Revenue ($M)",
-    min_value=0.0, max_value=1000.0, value=500.0, step=10.0,
-    format="%0.0fM"
+    "Annual Revenue ($M)", 0.0, 1000.0, 500.0, 10.0, format="%0.0fM"
 )
 revenue = revenue_m * 1_000_000
 default_cost_per_day = revenue / 365
 
 # Breach Impact Assumptions
 st.sidebar.markdown("### Breach Impact Assumptions")
-user_count_k = st.sidebar.slider(
-    "Estimated Affected Users (K)",
-    min_value=0, max_value=1000, value=600, step=10,
-    format="%dK"
-)
+user_count_k = st.sidebar.slider("Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK")
 user_count = user_count_k * 1000
-monitoring_cost_per_user = st.sidebar.slider(
-    "$ Cost per User for Credit Monitoring",
-    min_value=0, max_value=20, value=10, step=1,
-    format="$%d"
-)
+monitoring_cost_per_user = st.sidebar.slider("$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d")
 
-sle_m = st.sidebar.slider(
-    "Base SLE (Excluding Users) - Incident Cost ($M)",
-    min_value=0.0, max_value=10.0, value=6.0, step=0.1,
-    format="%0.1fM"
-)
+sle_m = st.sidebar.slider("Base SLE (Excluding Users) - Incident Cost ($M)", 0.0, 10.0, 6.0, 0.1, format="%0.1fM")
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
 
-# Downtime Impact Assumptions
+# Downtime Impact Assumptions
 st.sidebar.markdown("### Downtime Impact Assumptions")
-downtime_days = st.sidebar.slider(
-    "Estimated Days of Downtime",
-    min_value=5, max_value=30, value=5
-)
+downtime_days = st.sidebar.slider("Estimated Days of Downtime", 5, 30, 5)
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
-cost_per_day_m = st.sidebar.slider(
-    "Estimated Cost per Day of Downtime ($M)",
-    min_value=0.0, max_value=dcost_max_m, value=(default_cost_per_day / 1_000_000), step=0.1,
-    format="%0.1fM"
-)
+cost_per_day_m = st.sidebar.slider("Estimated Cost per Day of Downtime ($M)", 0.0, dcost_max_m, default_cost_per_day/1_000_000, 0.1, format="%0.1fM")
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
 
-# Incident Likelihood (ARO)
+# Incident Likelihood (ARO)
 st.sidebar.markdown("### Incident Likelihood")
-aro_before_percent = st.sidebar.slider(
-    "Likelihood Before Controls (%)", 0, 100, 30
-)
-aro_after_percent = st.sidebar.slider(
-    "Likelihood After Controls (%)", 0, 100, 10
-)
-aro_before = (aro_before_percent / 100) * {
-    "Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7
-}[maturity_level]
-aro_after = (aro_after_percent / 100) * {
-    "Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7
-}[maturity_level]
+aro_before_percent = st.sidebar.slider("Likelihood Before Controls (%)", 0, 100, 30)
+aro_after_percent = st.sidebar.slider("Likelihood After Controls (%)", 0, 100, 10)
+modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7}
+aro_before = (aro_before_percent/100) * modifiers[maturity_level]
+aro_after = (aro_after_percent/100) * modifiers[maturity_level]
 
 # Additional Industry Metrics Inputs
-st.sidebar.markdown("### Additional Industry Metrics")
+st.sidebar.markdown("### Additional Industry Metrics")
 mttd = st.sidebar.number_input("MTTD (Mean Time to Detect) in hours", value=72.0)
 mttr = st.sidebar.number_input("MTTR (Mean Time to Respond) in hours", value=48.0)
 vuln_rate = st.sidebar.slider("Vulnerability Remediation Rate (%)", 0, 100, 80)
 compliance_score = st.sidebar.slider("Compliance Score (%)", 0, 100, 90)
 risk_appetite = st.sidebar.slider("Risk Appetite Threshold (%)", 0, 100, 20)
-cost_noncompliance_m = st.sidebar.number_input(
-    "Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f"
-)
+cost_noncompliance_m = st.sidebar.number_input("Cost of Non-Compliance ($M)", value=0.5, step=0.1, format="%0.1f")
 cost_noncompliance = cost_noncompliance_m * 1_000_000
-
-# === RISK SURFACE OVERVIEW ===
-with st.expander(" Understanding Our Risk Surface", expanded=True):
-    st.markdown(f"""
-This calculator models the potential financial impact of a significant cyber event.
-
-**Risk Surface:**
-- **{user_count_k}K user accounts**
-- **${revenue:,.0f} in revenue**
-- **${controls_cost:,.0f} in controls spend**
-- **Program maturity:** _{maturity_level}_
-
-Variables feed calculations:
-- **SLE** = base + user breach + downtime
-- **ARO** = likelihood (adjusted)
-""", unsafe_allow_html=True)
 
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
 ale_before = sle * aro_before
 ale_after = sle * aro_after
 risk_reduction = ale_before - ale_after
-roi = (risk_reduction / controls_cost) if controls_cost else 0
+roi = risk_reduction / controls_cost if controls_cost else 0
 ale_before_pct = (ale_before / revenue * 100) if revenue else 0
 ale_after_pct = (ale_after / revenue * 100) if revenue else 0
 residual_risk = ale_after_pct - risk_appetite
 
-# === VISUAL COMPARISON ===
-if cost_per_day < default_cost_per_day:
-    st.warning(f"Underestimated daily downtime cost: ${cost_per_day:,.0f} < baseline ${default_cost_per_day:,.0f}.")
-else:
-    st.success(f"Estimated daily downtime cost of ${cost_per_day:,.0f} meets baseline.")
+# === HIGHLIGHTED METRICS SECTION ===
+# Using custom HTML/CSS for emphasis
+highlight_html = f"""
+<div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
+  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+    <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
+    <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
+  </div>
+  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+    <h3 style="color:#e06c75; margin:0;">ALE After</h3>
+    <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
+  </div>
+  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+    <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
+    <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
+  </div>
+</div>
+"""
+st.markdown(highlight_html, unsafe_allow_html=True)
 
-# === METRICS OUTPUT ===
-st.subheader("Core ROI Metrics")
-col1, col2, col3 = st.columns(3)
-col1.metric("ALE Before", f"${ale_before/1e6:.2f}M")
-col2.metric("ALE After", f"${ale_after/1e6:.2f}M")
-col3.metric("Risk Reduction", f"${risk_reduction/1e6:.2f}M")
-st.markdown(f"**ROI:** {(roi*100):.1f}%")
+# === ADDITIONAL METRICS OUTPUT ===
+st.subheader("Additional Industry Metrics")
+cols = st.columns(3)
+cols[0].metric("MTTD (hrs)", f"{mttd:.1f}")
+cols[1].metric("MTTR (hrs)", f"{mttr:.1f}")
+cols[2].metric("Vulnerability Remediation Rate (%)", f"{vuln_rate}")
+cols2 = st.columns(3)
+cols2[0].metric("Compliance Score (%)", f"{compliance_score}")
+cols2[1].metric("Residual Risk (%)", f"{residual_risk:.1f}")
+cols2[2].metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
 
-# === ADDITIONAL METRICS OUTPUT ===
-st.subheader("Additional Industry Metrics")
-col4, col5, col6 = st.columns(3)
-col4.metric("MTTD (hrs)", f"{mttd:.1f}")
-col5.metric("MTTR (hrs)", f"{mttr:.1f}")
-col6.metric("Vuln Remediation Rate (%)", f"{vuln_rate}")
-col7, col8, col9 = st.columns(3)
-col7.metric("Compliance Score (%)", f"{compliance_score}")
-col8.metric("Residual Risk (%)", f"{residual_risk:.1f}")
-col9.metric("Cost of Non-Compliance", f"${cost_noncompliance/1e6:.2f}M")
 
 # === ANNUAL LOSS EXPOSURE CHART ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
