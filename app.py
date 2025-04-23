@@ -129,11 +129,11 @@ else:
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
   <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
-    <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
+    <h3 style="color:#cc0000; margin:0;">ALE Before</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
   <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
-    <h3 style="color:#e06c75; margin:0;">ALE After</h3>
+    <h3 style="color:#61DAFB; margin:0;">ALE After</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
   <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
@@ -141,7 +141,7 @@ highlight_html = f"""
     <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
   </div>
   <div class="tooltip" style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; text-align:center;">
-    <h3 style="color:white; margin:0;">ROI</h3>
+    <h3 style="color:#ffd966; margin:0;">ROI</h3>
     <p style="font-size:24px; color:{roi_color}; margin:5px 0;">{roi_pct:.1f}%</p>
     <span class="tooltiptext">{roi_tooltip}</span>
   </div>
