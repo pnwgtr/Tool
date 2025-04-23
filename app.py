@@ -18,7 +18,6 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 st.markdown("<h1 style='text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
 # === SIDEBAR INPUTS ===
-# Program Maturity Level
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider(
     "Cybersecurity Program Maturity",
@@ -26,7 +25,6 @@ maturity_level = st.sidebar.select_slider(
     value="Defined"
 )
 
-# Input Parameters
 st.sidebar.header("Input Parameters")
 controls_cost_m = st.sidebar.slider(
     "Cost of Preventative Controls ($M)", 0.0, 10.0, 1.1, 0.1, format="%0.1fM"
@@ -37,21 +35,15 @@ revenue_m = st.sidebar.slider(
     "Annual Revenue ($M)", 0.0, 1000.0, 500.0, 10.0, format="%0.0fM"
 )
 revenue = revenue_m * 1_000_000
-default_cost_per_day = revenue / 365
 
 # Breach Impact Assumptions
+default_cost_per_day = revenue / 365
 st.sidebar.markdown("### Breach Impact Assumptions")
-user_count_k = st.sidebar.slider(
-    "Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK"
-)
+user_count_k = st.sidebar.slider("Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK")
 user_count = user_count_k * 1000
-monitoring_cost_per_user = st.sidebar.slider(
-    "$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d"
-)
+monitoring_cost_per_user = st.sidebar.slider("$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d")
 
-sle_m = st.sidebar.slider(
-    "Base SLE (Excluding Users) - Incident Cost ($M)", 0.0, 10.0, 6.0, 0.1, format="%0.1fM"
-)
+sle_m = st.sidebar.slider("Base SLE (Excluding Users) - Incident Cost ($M)", 0.0, 10.0, 6.0, 0.1, format="%0.1fM")
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
 
@@ -60,8 +52,7 @@ st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider("Estimated Days of Downtime", 5, 30, 5)
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
 cost_per_day_m = st.sidebar.slider(
-    "Estimated Cost per Day of Downtime ($M)",
-    0.0, dcost_max_m, default_cost_per_day/1_000_000, 0.1, format="%0.1fM"
+    "Estimated Cost per Day of Downtime ($M)", 0.0, dcost_max_m, default_cost_per_day/1_000_000, 0.1, format="%0.1fM"
 )
 cost_per_day = cost_per_day_m * 1_000_000
 downtime_cost = downtime_days * cost_per_day
@@ -71,8 +62,8 @@ st.sidebar.markdown("### Incident Likelihood")
 aro_before_percent = st.sidebar.slider("Likelihood Before Controls (%)", 0, 100, 30)
 aro_after_percent = st.sidebar.slider("Likelihood After Controls (%)", 0, 100, 10)
 modifiers = {"Initial":1.3, "Developing":1.15, "Defined":1.0, "Managed":0.85, "Optimized":0.7}
-aro_before = (aro_before_percent/100) * modifiers[maturity_level]
-aro_after = (aro_after_percent/100) * modifiers[maturity_level]
+aro_before = (aro_before_percent / 100) * modifiers[maturity_level]
+aro_after = (aro_after_percent / 100) * modifiers[maturity_level]
 
 # Additional Industry Metrics Inputs
 st.sidebar.markdown("### Additional Industry Metrics")
@@ -95,20 +86,24 @@ ale_after_pct = (ale_after / revenue * 100) if revenue else 0
 residual_risk = ale_after_pct - risk_appetite
 
 # === HIGHLIGHTED METRICS SECTION ===
-# Using custom HTML/CSS for emphasis
+# Using custom HTML/CSS for emphasis and include ROI
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
     <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
     <h3 style="color:#e06c75; margin:0;">ALE After</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
     <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
+  </div>
+  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
+    <h3 style="color:#d19a66; margin:0;">ROI</h3>
+    <p style="font-size:24px; color:white; margin:5px 0;">{(roi*100):.1f}%</p>
   </div>
 </div>
 """
@@ -139,6 +134,12 @@ bar_ax.set_ylabel('ALE (Millions $)', color='white')
 bar_ax.set_ylim(0, max(values)*1.25)
 for label in bar_ax.get_xticklabels() + bar_ax.get_yticklabels():
     label.set_color('white')
+bar_ax.spines['top'].set_visible(False)
+bar_ax.spines['right'].set_visible(False)
+bar_ax.spines['left'].set_color('white')
+bar_ax.spines['bottom'].set_color('white')
+st.pyplot(bar_fig, transparent=True)
+
 bar_ax.spines['top'].set_visible(False)
 bar_ax.spines['right'].set_visible(False)
 bar_ax.spines['left'].set_color('white')
