@@ -92,16 +92,16 @@ residual_risk = ale_after_pct - risk_appetite
 
 # === HIGHLIGHTED METRICS ===
 highlight_html = f"""
-<div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+<div style="display:flex; gap:20px; justify-content: space-around; margin:20px 0;">
+  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; text-align:center;">
     <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; text-align:center;">
     <h3 style="color:#e06c75; margin:0;">ALE After</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:25%; text-align:center;">
+  <div style="background:#20232A; padding:20px; border-radius:8px; flex:1; text-align:center;">
     <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
   </div>
