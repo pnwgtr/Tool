@@ -41,9 +41,13 @@ default_cost_per_day = revenue / 365
 st.sidebar.markdown("### Breach Impact Assumptions")
 user_count_k = st.sidebar.slider("Estimated Affected Users (K)", 0, 1000, 600, 10, format="%dK")
 user_count = user_count_k * 1000
-monitoring_cost_per_user = st.sidebar.slider("$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d")
+monitoring_cost_per_user = st.sidebar.slider(
+    "$ Cost per User for Credit Monitoring", 0, 20, 10, 1, format="$%d"
+)
 
-sle_m = st.sidebar.slider("Base SLE (Excluding Users) - Incident Cost ($M)", 0.0, 10.0, 6.0, 0.1, format="%0.1fM")
+sle_m = st.sidebar.slider(
+    "Base SLE (Excluding Users) - Incident Cost ($M)", 0.0, 10.0, 6.0, 0.1, format="%0.1fM"
+)
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
 
@@ -86,22 +90,22 @@ ale_after_pct = (ale_after / revenue * 100) if revenue else 0
 residual_risk = ale_after_pct - risk_appetite
 
 # === HIGHLIGHTED METRICS SECTION ===
-# Using custom HTML/CSS for emphasis and include ROI
+# Using flex for perfect alignment and equal sizing
 highlight_html = f"""
 <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
     <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
     <h3 style="color:#e06c75; margin:0;">ALE After</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
     <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
   </div>
-  <div style="background:#20232A; padding:20px; border-radius:8px; width:22%; text-align:center;">
+  <div style="flex:1; min-width:150px; background:#20232A; padding:20px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
     <h3 style="color:#d19a66; margin:0;">ROI</h3>
     <p style="font-size:24px; color:white; margin:5px 0;">{(roi*100):.1f}%</p>
   </div>
@@ -126,20 +130,16 @@ bar_fig, bar_ax = plt.subplots(facecolor='none')
 bar_ax.set_facecolor('none')
 scenarios = ["Before Controls", "After Controls"]
 values = [ale_before/1e6, ale_after/1e6]
-bar_colors = ['#EF553B', '#636EFA']
-bar_container = bar_ax.bar(scenarios, values, color=bar_colors)
-for bar, v in zip(bar_container, values):
-    bar_ax.text(bar.get_x() + bar.get_width() / 2, v + max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
+bar_container = bar_ax.bar(scenarios, values, color=['#EF553B', '#636EFA'])
+for bar, v in zip(bar_container, values): bar_ax.text(bar.get_x()+bar.get_width()/2, v+max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
 bar_ax.set_ylabel('ALE (Millions $)', color='white')
 bar_ax.set_ylim(0, max(values)*1.25)
-for label in bar_ax.get_xticklabels() + bar_ax.get_yticklabels():
-    label.set_color('white')
+for txt in bar_ax.get_xticklabels()+bar_ax.get_yticklabels(): txt.set_color('white')
 bar_ax.spines['top'].set_visible(False)
 bar_ax.spines['right'].set_visible(False)
 bar_ax.spines['left'].set_color('white')
 bar_ax.spines['bottom'].set_color('white')
 st.pyplot(bar_fig, transparent=True)
-
 bar_ax.spines['top'].set_visible(False)
 bar_ax.spines['right'].set_visible(False)
 bar_ax.spines['left'].set_color('white')
