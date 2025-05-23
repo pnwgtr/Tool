@@ -74,6 +74,9 @@ modifiers = {"Initial":1.3,"Developing":1.15,"Defined":1.0,"Managed":0.85,"Optim
 aro_before = (aro_before_pct/100)*modifiers[maturity_level]
 aro_after = (aro_after_pct/100)*modifiers[maturity_level]
 
+st.sidebar.markdown("### View Options")
+executive_mode = st.sidebar.checkbox("Enable Executive Mode", value=True)
+
 # === EXECUTIVE MODE TOGGLE ===
 st.sidebar.markdown("### View Options")
 executive_mode = st.sidebar.checkbox("Enable Executive Mode", value=True)
