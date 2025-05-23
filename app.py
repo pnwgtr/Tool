@@ -11,25 +11,25 @@ st.markdown("""
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 10px;
 }
 .metric-box {
   background-color: #1f1f1f;
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 .metric-box h4 {
   margin: 0;
   color: #61dafb;
-  font-size: 18px;
+  font-size: 16px;
 }
 .metric-box p {
-  font-size: 28px;
-  margin: 10px 0 0;
+  font-size: 22px;
+  margin: 8px 0 0;
   font-weight: bold;
 }
 </style>
@@ -76,6 +76,7 @@ aro_after = (aro_after_pct/100)*modifiers[maturity_level]
 
 # === EXECUTIVE MODE TOGGLE ===
 st.sidebar.markdown("### View Options")
+compact_mode = st.sidebar.checkbox("Enable Compact Layout", value=True, key="compact_mode_toggle")
 executive_mode = st.sidebar.checkbox("Enable Executive Mode", value=True, key="executive_mode_toggle")
 
 # === CALCULATIONS ===
@@ -118,11 +119,13 @@ highlight_grid = f"""
 st.markdown(highlight_grid, unsafe_allow_html=True)
 
 # === VISUALIZATION HEADER ===
-st.markdown("<h2 style='text-align: center; color: #00CC96;'>📊 Visual Risk Overview</h2>", unsafe_allow_html=True)
+if not compact_mode:
+    st.markdown("<h2 style='text-align: center; color: #00CC96;'>📊 Visual Risk Overview</h2>", unsafe_allow_html=True)
 
 # === COST COMPONENT BREAKDOWN ===
-st.markdown("<h3 style='text-align: center;'>Cost Component Breakdown</h3>", unsafe_allow_html=True)
-fig3, ax3 = plt.subplots(figsize=(6.5, 2.8), facecolor='none')
+if not compact_mode:
+    st.markdown("<h3 style='text-align: center;'>Cost Component Breakdown</h3>", unsafe_allow_html=True)
+fig3, ax3 = plt.subplots(figsize=(5.5, 2.2) if compact_mode else (6.5, 2.8), facecolor='none')
 comp_labels = ["Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
 comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
 colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
@@ -144,7 +147,7 @@ if not executive_mode:
 
     with col1:
         st.markdown("### Annual Loss Exposure")
-        fig1, ax1 = plt.subplots(figsize=(4.5, 2.2), facecolor='none')
+        fig1, ax1 = plt.subplots(figsize=(3.8, 1.8) if compact_mode else (4.5, 2.2), facecolor='none')
         scenarios = ["Before Controls", "After Controls"]
         values = [ale_before/1e6, ale_after/1e6]
         bars = ax1.barh(scenarios, values, color=['#EF553B','#636EFA'])
@@ -164,7 +167,7 @@ if not executive_mode:
 
     with col2:
         st.markdown("### Cost vs Risk Reduction")
-        fig2, ax2 = plt.subplots(figsize=(4.2, 3), facecolor='none')
+        fig2, ax2 = plt.subplots(figsize=(3.6, 2.4) if compact_mode else (4.2, 3), facecolor='none')
         labels = ["Controls Cost", "Risk Reduction"]
         sizes = [controls_cost/1e6, risk_reduction/1e6]
         colors = ['#636EFA', '#00CC96']
