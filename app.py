@@ -119,7 +119,7 @@ st.markdown("<h2 style='text-align: center;'> Visual Risk Overview</h2>", unsafe
 
 # Cost Component Breakdown
 #st.markdown("### Cost Component Breakdown")
-st.markdown("<h2 style='text-align: center;'> Cost Component Breakdown/h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center;'> Cost Component Breakdown", unsafe_allow_html=True)
 fig3, ax3 = plt.subplots(figsize=(6.5, 2.8), facecolor='none')
 comp_labels = ["Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
 comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
