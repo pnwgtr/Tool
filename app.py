@@ -25,7 +25,7 @@ st.markdown("""
 .metric-box h4 {
   margin: 0 0 2px 0;
   color: #61dafb;
-  font-size: 18px;
+  font-size: 30px;
   line-height: 1.1;
 }
 .metric-box p {
