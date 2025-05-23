@@ -188,18 +188,20 @@ if not executive_mode:
     # === Additional Executive-Off Content ===
     st.markdown("### 📌 Key Input Assumptions")
     input_data = {
-        "Revenue ($M)": revenue_m,
-        "Controls Cost ($M)": controls_cost_m,
-        "Users Affected (K)": user_count_k,
-        "Monitoring/User": monitoring_cost_per_user,
-        "Downtime Days": downtime_days,
-        "Downtime Cost/Day ($M)": cost_per_day_m,
-        "Base SLE ($M)": sle_m,
-        "ARO Before (%)": aro_before_pct,
-        "ARO After (%)": aro_after_pct,
-        "Program Maturity": maturity_level
+        "Revenue": {"Value": revenue_m, "Category": "Financials"},
+        "Controls Cost": {"Value": controls_cost_m, "Category": "Financials"},
+        "Users Affected (K)": {"Value": user_count_k, "Category": "Breach Impact"},
+        "Monitoring/User": {"Value": monitoring_cost_per_user, "Category": "Breach Impact"},
+        "Downtime Days": {"Value": downtime_days, "Category": "Downtime Impact"},
+        "Downtime Cost/Day": {"Value": cost_per_day_m, "Category": "Downtime Impact"},
+        "Base SLE": {"Value": sle_m, "Category": "Loss Expectancy"},
+        "ARO Before (%)": {"Value": aro_before_pct, "Category": "Incident Likelihood"},
+        "ARO After (%)": {"Value": aro_after_pct, "Category": "Incident Likelihood"},
+        "Program Maturity": {"Value": maturity_level, "Category": "Program Info"}
     }
-    st.dataframe(pd.DataFrame.from_dict(input_data, orient='index', columns=['Value']))
+    assumptions_df = pd.DataFrame.from_dict(input_data, orient='index')
+assumptions_df = assumptions_df[['Category', 'Value']].sort_values('Category')
+st.dataframe(assumptions_df)
 
     st.markdown("### 💡 ROI Insight")
     if roi_pct < 100:
