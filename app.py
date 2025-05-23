@@ -45,7 +45,7 @@ st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider("Cybersecurity Program Maturity",
     options=["Initial", "Developing", "Defined", "Managed", "Optimized"], value="Defined")
 
-st.sidebar.header("Input Parameters")
+st.sidebar.header("Assumptions")
 controls_cost_m = st.sidebar.slider("Cost of Preventative Controls ($M)", 0.0, 10.0, 1.1, 0.1)
 controls_cost = controls_cost_m * 1_000_000
 
@@ -205,7 +205,7 @@ if not executive_mode:
     assumptions_df = assumptions_df[['Category', 'Value']].sort_values('Category')
     st.dataframe(assumptions_df)
 
-    st.markdown("### 💡 ROI Insight")
+    st.markdown("### ROI Insight")
     if roi_pct < 100:
         insight = "Your current controls are underperforming. Consider revisiting cost-effectiveness or expanding coverage."
     elif roi_pct < 200:
