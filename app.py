@@ -114,7 +114,7 @@ highlight_grid = f"""
 st.markdown(highlight_grid, unsafe_allow_html=True)
 
 # === CHARTS ===
-st.markdown("## 📊 Visual Risk Overview")
+st.markdown("##Visual Risk Overview")
 
 # Cost Component Breakdown
 st.markdown("### Cost Component Breakdown")
