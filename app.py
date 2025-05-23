@@ -140,7 +140,8 @@ st.pyplot(fig3, transparent=True)
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("### Annual Loss Exposure")
+    #st.markdown("### Annual Loss Exposure")
+    st.markdown("<h2 style='text-align: center;'> Annual Loss Exposure", unsafe_allow_html=True)
     fig1, ax1 = plt.subplots(figsize=(4.5, 2.2), facecolor='none')
     scenarios = ["Before Controls", "After Controls"]
     values = [ale_before/1e6, ale_after/1e6]
