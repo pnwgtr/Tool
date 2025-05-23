@@ -11,33 +11,32 @@ st.markdown("""
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 10px;
   margin-top: 10px;
 }
 .metric-box {
   background-color: #1f1f1f;
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 .metric-box h4 {
   margin: 0;
   color: #61dafb;
-  font-size: 18px;
+  font-size: 16px;
 }
 .metric-box p {
-  font-size: 28px;
-  margin: 10px 0 0;
+  font-size: 22px;
+  margin: 8px 0 0;
   font-weight: bold;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # === TITLE ===
-st.markdown("<h1 style='text-align: center; margin-top: 1px; margin-bottom: 10px;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
-
+st.markdown("<h1 style='text-align: center; margin-top: 5px; margin-bottom: 10px;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
 # === SIDEBAR INPUTS ===
 st.sidebar.markdown("### Program Maturity Level")
@@ -77,6 +76,7 @@ aro_after = (aro_after_pct/100)*modifiers[maturity_level]
 
 # === EXECUTIVE MODE TOGGLE ===
 st.sidebar.markdown("### View Options")
+compact_mode = st.sidebar.checkbox("Enable Compact Layout", value=True, key="compact_mode_toggle")
 executive_mode = st.sidebar.checkbox("Enable Executive Mode", value=True, key="executive_mode_toggle")
 
 # === CALCULATIONS ===
@@ -119,7 +119,7 @@ highlight_grid = f"""
 st.markdown(highlight_grid, unsafe_allow_html=True)
 
 # === VISUALIZATION HEADER ===
-st.markdown("<h2 style='text-align: center; color: #00CC96;'> Visual Risk Overview</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #00CC96;'>📊 Visual Risk Overview</h2>", unsafe_allow_html=True)
 
 # === COST COMPONENT BREAKDOWN ===
 st.markdown("<h3 style='text-align: center;'>Cost Component Breakdown</h3>", unsafe_allow_html=True)
