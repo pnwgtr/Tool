@@ -36,7 +36,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === TITLE ===
-st.markdown("<h1 style='text-align: center; margin-top: 5px; margin-bottom: 10px;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; margin-top: 1px; margin-bottom: 10px;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
 
 # === SIDEBAR INPUTS ===
