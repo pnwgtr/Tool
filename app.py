@@ -101,29 +101,55 @@ This calculator models the potential financial impact of a significant cyber eve
 """, unsafe_allow_html=True)
 
 # === HIGHLIGHTED METRICS ===
-highlight_html = f"""
-<div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
-  <div style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
-    <h3 style="color:#61dafb; margin:0;">ALE Before</h3>
-    <p style="font-size:24px; color:white; margin:5px 0;">${ale_before/1e6:.2f}M</p>
+highlight_grid = f"""
+<style>
+.metric-grid {{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}}
+.metric-box {{
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}}
+.metric-box h4 {{
+  margin: 0;
+  color: #61dafb;
+  font-size: 18px;
+}}
+.metric-box p {{
+  font-size: 28px;
+  margin: 10px 0 0;
+  font-weight: bold;
+}}
+</style>
+
+<div class="metric-grid">
+  <div class="metric-box">
+    <h4>ALE Before Controls</h4>
+    <p>${ale_before/1e6:.2f}M</p>
   </div>
-  <div style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
-    <h3 style="color:#e06c75; margin:0;">ALE After</h3>
-    <p style="font-size:24px; color:white; margin:5px 0;">${ale_after/1e6:.2f}M</p>
+  <div class="metric-box">
+    <h4>ALE After Controls</h4>
+    <p>${ale_after/1e6:.2f}M</p>
   </div>
-  <div class="tooltip" style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
-    <h3 style="color:#98c379; margin:0;">Risk Reduction</h3>
-    <p style="font-size:24px; color:white; margin:5px 0;">${risk_reduction/1e6:.2f}M</p>
-    <span class="tooltiptext">Amount saved annually</span>
+  <div class="metric-box">
+    <h4>Risk Reduction</h4>
+    <p>${risk_reduction/1e6:.2f}M</p>
   </div>
-  <div class="tooltip" style="flex:1; padding:20px; background:#20232A; border-radius:8px; text-align:center; min-width:150px;">
-    <h3 style="color:white; margin:0;">ROI</h3>
-    <p style="font-size:24px; color:{roi_color}; margin:5px 0;">{roi_pct:.1f}%</p>
-    <span class="tooltiptext">{roi_tooltip}</span>
+  <div class="metric-box">
+    <h4>Return on Investment</h4>
+    <p style="color:{roi_color};">{roi_pct:.1f}%</p>
   </div>
 </div>
 """
-st.markdown(highlight_html, unsafe_allow_html=True)
+st.markdown(highlight_grid, unsafe_allow_html=True)
+
 
 # === Annual Loss Exposure Chart ===
 st.subheader("Annual Loss Exposure (Before vs After Controls)")
