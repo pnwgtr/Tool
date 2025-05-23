@@ -122,7 +122,7 @@ st.markdown(highlight_grid, unsafe_allow_html=True)
 
 # === VISUALIZATION HEADER ===
 if not compact_mode:
-    st.markdown("<h2 style='text-align: center; color: #00CC96;'>📊 Visual Risk Overview</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #00CC96;'> Visual Risk Overview</h2>", unsafe_allow_html=True)
 
 # === COST COMPONENT BREAKDOWN ===
 if not compact_mode:
