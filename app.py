@@ -150,6 +150,25 @@ highlight_grid = f"""
 """
 st.markdown(highlight_grid, unsafe_allow_html=True)
 
+# === Cost Component Breakdown ===
+st.subheader("Cost Component Breakdown")
+comp_labels = ["Preventative Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
+comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
+colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
+
+fig3, ax3 = plt.subplots(figsize=(6, 3.5), facecolor='none')
+bars = ax3.barh(comp_labels, comp_values, color=colors)
+
+for bar, val in zip(bars, comp_values):
+    ax3.text(val + max(comp_values) * 0.01, bar.get_y() + bar.get_height()/2,
+             f"{val:.2f}M", va='center', ha='left', color='white')
+
+ax3.set_xlabel("Amount (Millions $)", color='white')
+ax3.set_facecolor('none')
+for spine in ax3.spines.values(): spine.set_color('none')
+for label in ax3.get_xticklabels() + ax3.get_yticklabels(): label.set_color('white')
+ax3.invert_yaxis()
+st.pyplot(fig3, transparent=True)
 
 # === Annual Loss Exposure Chart ===
 st.subheader("Annual Loss Exposure (Before vs. After Controls)")
@@ -194,25 +213,7 @@ fig2.patch.set_facecolor('none')
 st.pyplot(fig2, transparent=True)
 
 
-# === Cost Component Breakdown ===
-st.subheader("Cost Component Breakdown")
-comp_labels = ["Preventative Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
-comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
-colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
 
-fig3, ax3 = plt.subplots(figsize=(6, 3.5), facecolor='none')
-bars = ax3.barh(comp_labels, comp_values, color=colors)
-
-for bar, val in zip(bars, comp_values):
-    ax3.text(val + max(comp_values) * 0.01, bar.get_y() + bar.get_height()/2,
-             f"{val:.2f}M", va='center', ha='left', color='white')
-
-ax3.set_xlabel("Amount (Millions $)", color='white')
-ax3.set_facecolor('none')
-for spine in ax3.spines.values(): spine.set_color('none')
-for label in ax3.get_xticklabels() + ax3.get_yticklabels(): label.set_color('white')
-ax3.invert_yaxis()
-st.pyplot(fig3, transparent=True)
 
 
 # === FAQ ===
