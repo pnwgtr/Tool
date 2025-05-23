@@ -161,7 +161,8 @@ with col1:
     st.pyplot(fig1, transparent=True)
 
 with col2:
-    st.markdown("### Cost vs Risk Reduction")
+    #st.markdown("### Cost vs Risk Reduction")
+    st.markdown("<h2 style='text-align: center;'> Cost vs Risk Reduction", unsafe_allow_html=True)
     fig2, ax2 = plt.subplots(figsize=(4.2, 3), facecolor='none')
     labels = ["Controls Cost", "Risk Reduction"]
     sizes = [controls_cost/1e6, risk_reduction/1e6]
