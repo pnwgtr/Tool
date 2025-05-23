@@ -23,14 +23,16 @@ st.markdown("""
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 .metric-box h4 {
-  margin: 0;
+  margin: 0 0 2px 0;
   color: #61dafb;
   font-size: 18px;
+  line-height: 1.1;
 }
 .metric-box p {
   font-size: 30px;
-  margin: 8px 0 0;
+  margin: 2px 0 0;
   font-weight: bold;
+  line-height: 1.2;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -186,7 +188,7 @@ if not executive_mode:
         st.pyplot(fig2, transparent=True)
 
     # === Additional Executive-Off Content ===
-    st.markdown("###  Key Input Assumptions")
+    st.markdown("### 📌 Key Input Assumptions")
     input_data = {
         "Revenue": {"Value": revenue_m, "Category": "Financials"},
         "Controls Cost": {"Value": controls_cost_m, "Category": "Financials"},
@@ -203,7 +205,7 @@ if not executive_mode:
     assumptions_df = assumptions_df[['Category', 'Value']].sort_values('Category')
     st.dataframe(assumptions_df)
 
-    st.markdown("###  ROI Insight")
+    st.markdown("### 💡 ROI Insight")
     if roi_pct < 100:
         insight = "Your current controls are underperforming. Consider revisiting cost-effectiveness or expanding coverage."
     elif roi_pct < 200:
@@ -212,7 +214,7 @@ if not executive_mode:
         insight = "Your cybersecurity program is delivering strong returns. This is a great benchmark to maintain."
     st.info(insight)
 
-    st.markdown("###  Future Risk Projection (Placeholder)")
+    st.markdown("### 📈 Future Risk Projection (Placeholder)")
     fig, ax = plt.subplots(figsize=(6, 2.5), facecolor='none')
     ax.plot([2023, 2024, 2025], [ale_before/1e6, (ale_before+ale_after)/2/1e6, ale_after/1e6], marker='o', color='#00CC96')
     ax.set_facecolor('none')
@@ -225,4 +227,3 @@ if not executive_mode:
         spine.set_color('white')
     fig.tight_layout()
     st.pyplot(fig, transparent=True)
-
