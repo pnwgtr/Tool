@@ -200,7 +200,7 @@ if not executive_mode:
         "Program Maturity": {"Value": maturity_level, "Category": "Program Info"}
     }
     assumptions_df = pd.DataFrame.from_dict(input_data, orient='index')
-assumptions_df = assumptions_df[['Category', 'Value']].sort_values('Category')
+    assumptions_df = assumptions_df[['Category', 'Value']].sort_values('Category')
     st.dataframe(assumptions_df)
 
     st.markdown("### 💡 ROI Insight")
