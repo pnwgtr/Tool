@@ -157,7 +157,7 @@ if not executive_mode:
             ax1.text(val + max(values) * 0.01, bar.get_y() + bar.get_height()/2,
                      f"{val:.2f}M", va='center', ha='left', color='white', fontsize=9)
         pct_diff = ((ale_before - ale_after) / ale_before) * 100 if ale_before else 0
-        ax1.text(0.5, 1.1, f"\u2193 {pct_diff:.1f}% Risk Reduction", color="#98c379",
+        ax1.text(0.5, 1.1, f"↓ {pct_diff:.1f}% Risk Reduction", color="#98c379",
                  ha='center', va='bottom', transform=ax1.transAxes, fontsize=9)
         ax1.set_facecolor('none')
         for spine in ax1.spines.values(): spine.set_color('none')
@@ -184,3 +184,42 @@ if not executive_mode:
         fig2.tight_layout()
         fig2.patch.set_facecolor('none')
         st.pyplot(fig2, transparent=True)
+
+    # === Additional Executive-Off Content ===
+    st.markdown("### 📌 Key Input Assumptions")
+    input_data = {
+        "Revenue ($M)": revenue_m,
+        "Controls Cost ($M)": controls_cost_m,
+        "Users Affected (K)": user_count_k,
+        "Monitoring/User": monitoring_cost_per_user,
+        "Downtime Days": downtime_days,
+        "Downtime Cost/Day ($M)": cost_per_day_m,
+        "Base SLE ($M)": sle_m,
+        "ARO Before (%)": aro_before_pct,
+        "ARO After (%)": aro_after_pct,
+        "Program Maturity": maturity_level
+    }
+    st.dataframe(pd.DataFrame.from_dict(input_data, orient='index', columns=['Value']))
+
+    st.markdown("### 💡 ROI Insight")
+    if roi_pct < 100:
+        insight = "Your current controls are underperforming. Consider revisiting cost-effectiveness or expanding coverage."
+    elif roi_pct < 200:
+        insight = "Your investment is producing moderate value. Review for potential optimization or targeted reinvestment."
+    else:
+        insight = "Your cybersecurity program is delivering strong returns. This is a great benchmark to maintain."
+    st.info(insight)
+
+    st.markdown("### 📈 Future Risk Projection (Placeholder)")
+    fig, ax = plt.subplots(figsize=(6, 2.5), facecolor='none')
+    ax.plot([2023, 2024, 2025], [ale_before/1e6, (ale_before+ale_after)/2/1e6, ale_after/1e6], marker='o', color='#00CC96')
+    ax.set_facecolor('none')
+    ax.set_title("Projected ALE Over Time", color='white')
+    ax.set_ylabel("ALE ($M)", color='white')
+    ax.set_xticks([2023, 2024, 2025])
+    for label in ax.get_xticklabels() + ax.get_yticklabels():
+        label.set_color('white')
+    for spine in ax.spines.values():
+        spine.set_color('white')
+    fig.tight_layout()
+    st.pyplot(fig, transparent=True)
