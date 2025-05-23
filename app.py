@@ -163,9 +163,19 @@ with col2:
     labels = ["Controls Cost", "Risk Reduction"]
     sizes = [controls_cost/1e6, risk_reduction/1e6]
     colors = ['#636EFA', '#00CC96']
+
     wedges, texts, autotexts = ax2.pie(
-        sizes, labels=labels,
+        sizes,
+        labels=labels,
         autopct=lambda p: f"${p*sum(sizes)/100:.1f}M",
-        startangle=90, colors=colors,
+        startangle=90,
+        colors=colors,
         wedgeprops=dict(width=0.35),
-        textprops=dict(
+        textprops=dict(color='white', fontsize=9)
+    )
+
+    ax2.axis('equal')
+    fig2.tight_layout()
+    fig2.patch.set_facecolor('none')
+    st.pyplot(fig2, transparent=True)
+
