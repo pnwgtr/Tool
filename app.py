@@ -99,19 +99,19 @@ else:
 highlight_grid = f"""
 <div class="metric-grid">
   <div class="metric-box">
-    <h4>ALE Before Controls</h4>
+    <h4>ALE Before Controls</h3>
     <p>${ale_before/1e6:.2f}M</p>
   </div>
   <div class="metric-box">
-    <h4>ALE After Controls</h4>
+    <h4>ALE After Controls</h3>
     <p>${ale_after/1e6:.2f}M</p>
   </div>
   <div class="metric-box">
-    <h4>Risk Reduction</h4>
+    <h4>Risk Reduction</h3>
     <p>${risk_reduction/1e6:.2f}M</p>
   </div>
   <div class="metric-box">
-    <h4>Return on Investment</h4>
+    <h4>Return on Investment</h3>
     <p style="color:{roi_color};">{roi_pct:.1f}%</p>
   </div>
 </div>
