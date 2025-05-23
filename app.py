@@ -201,9 +201,9 @@ if not executive_mode:
     }
     assumptions_df = pd.DataFrame.from_dict(input_data, orient='index')
 assumptions_df = assumptions_df[['Category', 'Value']].sort_values('Category')
-st.dataframe(assumptions_df)
+    st.dataframe(assumptions_df)
 
-  st.markdown("###  ROI Insight")
+    st.markdown("### 💡 ROI Insight")
     if roi_pct < 100:
         insight = "Your current controls are underperforming. Consider revisiting cost-effectiveness or expanding coverage."
     elif roi_pct < 200:
@@ -225,3 +225,4 @@ st.dataframe(assumptions_df)
         spine.set_color('white')
     fig.tight_layout()
     st.pyplot(fig, transparent=True)
+
