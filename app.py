@@ -12,7 +12,7 @@ st.markdown("""
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .metric-box {
   background-color: #1f1f1f;
