@@ -43,10 +43,10 @@ st.markdown("<h1 style='text-align: center; margin-top: 5px; margin-bottom: 10px
 # === SIDEBAR INPUTS ===
 st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider("Cybersecurity Program Maturity",
-    options=["Initial", "Developing", "Defined", "Managed", "Optimized"], value="Defined")
+    options=["Initial", "Developing", "Defined", "Managed", "Optimized"], value="Initial")
 
 st.sidebar.header("Assumptions")
-controls_cost_m = st.sidebar.slider("Cost of Preventative Controls ($M)", 0.0, 10.0, 1.1, 0.1)
+controls_cost_m = st.sidebar.slider("Cybersecurity Budget ($M)", 0.0, 10.0, 1.1, 0.1)
 controls_cost = controls_cost_m * 1_000_000
 
 revenue_m = st.sidebar.slider("Annual Revenue ($M)", 0.0, 1000.0, 500.0, 10.0)
