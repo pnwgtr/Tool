@@ -45,7 +45,7 @@ st.sidebar.markdown("### Program Maturity Level")
 maturity_level = st.sidebar.select_slider("Cybersecurity Program Maturity",
     options=["Initial", "Developing", "Defined", "Managed", "Optimized"], value="Initial")
 
-st.sidebar.header("Assumptions")
+st.sidebar.header("Input Parameters")
 controls_cost_m = st.sidebar.slider("Cybersecurity Budget ($M)", 0.0, 10.0, 1.1, 0.1)
 controls_cost = controls_cost_m * 1_000_000
 
