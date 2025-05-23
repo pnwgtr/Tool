@@ -11,25 +11,25 @@ st.markdown("""
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 10px;
+  gap: 20px;
+  margin-top: 20px;
 }
 .metric-box {
   background-color: #1f1f1f;
   border-radius: 10px;
-  padding: 10px;
+  padding: 20px;
   text-align: center;
   color: white;
-  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 .metric-box h4 {
   margin: 0;
   color: #61dafb;
-  font-size: 16px;
+  font-size: 18px;
 }
 .metric-box p {
-  font-size: 22px;
-  margin: 8px 0 0;
+  font-size: 28px;
+  margin: 10px 0 0;
   font-weight: bold;
 }
 </style>
@@ -76,7 +76,6 @@ aro_after = (aro_after_pct/100)*modifiers[maturity_level]
 
 # === EXECUTIVE MODE TOGGLE ===
 st.sidebar.markdown("### View Options")
-compact_mode = st.sidebar.checkbox("Enable Compact Layout", value=True, key="compact_mode_toggle")
 executive_mode = st.sidebar.checkbox("Enable Executive Mode", value=True, key="executive_mode_toggle")
 
 # === CALCULATIONS ===
