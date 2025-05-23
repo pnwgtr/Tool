@@ -114,7 +114,7 @@ highlight_grid = f"""
 st.markdown(highlight_grid, unsafe_allow_html=True)
 
 # === CHARTS ===
-st.markdown("<h2 style='text-align: center; color: #61dafb'> Visual Risk Overview</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #ffd966'> Visual Risk Overview</h2>", unsafe_allow_html=True)
 
 
 # Cost Component Breakdown
