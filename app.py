@@ -74,6 +74,10 @@ modifiers = {"Initial":1.3,"Developing":1.15,"Defined":1.0,"Managed":0.85,"Optim
 aro_before = (aro_before_pct/100)*modifiers[maturity_level]
 aro_after = (aro_after_pct/100)*modifiers[maturity_level]
 
+# === EXECUTIVE MODE TOGGLE ===
+st.sidebar.markdown("### View Options")
+executive_mode = st.sidebar.checkbox("Enable Executive Mode", value=True)
+
 # === CALCULATIONS ===
 sle = base_sle + user_breach_cost + downtime_cost
 ale_before = sle * aro_before
@@ -113,13 +117,11 @@ highlight_grid = f"""
 """
 st.markdown(highlight_grid, unsafe_allow_html=True)
 
-# === CHARTS ===
-st.markdown("<h2 style='text-align: center; color: #ffd966'> Visual Risk Overview</h2>", unsafe_allow_html=True)
+# === VISUALIZATION HEADER ===
+st.markdown("<h2 style='text-align: center;'>\ud83d\udcca Visual Risk Overview</h2>", unsafe_allow_html=True)
 
-
-# Cost Component Breakdown
-#st.markdown("### Cost Component Breakdown")
-st.markdown("<h2 style='text-align: center;'> Cost Component Breakdown", unsafe_allow_html=True)
+# === COST COMPONENT BREAKDOWN ===
+st.markdown("### Cost Component Breakdown")
 fig3, ax3 = plt.subplots(figsize=(6.5, 2.8), facecolor='none')
 comp_labels = ["Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
 comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
@@ -136,50 +138,46 @@ ax3.invert_yaxis()
 fig3.tight_layout()
 st.pyplot(fig3, transparent=True)
 
-# Stacked side-by-side charts
-col1, col2 = st.columns(2)
+# === CONDITIONAL CHARTS ===
+if not executive_mode:
+    col1, col2 = st.columns(2)
 
-with col1:
-    #st.markdown("### Annual Loss Exposure")
-    st.markdown("<h2 style='text-align: center;'> Annual Loss Exposure", unsafe_allow_html=True)
-    fig1, ax1 = plt.subplots(figsize=(4.5, 2.2), facecolor='none')
-    scenarios = ["Before Controls", "After Controls"]
-    values = [ale_before/1e6, ale_after/1e6]
-    bars = ax1.barh(scenarios, values, color=['#EF553B','#636EFA'])
-    ax1.set_xlabel('ALE (Millions $)', labelpad=6, color='white')
-    ax1.invert_yaxis()
-    for bar, val in zip(bars, values):
-        ax1.text(val + max(values) * 0.01, bar.get_y() + bar.get_height()/2,
-                 f"{val:.2f}M", va='center', ha='left', color='white', fontsize=9)
-    pct_diff = ((ale_before - ale_after) / ale_before) * 100 if ale_before else 0
-    ax1.text(0.5, 1.1, f"↓ {pct_diff:.1f}% Risk Reduction", color="#98c379",
-             ha='center', va='bottom', transform=ax1.transAxes, fontsize=9)
-    ax1.set_facecolor('none')
-    for spine in ax1.spines.values(): spine.set_color('none')
-    for label in ax1.get_xticklabels() + ax1.get_yticklabels(): label.set_color('white')
-    fig1.tight_layout()
-    st.pyplot(fig1, transparent=True)
+    with col1:
+        st.markdown("### Annual Loss Exposure")
+        fig1, ax1 = plt.subplots(figsize=(4.5, 2.2), facecolor='none')
+        scenarios = ["Before Controls", "After Controls"]
+        values = [ale_before/1e6, ale_after/1e6]
+        bars = ax1.barh(scenarios, values, color=['#EF553B','#636EFA'])
+        ax1.set_xlabel('ALE (Millions $)', labelpad=6, color='white')
+        ax1.invert_yaxis()
+        for bar, val in zip(bars, values):
+            ax1.text(val + max(values) * 0.01, bar.get_y() + bar.get_height()/2,
+                     f"{val:.2f}M", va='center', ha='left', color='white', fontsize=9)
+        pct_diff = ((ale_before - ale_after) / ale_before) * 100 if ale_before else 0
+        ax1.text(0.5, 1.1, f"\u2193 {pct_diff:.1f}% Risk Reduction", color="#98c379",
+                 ha='center', va='bottom', transform=ax1.transAxes, fontsize=9)
+        ax1.set_facecolor('none')
+        for spine in ax1.spines.values(): spine.set_color('none')
+        for label in ax1.get_xticklabels() + ax1.get_yticklabels(): label.set_color('white')
+        fig1.tight_layout()
+        st.pyplot(fig1, transparent=True)
 
-with col2:
-    #st.markdown("### Cost vs Risk Reduction")
-    st.markdown("<h2 style='text-align: center;'> Cost vs Risk Reduction", unsafe_allow_html=True)
-    fig2, ax2 = plt.subplots(figsize=(4.2, 3), facecolor='none')
-    labels = ["Controls Cost", "Risk Reduction"]
-    sizes = [controls_cost/1e6, risk_reduction/1e6]
-    colors = ['#636EFA', '#00CC96']
-
-    wedges, texts, autotexts = ax2.pie(
-        sizes,
-        labels=labels,
-        autopct=lambda p: f"${p*sum(sizes)/100:.1f}M",
-        startangle=90,
-        colors=colors,
-        wedgeprops=dict(width=0.35),
-        textprops=dict(color='white', fontsize=9)
-    )
-
-    ax2.axis('equal')
-    fig2.tight_layout()
-    fig2.patch.set_facecolor('none')
-    st.pyplot(fig2, transparent=True)
-
+    with col2:
+        st.markdown("### Cost vs Risk Reduction")
+        fig2, ax2 = plt.subplots(figsize=(4.2, 3), facecolor='none')
+        labels = ["Controls Cost", "Risk Reduction"]
+        sizes = [controls_cost/1e6, risk_reduction/1e6]
+        colors = ['#636EFA', '#00CC96']
+        wedges, texts, autotexts = ax2.pie(
+            sizes,
+            labels=labels,
+            autopct=lambda p: f"${p*sum(sizes)/100:.1f}M",
+            startangle=90,
+            colors=colors,
+            wedgeprops=dict(width=0.35),
+            textprops=dict(color='white', fontsize=9)
+        )
+        ax2.axis('equal')
+        fig2.tight_layout()
+        fig2.patch.set_facecolor('none')
+        st.pyplot(fig2, transparent=True)
