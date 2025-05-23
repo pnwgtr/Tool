@@ -156,7 +156,7 @@ comp_labels = ["Preventative Controls", "User Breach Cost", "Downtime Cost", "To
 comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
 colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
 
-fig3, ax3 = plt.subplots(figsize=(6, 3.5), facecolor='none')
+fig3, ax3 = plt.subplots(figsize=(5, 2.5), facecolor='none')
 bars = ax3.barh(comp_labels, comp_values, color=colors)
 
 for bar, val in zip(bars, comp_values):
@@ -172,7 +172,7 @@ st.pyplot(fig3, transparent=True)
 
 # === Annual Loss Exposure Chart ===
 st.subheader("Annual Loss Exposure (Before vs. After Controls)")
-fig1, ax1 = plt.subplots(figsize=(6, 3.5), facecolor='none')
+fig1, ax1 = plt.subplots(figsize=(5, 2.5), facecolor='none')
 scenarios = ["Before Controls", "After Controls"]
 values = [ale_before/1e6, ale_after/1e6]
 bars = ax1.barh(scenarios, values, color=['#EF553B','#636EFA'])
@@ -199,7 +199,7 @@ st.pyplot(fig1, transparent=True)
 
 # === Donut Chart ===
 st.subheader("Cost vs. Risk Reduction")
-fig2, ax2 = plt.subplots(figsize=(5, 4), facecolor='none')
+fig2, ax2 = plt.subplots(figsize=(4, 3), facecolor='none')
 labels = ["Controls Cost", "Risk Reduction"]
 sizes = [controls_cost/1e6, risk_reduction/1e6]
 colors = ['#636EFA', '#00CC96']
