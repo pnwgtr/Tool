@@ -152,43 +152,68 @@ st.markdown(highlight_grid, unsafe_allow_html=True)
 
 
 # === Annual Loss Exposure Chart ===
-st.subheader("Annual Loss Exposure (Before vs After Controls)")
-bar_fig, bar_ax = plt.subplots(facecolor='none')
-bar_ax.set_facecolor('none')
-scenarios, values = ["Before Controls","After Controls"], [ale_before/1e6, ale_after/1e6]
-colors = ['#EF553B','#636EFA']
-bars = bar_ax.bar(scenarios, values, color=colors)
-for bar, v in zip(bars, values): bar_ax.text(bar.get_x()+bar.get_width()/2, v+max(values)*0.02, f"{v:.2f}M", ha='center', color='white')
-bar_ax.set_ylabel('ALE (Millions $)', color='white'); bar_ax.set_ylim(0,max(values)*1.25)
-for lbl in bar_ax.get_xticklabels()+bar_ax.get_yticklabels(): lbl.set_color('white')
-bar_ax.spines['top'].set_visible(False); bar_ax.spines['right'].set_visible(False)
-bar_ax.spines['left'].set_color('white'); bar_ax.spines['bottom'].set_color('white')
-st.pyplot(bar_fig, transparent=True)
+st.subheader("Annual Loss Exposure (Before vs. After Controls)")
+fig1, ax1 = plt.subplots(figsize=(6, 3.5), facecolor='none')
+scenarios = ["Before Controls", "After Controls"]
+values = [ale_before/1e6, ale_after/1e6]
+bars = ax1.barh(scenarios, values, color=['#EF553B','#636EFA'])
+ax1.set_xlabel('ALE (Millions $)', color='white')
+ax1.invert_yaxis()
+
+# Annotate bars
+for bar, val in zip(bars, values):
+    ax1.text(val + max(values) * 0.02, bar.get_y() + bar.get_height()/2,
+             f"{val:.2f}M", va='center', ha='left', color='white')
+
+# ROI Annotation
+pct_diff = ((ale_before - ale_after) / ale_before) * 100 if ale_before else 0
+ax1.text(0.5, 1.1, f"↓ {pct_diff:.1f}% Risk Reduction", color="#98c379",
+         ha='center', va='bottom', transform=ax1.transAxes, fontsize=12)
+
+# Style
+ax1.set_facecolor('none')
+for spine in ax1.spines.values(): spine.set_color('none')
+for label in ax1.get_xticklabels() + ax1.get_yticklabels(): label.set_color('white')
+st.pyplot(fig1, transparent=True)
+
 
 
 # === Donut Chart ===
-st.subheader("Cost vs Risk Reduction (Donut View)")
-cost_df = pd.DataFrame({"Category": ["Preventative Controls","Risk Reduction"], "M": [controls_cost/1e6, risk_reduction/1e6]})
-fig_donut, ax_donut = plt.subplots(figsize=(6,4), facecolor='none')
-ax_donut.set_facecolor('none')
-wedges, texts, autotexts = ax_donut.pie(cost_df['M'], labels=cost_df['Category'], autopct='%1.1f%%', startangle=90, pctdistance=0.75, colors=['#636EFA','#00CC96'], textprops={'color':'white','weight':'bold'})
-for w in wedges: w.set_edgecolor('none')
-ax_donut.axis('equal')
-st.pyplot(fig_donut, transparent=True)
+st.subheader("Cost vs. Risk Reduction")
+fig2, ax2 = plt.subplots(figsize=(5, 4), facecolor='none')
+labels = ["Controls Cost", "Risk Reduction"]
+sizes = [controls_cost/1e6, risk_reduction/1e6]
+colors = ['#636EFA', '#00CC96']
+
+wedges, texts, autotexts = ax2.pie(
+    sizes, labels=labels, autopct=lambda p: f"${p*sum(sizes)/100:.1f}M",
+    startangle=90, colors=colors, wedgeprops=dict(width=0.45), textprops=dict(color='white')
+)
+ax2.axis('equal')
+fig2.patch.set_facecolor('none')
+st.pyplot(fig2, transparent=True)
+
 
 # === Cost Component Breakdown ===
 st.subheader("Cost Component Breakdown")
-cost_comp_df = pd.DataFrame({"Component": ["Preventative Controls","User Breach Cost","Downtime Cost","Total Incident Cost"], "Amount (Millions $)": [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]})
-fig3, ax3 = plt.subplots(facecolor='none')
+comp_labels = ["Preventative Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
+comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
+colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
+
+fig3, ax3 = plt.subplots(figsize=(6, 3.5), facecolor='none')
+bars = ax3.barh(comp_labels, comp_values, color=colors)
+
+for bar, val in zip(bars, comp_values):
+    ax3.text(val + max(comp_values) * 0.01, bar.get_y() + bar.get_height()/2,
+             f"{val:.2f}M", va='center', ha='left', color='white')
+
+ax3.set_xlabel("Amount (Millions $)", color='white')
 ax3.set_facecolor('none')
-bars3 = ax3.barh(cost_comp_df['Component'], cost_comp_df['Amount (Millions $)'], color=['#636EFA','#EF553B','#00CC96','#AB63FA'])
-max_amt = cost_comp_df['Amount (Millions $)'].max()
-for bar, v in zip(bars3, cost_comp_df['Amount (Millions $)']): ax3.text(v+max_amt*0.01, bar.get_y()+bar.get_height()/2, f"{v:.2f}M", va='center', color='white')
-for lbl in ax3.get_xticklabels()+ax3.get_yticklabels(): lbl.set_color('white')
 for spine in ax3.spines.values(): spine.set_color('none')
-ax3.set_xlabel('Amount (Millions $)')
+for label in ax3.get_xticklabels() + ax3.get_yticklabels(): label.set_color('white')
 ax3.invert_yaxis()
 st.pyplot(fig3, transparent=True)
+
 
 # === FAQ ===
 with st.sidebar.expander("What These Mean", expanded=False):
