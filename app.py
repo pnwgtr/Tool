@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # === PAGE CONFIG ===
+if "dismiss_overlay" not in st.session_state:
+    st.session_state.dismiss_overlay = False
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
 # === STYLES ===
@@ -25,7 +27,7 @@ st.markdown("""
 .metric-box h4 {
   margin: 0 0 2px 0;
   color: #61dafb;
-  font-size: 30px;
+  font-size: 18px;
   line-height: 1.1;
 }
 .metric-box p {
@@ -38,6 +40,34 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === TITLE ===
+if not st.session_state.dismiss_overlay:
+    st.markdown("""
+    <div style="
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85);
+        z-index: 1000;
+        color: white;
+        text-align: center;
+        padding-top: 120px;
+    ">
+        <h2>👋 Welcome to the Cyber Risk ROI Calculator</h2>
+        <p>Start by adjusting the sliders in the sidebar:</p>
+        <ul style='text-align: left; width: 400px; margin: auto;'>
+            <li><b>Cybersecurity Budget</b>: Your annual spend</li>
+            <li><b>Revenue</b>: Annual gross revenue</li>
+            <li><b>Users Affected</b>: Number of impacted users</li>
+            <li><b>ARO</b>: Likelihood before/after controls</li>
+        </ul>
+        <form action="" method="post">
+            <input type="submit" name="dismiss" value="Got it!" style="margin-top:20px; padding:10px 20px; font-size: 16px;"/>
+        </form>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.form_submit_button("dismiss"):
+        st.session_state.dismiss_overlay = True
 st.markdown("<h1 style='text-align: center; margin-top: 5px; margin-bottom: 10px;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
 # === SIDEBAR INPUTS ===
@@ -122,13 +152,13 @@ st.markdown(highlight_grid, unsafe_allow_html=True)
 
 # === VISUALIZATION HEADER ===
 if not compact_mode:
-    st.markdown("<h2 style='text-align: center; color: #00CC96;'> Visual Risk Overview</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #00CC96;'>📊 Visual Risk Overview</h2>", unsafe_allow_html=True)
 
 # === COST COMPONENT BREAKDOWN ===
 if not compact_mode:
     st.markdown("<h3 style='text-align: center;'>Cost Component Breakdown</h3>", unsafe_allow_html=True)
 fig3, ax3 = plt.subplots(figsize=(5.5, 2.2) if compact_mode else (6.5, 2.8), facecolor='none')
-comp_labels = ["Controls", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
+comp_labels = ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"]
 comp_values = [controls_cost/1e6, user_breach_cost/1e6, downtime_cost/1e6, sle/1e6]
 colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA']
 bars3 = ax3.barh(comp_labels, comp_values, color=colors)
@@ -170,7 +200,7 @@ if not executive_mode:
     with col2:
         st.markdown("### Cost vs Risk Reduction")
         fig2, ax2 = plt.subplots(figsize=(3.6, 2.4) if compact_mode else (4.2, 3), facecolor='none')
-        labels = ["Controls Cost", "Risk Reduction"]
+        labels = ["Cybersecurity Budget", "Risk Reduction"]
         sizes = [controls_cost/1e6, risk_reduction/1e6]
         colors = ['#636EFA', '#00CC96']
         wedges, texts, autotexts = ax2.pie(
@@ -191,7 +221,7 @@ if not executive_mode:
     st.markdown("### 📌 Key Input Assumptions")
     input_data = {
         "Revenue": {"Value": revenue_m, "Category": "Financials"},
-        "Controls Cost": {"Value": controls_cost_m, "Category": "Financials"},
+        "Cybersecurity Budget": {"Value": controls_cost_m, "Category": "Financials"},
         "Users Affected (K)": {"Value": user_count_k, "Category": "Breach Impact"},
         "Monitoring/User": {"Value": monitoring_cost_per_user, "Category": "Breach Impact"},
         "Downtime Days": {"Value": downtime_days, "Category": "Downtime Impact"},
@@ -205,7 +235,7 @@ if not executive_mode:
     assumptions_df = assumptions_df[['Category', 'Value']].sort_values('Category')
     st.dataframe(assumptions_df)
 
-    st.markdown("### ROI Insight")
+    st.markdown("### 💡 ROI Insight")
     if roi_pct < 100:
         insight = "Your current controls are underperforming. Consider revisiting cost-effectiveness or expanding coverage."
     elif roi_pct < 200:
@@ -227,3 +257,4 @@ if not executive_mode:
         spine.set_color('white')
     fig.tight_layout()
     st.pyplot(fig, transparent=True)
+
