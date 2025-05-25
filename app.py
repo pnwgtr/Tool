@@ -40,13 +40,7 @@ with st.container():
             st.session_state.show_guide = not st.session_state.get("show_guide", False)
 
 
-# === SIDEBAR GUIDE ===
-if st.sidebar.button("💡 Quick Start Guide"):
-    st.session_state.show_guide = not st.session_state.show_guide
 
-if st.session_state.show_guide:
-    with st.sidebar.expander("👋 Getting Started", expanded=True):
-        st.markdown("""
 Adjust these inputs to model your cybersecurity ROI:
 
 - **Cybersecurity Budget** – Your annual spend on controls  
