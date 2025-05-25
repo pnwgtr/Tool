@@ -5,14 +5,18 @@ import pandas as pd
 # === PAGE CONFIG ===
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
+# === THEME DETECTION ===
+theme = st.get_option("theme.base")
+text_color = "black" if theme == "light" else "white"
+
 # === GUIDE STATE ===
 if "show_guide" not in st.session_state:
     st.session_state.show_guide = False
 
-# === FLOATING HELP BUTTON ===
-st.markdown("""
+# === FLOATING QUICK START BUTTON ===
+st.markdown(f"""
 <style>
-.floating-help {
+.floating-help {{
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -24,17 +28,17 @@ st.markdown("""
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     cursor: pointer;
     z-index: 10000;
-}
+}}
 </style>
 <script>
-function toggleGuide() {
+function toggleGuide() {{
     fetch('/?show_guide=1').then(() => window.location.reload());
-}
+}}
 </script>
 <div class="floating-help" onclick="toggleGuide()">💡 Quick Start</div>
 """, unsafe_allow_html=True)
 
-# === SIDEBAR GUIDE TOGGLE ===
+# === SIDEBAR GUIDE ===
 if st.sidebar.button("💡 Quick Start Guide"):
     st.session_state.show_guide = not st.session_state.show_guide
 
@@ -46,7 +50,7 @@ Adjust these inputs to model your cybersecurity ROI:
 - **Cybersecurity Budget** – Your annual spend on controls  
 - **Annual Revenue** – Used to estimate downtime loss  
 - **Users Affected** – For breach impact calculation  
-- **ARO Before/After** – Likelihood of incidents before/after controls  
+- **ARO Before/After** – Likelihood before and after implementing controls  
         """)
 
 # === SIDEBAR INPUTS ===
@@ -102,118 +106,46 @@ roi = risk_reduction / controls_cost if controls_cost else 0
 roi_pct = roi * 100
 roi_color = "#e06c75" if roi_pct < 100 else "#e5c07b" if roi_pct < 200 else "#00cc96"
 
-# === KPI GRID ===
+# === KPI TITLE ===
 st.markdown("<h1 style='margin-top: 10px; text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
-kpi_style = f"""
-<style>
-.metric-grid {{
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: {'10px' if compact_mode else '20px'};
-  margin-top: 10px;
-}}
-.metric-box {{
-  background-color: #1f1f1f;
-  border-radius: 10px;
-  padding: {'10px' if compact_mode else '20px'};
-  text-align: center;
-  color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}}
-.metric-box h4 {{
-  margin: 0 0 4px 0;
-  color: #61dafb;
-  font-size: {'16px' if compact_mode else '18px'};
-}}
-.metric-box p {{
-  font-size: {'26px' if compact_mode else '30px'};
-  margin: 0;
-  font-weight: bold;
-}}
-</style>
-"""
-st.markdown(kpi_style, unsafe_allow_html=True)
-
-st.markdown(f"""
-<div class="metric-grid">
-  <div class="metric-box">
-    <h4>ALE Before Controls</h4>
-    <p>${ale_before/1e6:.2f}M</p>
-  </div>
-  <div class="metric-box">
-    <h4>ALE After Controls</h4>
-    <p>${ale_after/1e6:.2f}M</p>
-  </div>
-  <div class="metric-box">
-    <h4>Risk Reduction</h4>
-    <p>${risk_reduction/1e6:.2f}M</p>
-  </div>
-  <div class="metric-box">
-    <h4>Return on Investment</h4>
-    <p style="color:{roi_color};">{roi_pct:.1f}%</p>
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
-# === DARK-MODE FRIENDLY CHARTS ===
-def apply_dark_style(ax):
+# === HELPER FUNCTION ===
+def apply_theme_style(ax):
     ax.set_facecolor('none')
     for label in ax.get_xticklabels() + ax.get_yticklabels():
-        label.set_color("white")
-    ax.xaxis.label.set_color("white")
-    ax.yaxis.label.set_color("white")
+        label.set_color(text_color)
+    ax.xaxis.label.set_color(text_color)
+    ax.yaxis.label.set_color(text_color)
     for spine in ax.spines.values():
         spine.set_visible(False)
 
-if executive_mode:
-    st.subheader("Cost Component Breakdown")
-    cost_data = pd.DataFrame({
-        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
-    })
-    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
-    bars = ax3.barh(cost_data["Component"], cost_data["Millions"],
-                    color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
-    for bar, val in zip(bars, cost_data["Millions"]):
-        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2,
-                 f"{val:.2f}M", va='center', color='white')
-    ax3.invert_yaxis()
-    ax3.set_xlabel("Millions $")
-    apply_dark_style(ax3)
-    st.pyplot(fig3, transparent=True)
+# === COST COMPONENT BREAKDOWN (ALWAYS VISIBLE) ===
+st.subheader("Cost Component Breakdown")
+cost_data = pd.DataFrame({
+    "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+    "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
+})
+fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
+bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
+for bar, val in zip(bars, cost_data["Millions"]):
+    ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center', color=text_color)
+ax3.invert_yaxis()
+ax3.set_xlabel("Millions $")
+apply_theme_style(ax3)
+st.pyplot(fig3, transparent=True)
 
-else:
-    # Cost Component Breakdown (on top)
-    st.subheader("Cost Component Breakdown")
-    cost_data = pd.DataFrame({
-        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
-    })
-    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
-    bars = ax3.barh(cost_data["Component"], cost_data["Millions"],
-                    color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
-    for bar, val in zip(bars, cost_data["Millions"]):
-        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2,
-                 f"{val:.2f}M", va='center', color='white')
-    ax3.invert_yaxis()
-    ax3.set_xlabel("Millions $")
-    apply_dark_style(ax3)
-    st.pyplot(fig3, transparent=True)
-
-    # Annual Loss Exposure
+# === OTHER CHARTS (IF EXEC MODE IS OFF) ===
+if not executive_mode:
     st.subheader("Annual Loss Exposure (Before vs After Controls)")
     fig1, ax1 = plt.subplots(figsize=(5, 3) if compact_mode else (6, 4), facecolor='none')
     values = [ale_before / 1e6, ale_after / 1e6]
     bars = ax1.bar(["Before Controls", "After Controls"], values, color=['#EF553B', '#00CC96'])
     for bar, val in zip(bars, values):
-        ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1,
-                 f"{val:.2f}M", ha='center', color='white')
+        ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', color=text_color)
     ax1.set_ylabel("ALE (Millions $)")
-    apply_dark_style(ax1)
+    apply_theme_style(ax1)
     st.pyplot(fig1, transparent=True)
 
-    # Donut Chart
     st.subheader("Cost vs Risk Reduction")
     fig2, ax2 = plt.subplots(figsize=(4, 3) if compact_mode else (6, 4), facecolor='none')
     wedges, texts, autotexts = ax2.pie(
@@ -223,7 +155,7 @@ else:
         startangle=90,
         colors=['#636EFA', '#00CC96'],
         wedgeprops=dict(width=0.3),
-        textprops={'color': 'white', 'weight': 'bold'}
+        textprops={'color': text_color, 'weight': 'bold'}
     )
     ax2.axis("equal")
     st.pyplot(fig2, transparent=True)
