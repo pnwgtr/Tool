@@ -13,30 +13,32 @@ text_color = "black" if theme == "light" else "white"
 if "show_guide" not in st.session_state:
     st.session_state.show_guide = False
 
-# === FLOATING QUICK START BUTTON ===
-st.markdown(f"""
-<style>
-.floating-help {{
-    position: fixed;
-    bottom: 90px;
-    right: 30px;
-    background-color: #00cc96;
-    color: white;
-    padding: 10px 18px;
-    border-radius: 30px;
-    font-weight: bold;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    cursor: pointer;
-    z-index: 10000;
-}}
-</style>
-<script>
-function toggleGuide() {{
-    fetch('/?show_guide=1').then(() => window.location.reload());
-}}
-</script>
-<div class="floating-help" onclick="toggleGuide()">💡 Quick Start</div>
-""", unsafe_allow_html=True)
+# === FLOATING QUICK START BUTTON (Streamlit-native) ===
+with st.container():
+    col1, col2, col3 = st.columns([0.7, 0.1, 0.2])
+    with col3:
+        st.markdown(
+            f"""
+            <style>
+            div[data-testid="column"] button {{
+                position: fixed;
+                bottom: 90px;
+                right: 30px;
+                background-color: #00cc96;
+                color: white;
+                padding: 10px 18px;
+                border-radius: 30px;
+                font-weight: bold;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                z-index: 10000;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+        if st.button("💡 Quick Start"):
+            st.session_state.show_guide = not st.session_state.get("show_guide", False)
+
 
 # === SIDEBAR GUIDE ===
 if st.sidebar.button("💡 Quick Start Guide"):
