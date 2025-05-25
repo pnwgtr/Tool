@@ -18,8 +18,8 @@ st.markdown(f"""
 <style>
 .floating-help {{
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 90px;
+    right: 30px;
     background-color: #00cc96;
     color: white;
     padding: 10px 18px;
