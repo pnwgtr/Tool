@@ -5,6 +5,52 @@ import pandas as pd
 # === PAGE CONFIG ===
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
+# === GUIDE STATE ===
+if "show_guide" not in st.session_state:
+    st.session_state.show_guide = False
+
+# === FLOATING HELP BUTTON ===
+st.markdown("""
+<style>
+.floating-help {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #00cc96;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 10000;
+}
+</style>
+<script>
+function toggleGuide() {
+    fetch('/?show_guide=1').then(() => window.location.reload());
+}
+</script>
+<div class="floating-help" onclick="toggleGuide()">💡 Quick Start</div>
+""", unsafe_allow_html=True)
+
+# === SIDEBAR TOGGLE BUTTON + EXPANDER ===
+if st.sidebar.button("💡 Quick Start Guide"):
+    st.session_state.show_guide = not st.session_state.show_guide
+
+if st.session_state.show_guide:
+    with st.sidebar.expander("👋 Getting Started", expanded=True):
+        st.markdown("""
+Adjust these inputs to model your cybersecurity ROI:
+
+- **Cybersecurity Budget** – Your annual spend on controls
+- **Annual Revenue** – Used to estimate downtime loss
+- **Users Affected** – For breach impact calculation
+- **ARO Before/After** – Likelihood of incident before/after controls
+
+Use **Executive Mode** to simplify the view.
+        """)
+
 # === SIDEBAR CONTROLS ===
 st.sidebar.header("Input Parameters")
 st.sidebar.markdown("### Program Configuration")
@@ -44,25 +90,6 @@ aro_after_pct = st.sidebar.slider("Likelihood After Controls (%)", 0, 100, 10)
 st.sidebar.markdown("### View Options")
 executive_mode = st.sidebar.checkbox("Enable Executive Mode", value=True)
 compact_mode = st.sidebar.checkbox("Enable Compact Layout", value=True)
-
-# === QUICK START GUIDE ===
-if "show_guide" not in st.session_state:
-    st.session_state.show_guide = True
-
-with st.sidebar.expander("👋 Quick Start Guide", expanded=st.session_state.show_guide):
-    st.markdown("""
-Use this tool to estimate ROI of your cybersecurity investments. Adjust:
-
-- **Cybersecurity Budget**: Total control spend
-- **Revenue**: Impacts downtime loss estimates
-- **Users Affected**: Breach size
-- **Credit Monitoring**: Per-user cost post-breach
-- **Base Incident Cost**: Estimated loss from a single incident
-- **Downtime**: Days and per-day cost
-- **ARO Sliders**: Likelihood before and after implementing controls
-    """)
-    if st.button("Dismiss Guide"):
-        st.session_state.show_guide = False
 
 # === CALCULATIONS ===
 modifiers = {"Initial": 1.3, "Developing": 1.15, "Defined": 1.0, "Managed": 0.85, "Optimized": 0.7}
