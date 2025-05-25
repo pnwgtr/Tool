@@ -159,42 +159,58 @@ highlight_grid = f"""
 """
 st.markdown(highlight_grid, unsafe_allow_html=True)
 # === CHARTS ===
-st.subheader("Annual Loss Exposure (Before vs After Controls)")
-fig1, ax1 = plt.subplots(figsize=(5, 3) if compact_mode else (6, 4))
-scenarios = ["Before Controls", "After Controls"]
-values = [ale_before / 1e6, ale_after / 1e6]
-bars = ax1.bar(scenarios, values, color=['#EF553B', '#00CC96'])
-ax1.set_ylabel('ALE (Millions $)')
-ax1.set_ylim(0, max(values) * 1.25)
-for bar, val in zip(bars, values):
-    ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', va='bottom')
-st.pyplot(fig1)
+if executive_mode:
+    st.subheader("Cost Component Breakdown")
+    cost_data = pd.DataFrame({
+        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
+    })
+    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4))
+    bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
+    for bar, val in zip(bars, cost_data["Millions"]):
+        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center')
+    ax3.invert_yaxis()
+    ax3.set_xlabel("Millions $")
+    st.pyplot(fig3)
+else:
+    # Show cost component breakdown first
+    st.subheader("Cost Component Breakdown")
+    cost_data = pd.DataFrame({
+        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
+    })
+    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4))
+    bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
+    for bar, val in zip(bars, cost_data["Millions"]):
+        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center')
+    ax3.invert_yaxis()
+    ax3.set_xlabel("Millions $")
+    st.pyplot(fig3)
 
-st.subheader("Cost vs Risk Reduction")
-fig2, ax2 = plt.subplots(figsize=(4, 3) if compact_mode else (6, 4))
-costs = [controls_cost / 1e6, risk_reduction / 1e6]
-labels = ["Cybersecurity Budget", "Risk Reduction"]
-colors = ['#636EFA', '#00CC96']
-wedges, texts, autotexts = ax2.pie(
-    costs,
-    labels=labels,
-    autopct='%1.1f%%',
-    startangle=90,
-    colors=colors,
-    wedgeprops=dict(width=0.3)
-)
-ax2.axis('equal')
-st.pyplot(fig2)
+    # Then show the other two
+    st.subheader("Annual Loss Exposure (Before vs After Controls)")
+    fig1, ax1 = plt.subplots(figsize=(5, 3) if compact_mode else (6, 4))
+    scenarios = ["Before Controls", "After Controls"]
+    values = [ale_before / 1e6, ale_after / 1e6]
+    bars = ax1.bar(scenarios, values, color=['#EF553B', '#00CC96'])
+    ax1.set_ylabel('ALE (Millions $)')
+    ax1.set_ylim(0, max(values) * 1.25)
+    for bar, val in zip(bars, values):
+        ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', va='bottom')
+    st.pyplot(fig1)
 
-st.subheader("Cost Component Breakdown")
-cost_data = pd.DataFrame({
-    "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-    "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
-})
-fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4))
-bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
-for bar, val in zip(bars, cost_data["Millions"]):
-    ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center')
-ax3.invert_yaxis()
-ax3.set_xlabel("Millions $")
-st.pyplot(fig3)
+    st.subheader("Cost vs Risk Reduction")
+    fig2, ax2 = plt.subplots(figsize=(4, 3) if compact_mode else (6, 4))
+    costs = [controls_cost / 1e6, risk_reduction / 1e6]
+    labels = ["Cybersecurity Budget", "Risk Reduction"]
+    colors = ['#636EFA', '#00CC96']
+    wedges, texts, autotexts = ax2.pie(
+        costs,
+        labels=labels,
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=colors,
+        wedgeprops=dict(width=0.3)
+    )
+    ax2.axis('equal')
+    st.pyplot(fig2)
