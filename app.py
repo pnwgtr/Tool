@@ -156,43 +156,64 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# === CHARTS (DARK MODE FRIENDLY) ===
+# === DARK-MODE FRIENDLY CHARTS ===
 def apply_dark_style(ax):
     ax.set_facecolor('none')
     for label in ax.get_xticklabels() + ax.get_yticklabels():
         label.set_color("white")
-    for spine in ax.spines.values():
-        spine.set_color("white")
     ax.xaxis.label.set_color("white")
     ax.yaxis.label.set_color("white")
+    for spine in ax.spines.values():
+        spine.set_visible(False)
 
-# Always show cost breakdown
-st.subheader("Cost Component Breakdown")
-cost_data = pd.DataFrame({
-    "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-    "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
-})
-fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
-bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
-for bar, val in zip(bars, cost_data["Millions"]):
-    ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center', color='white')
-ax3.invert_yaxis()
-ax3.set_xlabel("Millions $")
-apply_dark_style(ax3)
-st.pyplot(fig3, transparent=True)
+if executive_mode:
+    st.subheader("Cost Component Breakdown")
+    cost_data = pd.DataFrame({
+        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
+    })
+    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
+    bars = ax3.barh(cost_data["Component"], cost_data["Millions"],
+                    color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
+    for bar, val in zip(bars, cost_data["Millions"]):
+        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2,
+                 f"{val:.2f}M", va='center', color='white')
+    ax3.invert_yaxis()
+    ax3.set_xlabel("Millions $")
+    apply_dark_style(ax3)
+    st.pyplot(fig3, transparent=True)
 
-# Only show the next two if NOT in executive mode
-if not executive_mode:
+else:
+    # Cost Component Breakdown (on top)
+    st.subheader("Cost Component Breakdown")
+    cost_data = pd.DataFrame({
+        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
+    })
+    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
+    bars = ax3.barh(cost_data["Component"], cost_data["Millions"],
+                    color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
+    for bar, val in zip(bars, cost_data["Millions"]):
+        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2,
+                 f"{val:.2f}M", va='center', color='white')
+    ax3.invert_yaxis()
+    ax3.set_xlabel("Millions $")
+    apply_dark_style(ax3)
+    st.pyplot(fig3, transparent=True)
+
+    # Annual Loss Exposure
     st.subheader("Annual Loss Exposure (Before vs After Controls)")
     fig1, ax1 = plt.subplots(figsize=(5, 3) if compact_mode else (6, 4), facecolor='none')
     values = [ale_before / 1e6, ale_after / 1e6]
     bars = ax1.bar(["Before Controls", "After Controls"], values, color=['#EF553B', '#00CC96'])
     for bar, val in zip(bars, values):
-        ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', color='white')
+        ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1,
+                 f"{val:.2f}M", ha='center', color='white')
     ax1.set_ylabel("ALE (Millions $)")
     apply_dark_style(ax1)
     st.pyplot(fig1, transparent=True)
 
+    # Donut Chart
     st.subheader("Cost vs Risk Reduction")
     fig2, ax2 = plt.subplots(figsize=(4, 3) if compact_mode else (6, 4), facecolor='none')
     wedges, texts, autotexts = ax2.pie(
