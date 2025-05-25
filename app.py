@@ -8,52 +8,59 @@ if "dismiss_overlay" not in st.session_state:
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
 # === OVERLAY CSS & DISMISS BUTTON ===
+if "dismiss_overlay" not in st.session_state:
+    st.session_state.dismiss_overlay = False
+
 if not st.session_state.dismiss_overlay:
-    st.markdown("""
+    with st.container():
+        st.markdown("""
         <style>
-        .overlay {
+        .overlay-container {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.92);
             z-index: 9999;
-            color: white;
-            text-align: center;
             padding-top: 100px;
+            text-align: center;
+            color: white;
         }
-        .overlay h2 {
+        .overlay-content {
+            max-width: 500px;
+            margin: auto;
+        }
+        .overlay-content h2 {
             font-size: 32px;
             margin-bottom: 20px;
         }
-        .overlay p, .overlay li {
-            font-size: 18px;
-        }
-        .overlay ul {
+        .overlay-content ul {
             list-style-type: disc;
-            margin: 0 auto;
-            padding: 0;
-            width: 400px;
             text-align: left;
+            padding-left: 40px;
         }
         </style>
-        <div class="overlay">
-            <h2>👋 Welcome to the Cyber Risk ROI Calculator</h2>
-            <p>Start by adjusting the sliders in the sidebar:</p>
-            <ul>
-                <li><b>Cybersecurity Budget</b>: Your annual spend</li>
-                <li><b>Revenue</b>: Annual gross revenue</li>
-                <li><b>Users Affected</b>: Number of impacted users</li>
-                <li><b>ARO</b>: Likelihood before/after controls</li>
-            </ul>
+
+        <div class="overlay-container">
+            <div class="overlay-content">
+                <h2>👋 Welcome to the Cyber Risk ROI Calculator</h2>
+                <p>Please review and adjust the following inputs:</p>
+                <ul>
+                    <li><b>Cybersecurity Budget</b>: How much you're spending</li>
+                    <li><b>Revenue</b>: Annual gross revenue</li>
+                    <li><b>Users Affected</b>: Customer or user impact</li>
+                    <li><b>ARO</b>: Likelihood before and after controls</li>
+                </ul>
+            </div>
         </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    if st.button("✅ Got it! Start Using the Tool", key="overlay_dismiss"):
-        st.session_state.dismiss_overlay = True
-        st.experimental_rerun()
-
-    st.stop()
+        # Place a normal Streamlit button BELOW the overlay block
+        st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+        if st.button("✅ Got it!"):
+            st.session_state.dismiss_overlay = True
+        st.stop()
 
 
 # === SIDEBAR CONTROLS ===
