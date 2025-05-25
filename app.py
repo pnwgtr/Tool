@@ -34,7 +34,7 @@ function toggleGuide() {
 <div class="floating-help" onclick="toggleGuide()">💡 Quick Start</div>
 """, unsafe_allow_html=True)
 
-# === SIDEBAR TOGGLE BUTTON + EXPANDER ===
+# === SIDEBAR GUIDE TOGGLE ===
 if st.sidebar.button("💡 Quick Start Guide"):
     st.session_state.show_guide = not st.session_state.show_guide
 
@@ -43,15 +43,13 @@ if st.session_state.show_guide:
         st.markdown("""
 Adjust these inputs to model your cybersecurity ROI:
 
-- **Cybersecurity Budget** – Your annual spend on controls
-- **Annual Revenue** – Used to estimate downtime loss
-- **Users Affected** – For breach impact calculation
-- **ARO Before/After** – Likelihood of incident before/after controls
-
-Use **Executive Mode** to simplify the view.
+- **Cybersecurity Budget** – Your annual spend on controls  
+- **Annual Revenue** – Used to estimate downtime loss  
+- **Users Affected** – For breach impact calculation  
+- **ARO Before/After** – Likelihood of incidents before/after controls  
         """)
 
-# === SIDEBAR CONTROLS ===
+# === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
 st.sidebar.markdown("### Program Configuration")
 maturity_level = st.sidebar.select_slider(
@@ -137,7 +135,7 @@ kpi_style = f"""
 """
 st.markdown(kpi_style, unsafe_allow_html=True)
 
-highlight_grid = f"""
+st.markdown(f"""
 <div class="metric-grid">
   <div class="metric-box">
     <h4>ALE Before Controls</h4>
@@ -156,61 +154,55 @@ highlight_grid = f"""
     <p style="color:{roi_color};">{roi_pct:.1f}%</p>
   </div>
 </div>
-"""
-st.markdown(highlight_grid, unsafe_allow_html=True)
-# === CHARTS ===
-if executive_mode:
-    st.subheader("Cost Component Breakdown")
-    cost_data = pd.DataFrame({
-        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
-    })
-    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4))
-    bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
-    for bar, val in zip(bars, cost_data["Millions"]):
-        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center')
-    ax3.invert_yaxis()
-    ax3.set_xlabel("Millions $")
-    st.pyplot(fig3)
-else:
-    # Show cost component breakdown first
-    st.subheader("Cost Component Breakdown")
-    cost_data = pd.DataFrame({
-        "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
-        "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
-    })
-    fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4))
-    bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
-    for bar, val in zip(bars, cost_data["Millions"]):
-        ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center')
-    ax3.invert_yaxis()
-    ax3.set_xlabel("Millions $")
-    st.pyplot(fig3)
+""", unsafe_allow_html=True)
 
-    # Then show the other two
+# === CHARTS (DARK MODE FRIENDLY) ===
+def apply_dark_style(ax):
+    ax.set_facecolor('none')
+    for label in ax.get_xticklabels() + ax.get_yticklabels():
+        label.set_color("white")
+    for spine in ax.spines.values():
+        spine.set_color("white")
+    ax.xaxis.label.set_color("white")
+    ax.yaxis.label.set_color("white")
+
+# Always show cost breakdown
+st.subheader("Cost Component Breakdown")
+cost_data = pd.DataFrame({
+    "Component": ["Cybersecurity Budget", "User Breach Cost", "Downtime Cost", "Total Incident Cost"],
+    "Millions": [controls_cost / 1e6, user_breach_cost / 1e6, downtime_cost / 1e6, sle / 1e6]
+})
+fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
+bars = ax3.barh(cost_data["Component"], cost_data["Millions"], color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA'])
+for bar, val in zip(bars, cost_data["Millions"]):
+    ax3.text(val + 0.1, bar.get_y() + bar.get_height()/2, f"{val:.2f}M", va='center', color='white')
+ax3.invert_yaxis()
+ax3.set_xlabel("Millions $")
+apply_dark_style(ax3)
+st.pyplot(fig3, transparent=True)
+
+# Only show the next two if NOT in executive mode
+if not executive_mode:
     st.subheader("Annual Loss Exposure (Before vs After Controls)")
-    fig1, ax1 = plt.subplots(figsize=(5, 3) if compact_mode else (6, 4))
-    scenarios = ["Before Controls", "After Controls"]
+    fig1, ax1 = plt.subplots(figsize=(5, 3) if compact_mode else (6, 4), facecolor='none')
     values = [ale_before / 1e6, ale_after / 1e6]
-    bars = ax1.bar(scenarios, values, color=['#EF553B', '#00CC96'])
-    ax1.set_ylabel('ALE (Millions $)')
-    ax1.set_ylim(0, max(values) * 1.25)
+    bars = ax1.bar(["Before Controls", "After Controls"], values, color=['#EF553B', '#00CC96'])
     for bar, val in zip(bars, values):
-        ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', va='bottom')
-    st.pyplot(fig1)
+        ax1.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', color='white')
+    ax1.set_ylabel("ALE (Millions $)")
+    apply_dark_style(ax1)
+    st.pyplot(fig1, transparent=True)
 
     st.subheader("Cost vs Risk Reduction")
-    fig2, ax2 = plt.subplots(figsize=(4, 3) if compact_mode else (6, 4))
-    costs = [controls_cost / 1e6, risk_reduction / 1e6]
-    labels = ["Cybersecurity Budget", "Risk Reduction"]
-    colors = ['#636EFA', '#00CC96']
+    fig2, ax2 = plt.subplots(figsize=(4, 3) if compact_mode else (6, 4), facecolor='none')
     wedges, texts, autotexts = ax2.pie(
-        costs,
-        labels=labels,
-        autopct='%1.1f%%',
+        [controls_cost / 1e6, risk_reduction / 1e6],
+        labels=["Cybersecurity Budget", "Risk Reduction"],
+        autopct="%1.1f%%",
         startangle=90,
-        colors=colors,
-        wedgeprops=dict(width=0.3)
+        colors=['#636EFA', '#00CC96'],
+        wedgeprops=dict(width=0.3),
+        textprops={'color': 'white', 'weight': 'bold'}
     )
-    ax2.axis('equal')
-    st.pyplot(fig2)
+    ax2.axis("equal")
+    st.pyplot(fig2, transparent=True)
