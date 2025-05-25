@@ -9,23 +9,31 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
 # === OVERLAY CSS & DISMISS BUTTON ===
 if not st.session_state.dismiss_overlay:
-    with st.container():
-        st.markdown("""
+    st.markdown("""
         <style>
         .overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.9);
             z-index: 9999;
             color: white;
             text-align: center;
-            padding-top: 120px;
+            padding-top: 100px;
+        }
+        .overlay h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .overlay p, .overlay li {
+            font-size: 18px;
         }
         .overlay ul {
-            text-align: left;
+            list-style-type: disc;
+            margin: 0 auto;
+            padding: 0;
             width: 400px;
-            margin: auto;
+            text-align: left;
         }
         </style>
         <div class="overlay">
@@ -37,11 +45,16 @@ if not st.session_state.dismiss_overlay:
                 <li><b>Users Affected</b>: Number of impacted users</li>
                 <li><b>ARO</b>: Likelihood before/after controls</li>
             </ul>
-        """, unsafe_allow_html=True)
-        if st.button("Got it!", key="dismiss_button"):
-            st.session_state.dismiss_overlay = True
-        st.markdown("""</div>""", unsafe_allow_html=True)
-        st.stop()
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    if st.button("✅ Got it! Start Using the Tool", key="overlay_dismiss"):
+        st.session_state.dismiss_overlay = True
+        st.experimental_rerun()
+
+    st.stop()
+
 
 # === SIDEBAR CONTROLS ===
 st.sidebar.header("Input Parameters")
