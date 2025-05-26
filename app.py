@@ -100,7 +100,8 @@ def apply_theme_style(ax):
     ax.yaxis.label.set_color(text_color)
     for spine in ax.spines.values():
         spine.set_visible(False)
-st.markdown("""
+# da grpahs
+st.markdown(f"""
 <style>
 .metric-grid {
   display: grid;
@@ -130,15 +131,15 @@ st.markdown("""
 <div class="metric-grid">
   <div class="metric-box">
     <h4>ALE Before Controls</h4>
-    <p>${ale_before/1e6:.2f}M</p>
+    <p>${ale_before / 1_000_000:.2f}M</p>
   </div>
   <div class="metric-box">
     <h4>ALE After Controls</h4>
-    <p>${ale_after/1e6:.2f}M</p>
+    <p>${ale_after / 1_000_000:.2f}M</p>
   </div>
   <div class="metric-box">
     <h4>Risk Reduction</h4>
-    <p>${risk_reduction/1e6:.2f}M</p>
+    <p>${risk_reduction / 1_000_000:.2f}M</p>
   </div>
   <div class="metric-box">
     <h4>ROI</h4>
@@ -146,6 +147,7 @@ st.markdown("""
   </div>
 </div>
 """, unsafe_allow_html=True)
+
 
 # === COST COMPONENT BREAKDOWN (ALWAYS VISIBLE) ===
 st.subheader("Cost Component Breakdown")
