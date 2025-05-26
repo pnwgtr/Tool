@@ -170,40 +170,40 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 # === CYBERSECURITY PROGRAM SPEND (Current vs Benchmark) ===
 # Benchmark: industry median ~3% of annual revenue (adjust as needed)
-benchmark_pct = 0.03
-benchmark_budget = revenue * benchmark_pct  # 3% of revenue
+benchmark_pct = 0.005
+benchmark_budget = revenue * benchmark_pct  # 0.5% of revenue
 
 if not executive_mode:
-    st.markdown("<h3 style='text-align:center;'>Cybersecurity Program Spend vs Benchmark</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align:center;'>Cybersecurity Program Spend vs Benchmark</h3>", unsafe_allow_html=True)
 
-    spend_df = pd.DataFrame({
-        'Category': ['Current CS Budget', 'Benchmark', 'Risk Reduction'],
-        'Millions': [controls_cost/1e6, benchmark_budget/1e6, risk_reduction/1e6]
-    })
+        spend_df = pd.DataFrame({
+            'Category': ['Current CS Budget', 'Benchmark', 'Risk Reduction'],
+            'Millions': [controls_cost/1e6, benchmark_budget/1e6, risk_reduction/1e6]
+        })
 
-    fig_spend, ax_spend = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
-    bars = ax_spend.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA', '#FFA15A', '#00CC96'])
+        fig_spend, ax_spend = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
+        bars = ax_spend.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA', '#FFA15A', '#00CC96'])
 
-    # Rotate x‑axis labels to avoid overlap
-    ax_spend.set_xticklabels(spend_df['Category'], rotation=0, ha='center')
+        # Rotate x‑axis labels to avoid overlap
+        ax_spend.set_xticklabels(spend_df['Category'], rotation=0, ha='center')
 
-    # Annotate bars
-    for bar, val in zip(bars, spend_df['Millions']):
-        ax_spend.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', color=text_color)
+        # Annotate bars
+        for bar, val in zip(bars, spend_df['Millions']):
+            ax_spend.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', color=text_color)
 
-    ax_spend.set_ylabel('Millions $')
-    apply_theme_style(ax_spend)
-    fig_spend.tight_layout()
-    st.pyplot(fig_spend, transparent=True)
+        ax_spend.set_ylabel('Millions $')
+        apply_theme_style(ax_spend)
+        fig_spend.tight_layout()
+        st.pyplot(fig_spend, transparent=True)
 
-    # Commentary for execs
-    delta = controls_cost - benchmark_budget
-    if delta >= 0:
-        msg = f"🔎 Your current cybersecurity budget is **{delta/1e6:.2f}M** above the peer benchmark (3% of revenue)."
-        color = '#00cc96'
-    else:
-        msg = f"⚠️ Your current cybersecurity budget is **{abs(delta)/1e6:.2f}M** below the peer benchmark (3% of revenue). Consider increasing investment."
-        color = '#ef553b'
+        # Commentary for execs
+        delta = controls_cost - benchmark_budget
+        if delta >= 0:
+            msg = f"🔎 Your current cybersecurity budget is **{delta/1e6:.2f}M** above the peer benchmark (0.5% of revenue)."
+            color = '#00cc96'
+        else:
+            msg = f"⚠️ Your current cybersecurity budget is **{abs(delta)/1e6:.2f}M** below the peer benchmark (0.5% of revenue). Consider increasing investment."
+            color = '#ef553b'
 
-    st.markdown(f"<p style='text-align:center;font-size:16px;font-weight:bold;color:{color};margin-top:10px;'>{msg}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align:center;font-size:16px;font-weight:bold;color:{color};margin-top:10px;'>{msg}</p>", unsafe_allow_html=True)
 
