@@ -100,6 +100,52 @@ def apply_theme_style(ax):
     ax.yaxis.label.set_color(text_color)
     for spine in ax.spines.values():
         spine.set_visible(False)
+st.markdown("""
+<style>
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 30px 0;
+}
+.metric-box {
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.metric-box h4 {
+  margin: 0 0 8px 0;
+  color: #61dafb;
+  font-size: 18px;
+}
+.metric-box p {
+  font-size: 28px;
+  margin: 0;
+  font-weight: bold;
+}
+</style>
+<div class="metric-grid">
+  <div class="metric-box">
+    <h4>ALE Before Controls</h4>
+    <p>${ale_before/1e6:.2f}M</p>
+  </div>
+  <div class="metric-box">
+    <h4>ALE After Controls</h4>
+    <p>${ale_after/1e6:.2f}M</p>
+  </div>
+  <div class="metric-box">
+    <h4>Risk Reduction</h4>
+    <p>${risk_reduction/1e6:.2f}M</p>
+  </div>
+  <div class="metric-box">
+    <h4>ROI</h4>
+    <p style="color:{roi_color};">{roi_pct:.1f}%</p>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
 # === COST COMPONENT BREAKDOWN (ALWAYS VISIBLE) ===
 st.subheader("Cost Component Breakdown")
