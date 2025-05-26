@@ -185,7 +185,7 @@ if not executive_mode:
     bars = ax_spend.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA', '#FFA15A', '#00CC96'])
 
     # Rotate x‑axis labels to avoid overlap
-    ax_spend.set_xticklabels(spend_df['Category'], rotation=15, ha='right')
+    ax_spend.set_xticklabels(spend_df['Category'], rotation=0, ha='right')
 
     # Annotate bars
     for bar, val in zip(bars, spend_df['Millions']):
