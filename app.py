@@ -1,3 +1,4 @@
+
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -52,6 +53,7 @@ monitoring_cost_per_user = st.sidebar.slider("Cost per User for Credit Monitorin
 sle_m = st.sidebar.slider("Base Incident Cost (Excl. Users) ($M)", 0.0, 10.0, 6.0, 0.1)
 base_sle = sle_m * 1_000_000
 user_breach_cost = user_count * monitoring_cost_per_user
+
 st.sidebar.markdown("### Downtime Impact Assumptions")
 downtime_days = st.sidebar.slider("Estimated Days of Downtime", 5, 30, 5)
 dcost_max_m = (default_cost_per_day / 1_000_000) * 2
@@ -91,16 +93,7 @@ roi_color = "#e06c75" if roi_pct < 100 else "#e5c07b" if roi_pct < 200 else "#00
 # === PAGE TITLE ===
 st.markdown("<h1 style='margin-top: 10px; text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
-# === THEME-STYLING HELPER ===
-def apply_theme_style(ax):
-    ax.set_facecolor("none")
-    for label in ax.get_xticklabels() + ax.get_yticklabels():
-        label.set_color(text_color)
-    ax.xaxis.label.set_color(text_color)
-    ax.yaxis.label.set_color(text_color)
-    for spine in ax.spines.values():
-        spine.set_visible(False)
-# da grpahs
+# === KPI METRIC BOXES ===
 st.markdown(f"""
 <style>
 .metric-grid {{
@@ -131,24 +124,35 @@ st.markdown(f"""
 <div class="metric-grid">
   <div class="metric-box">
     <h4>ALE Before Controls</h4>
-    <p>{ale_before / 1_000_000:.2f}M</p>
+    <p>{{ale_before / 1_000_000:.2f}}M</p>
   </div>
   <div class="metric-box">
     <h4>ALE After Controls</h4>
-    <p>{ale_after / 1_000_000:.2f}M</p>
+    <p>{{ale_after / 1_000_000:.2f}}M</p>
   </div>
   <div class="metric-box">
     <h4>Risk Reduction</h4>
-    <p>{risk_reduction / 1_000_000:.2f}M</p>
+    <p>{{risk_reduction / 1_000_000:.2f}}M</p>
   </div>
   <div class="metric-box">
     <h4>ROI</h4>
-    <p style="color:{roi_color};">{roi_pct:.1f}%</p>
+    <p style="color:{{roi_color}};">{{roi_pct:.1f}}%</p>
   </div>
 </div>
+<p style='text-align: center; margin-top: 15px; font-size: 14px; color: #aaa;'>
+  📘 Calculations: ALE = SLE × ARO, ROI = Risk Reduction ÷ Cybersecurity Budget
+</p>
 """, unsafe_allow_html=True)
 
-
+# === THEME-STYLING HELPER ===
+def apply_theme_style(ax):
+    ax.set_facecolor("none")
+    for label in ax.get_xticklabels() + ax.get_yticklabels():
+        label.set_color(text_color)
+    ax.xaxis.label.set_color(text_color)
+    ax.yaxis.label.set_color(text_color)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
 
 # === COST COMPONENT BREAKDOWN (ALWAYS VISIBLE) ===
 st.subheader("Cost Component Breakdown")
@@ -187,7 +191,6 @@ st.pyplot(fig3, transparent=True)
 
 # === ADDITIONAL CHARTS IF EXEC MODE DISABLED ===
 if not executive_mode:
-    # === ANNUAL LOSS EXPOSURE BAR CHART ===
     st.subheader("Annual Loss Exposure (Before vs After Controls)")
     fig1, ax1 = plt.subplots(figsize=(5, 3) if compact_mode else (6, 4), facecolor="none")
     values = [ale_before / 1e6, ale_after / 1e6]
@@ -204,7 +207,6 @@ if not executive_mode:
     apply_theme_style(ax1)
     st.pyplot(fig1, transparent=True)
 
-    # === COST VS RISK REDUCTION DONUT CHART ===
     st.subheader("Cost vs Risk Reduction")
     fig2, ax2 = plt.subplots(figsize=(4, 3) if compact_mode else (6, 4), facecolor="none")
     wedges, texts, autotexts = ax2.pie(
@@ -218,4 +220,3 @@ if not executive_mode:
     )
     ax2.axis("equal")
     st.pyplot(fig2, transparent=True)
-
