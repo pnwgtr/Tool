@@ -155,39 +155,38 @@ def apply_theme_style(ax):
         spine.set_visible(False)
 
 # === COST COMPONENT BREAKDOWN (ALWAYS VISIBLE) ===
-st.subheader("Cost Component Breakdown")
-cost_data = pd.DataFrame({
+# === INCIDENT COST BREAKDOWN CHART ===
+st.subheader("Incident Cost Components")
+incident_cost_data = pd.DataFrame({
     "Component": [
-        "Cybersecurity Budget",
+        "Base Incident Cost",
         "User Breach Cost",
-        "Downtime Cost",
-        "Total Incident Cost"
+        "Downtime Cost"
     ],
     "Millions": [
-        controls_cost / 1e6,
+        base_sle / 1e6,
         user_breach_cost / 1e6,
-        downtime_cost / 1e6,
-        sle / 1e6
+        downtime_cost / 1e6
     ]
 })
-fig3, ax3 = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor="none")
-bars = ax3.barh(
-    cost_data["Component"],
-    cost_data["Millions"],
-    color=["#636EFA", "#EF553B", "#00CC96", "#AB63FA"]
+fig_incident, ax_incident = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor="none")
+bars = ax_incident.barh(
+    incident_cost_data["Component"],
+    incident_cost_data["Millions"],
+    color=["#EF553B", "#00CC96", "#AB63FA"]
 )
-for bar, val in zip(bars, cost_data["Millions"]):
-    ax3.text(
+for bar, val in zip(bars, incident_cost_data["Millions"]):
+    ax_incident.text(
         val + 0.1,
         bar.get_y() + bar.get_height() / 2,
         f"{val:.2f}M",
         va="center",
         color=text_color
     )
-ax3.invert_yaxis()
-ax3.set_xlabel("Millions $")
-apply_theme_style(ax3)
-st.pyplot(fig3, transparent=True)
+ax_incident.invert_yaxis()
+ax_incident.set_xlabel("Millions $")
+apply_theme_style(ax_incident)
+st.pyplot(fig_incident, transparent=True)
 
 # === ADDITIONAL CHARTS IF EXEC MODE DISABLED ===
 if not executive_mode:
