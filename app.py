@@ -161,8 +161,13 @@ ax_i.set_xlabel('Millions $')
 apply_theme_style(ax_i)
 st.pyplot(fig_i, transparent=True)
 
-st.markdown(f"<p style='text-align:center;font-size:22px;font-weight:bold;color:{text_color};margin-top:10px;'>Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M</p>", unsafe_allow_html=True)
-
+st.markdown(f"""
+<div style='text-align:center;margin:25px 0;'>
+  <span style='display:inline-block;background-color:#EF553B;border-radius:10px;padding:14px 28px;font-size:30px;font-weight:800;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.25);'>
+    💰 Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M
+  </span>
+</div>
+""", unsafe_allow_html=True)
 # === CYBERSECURITY PROGRAM SPEND ===
 if not executive_mode:
     st.markdown("<h3 style='text-align:center;'>Cybersecurity Program Spend</h3>", unsafe_allow_html=True)
