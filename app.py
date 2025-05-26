@@ -127,11 +127,37 @@ if not executive_mode:
 <p style='text-align:center;font-size:14px;color:#aaa;margin-bottom:6px;'>Benchmark is set at <b>0.5% of annual revenue</b> (industry median).</p>
 """,unsafe_allow_html=True)
 
-    spend_df = pd.DataFrame({
-        'Category':["Current Budget","Benchmark","Risk Reduction"],
-        'Millions':[controls_cost/1e6, benchmark_budget/1e6, risk_reduction/1e6]})
+        spend_df = pd.DataFrame({
+        'Category': ["Current Budget", "Benchmark", "Risk Reduction"],
+        'Millions': [controls_cost / 1e6, benchmark_budget / 1e6, risk_reduction / 1e6]
+    })
 
-    fig_s, ax_s = plt.subplots(figsize=(6,3) if compact_mode else (8,4))
-    bars = ax_s.bar(spend_df['Category'],spend_df['Millions'],color=['#636EFA','#FFA15A','#00CC96'])
-    ax_s.set_xticklabels(spend_df['Category'],rotation=0,ha='center')
-    for b,v in zip(bars,spend
+    fig_s, ax_s = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4))
+    bars = ax_s.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA', '#FFA15A', '#00CC96'])
+
+    # Centered labels without rotation
+    ax_s.set_xticks(range(len(spend_df)))
+    ax_s.set_xticklabels(spend_df['Category'], rotation=0, ha='center')
+
+    # Annotate bars
+    for bar, val in zip(bars, spend_df['Millions']):
+        ax_s.text(bar.get_x() + bar.get_width() / 2, val + 0.1, f"{val:.2f}M", ha='center', color=text_color)
+
+    ax_s.set_ylabel('Millions $')
+    style_ax(ax_s)
+    fig_s.tight_layout()
+    st.pyplot(fig_s, transparent=True)
+
+    # Exec commentary
+    delta = controls_cost - benchmark_budget
+    if delta >= 0:
+        msg = f"🔎 Your current cybersecurity budget is **{delta / 1e6:.2f}M** above the 0.5% benchmark."
+        col = '#00cc96'
+    else:
+        msg = f"⚠️ Your current cybersecurity budget is **{abs(delta) / 1e6:.2f}M** below the 0.5% benchmark. Consider increasing investment."
+        col = '#ef553b'
+
+    st.markdown(
+        f"<p style='text-align:center;font-size:16px;font-weight:bold;color:{col};margin-top:10px'>{msg}</p>",
+        unsafe_allow_html=True
+    )
