@@ -97,30 +97,30 @@ st.markdown("<h1 style='margin-top: 10px; text-align: center;'>Cyber Risk ROI Ca
 # === KPI METRIC BOXES ===
 st.markdown(f"""
 <style>
-.metric-grid {
+.metric-grid {{
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin: 30px 0;
-}
-.metric-box {
+}}
+.metric-box {{
   background-color: #1f1f1f;
   border-radius: 10px;
   padding: 20px;
   text-align: center;
   color: white;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-.metric-box h4 {
+}}
+.metric-box h4 {{
   margin: 0 0 8px 0;
   color: #61dafb;
   font-size: 18px;
-}
-.metric-box p {
+}}
+.metric-box p {{
   font-size: 28px;
   margin: 0;
   font-weight: bold;
-}
+}}
 </style>
 <div class="metric-grid">
   <div class="metric-box">
@@ -144,6 +144,7 @@ st.markdown(f"""
   📘 Calculations: ALE = SLE × ARO, ROI = Risk Reduction ÷ Cybersecurity Budget
 </p>
 """, unsafe_allow_html=True)
+
 
 # === THEME-STYLING HELPER ===
 def apply_theme_style(ax):
