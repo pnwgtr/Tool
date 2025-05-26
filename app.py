@@ -6,23 +6,19 @@ import pandas as pd
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
 # === THEME DETECTION ===
-theme = st.get_option("theme.base")
-text_color = "black" if theme == "light" else "white"
+text_color = "black" if st.get_option("theme.base") == "light" else "white"
 
-# === SIDEBAR GUIDE STATE ===
+# === SIDEBAR GUIDE ===
 if "show_guide" not in st.session_state:
     st.session_state.show_guide = False
-
 if st.sidebar.button("💡 Quick Start Guide"):
     st.session_state.show_guide = not st.session_state.show_guide
-
 if st.session_state.show_guide:
     with st.sidebar.expander("👋 Getting Started", expanded=True):
         st.markdown("""
 Adjust these inputs to model your cybersecurity ROI:
-
 - **Cybersecurity Budget** – Annual spend on controls  
-- **Annual Revenue** – Used to estimate downtime cost  
+- **Annual Revenue** – Used to estimate downtime loss  
 - **Users Affected** – For breach impact  
 - **ARO Before/After** – Likelihood before/after controls
 """)
@@ -83,18 +79,17 @@ roi_pct = roi * 100
 roi_color = "#e06c75" if roi_pct < 100 else "#e5c07b" if roi_pct < 200 else "#00cc96"
 
 total_incident_cost = sle
-benchmark_pct = 0.005
+benchmark_pct = 0.005  # 0.5% of revenue
 benchmark_budget = revenue * benchmark_pct
 
 # === PAGE TITLE ===
 st.markdown("<h1 style='text-align:center;margin-top:10px;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
-# === THEME HELP ===
-
+# === HELPER ===
 def apply_theme(ax):
     ax.set_facecolor('none')
-    for lbl in ax.get_xticklabels()+ax.get_yticklabels():
-        lbl.set_color(text_color)
+    for l in ax.get_xticklabels()+ax.get_yticklabels():
+        l.set_color(text_color)
     ax.xaxis.label.set_color(text_color)
     ax.yaxis.label.set_color(text_color)
     for s in ax.spines.values():
@@ -103,10 +98,10 @@ def apply_theme(ax):
 # === KPI GRID ===
 st.markdown(f"""
 <style>
-.metric-grid {{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin:30px 0;}}
-.metric-box {{background:#1f1f1f;border-radius:10px;padding:20px;text-align:center;color:white;box-shadow:0 0 10px rgba(0,0,0,0.3);}}
-.metric-box h4 {{margin:0 0 8px;color:#61dafb;font-size:18px;}}
-.metric-box p {{font-size:28px;margin:0;font-weight:bold;}}
+.metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin:30px 0;}}
+.metric-box{{background:#1f1f1f;border-radius:10px;padding:20px;text-align:center;color:white;box-shadow:0 0 10px rgba(0,0,0,0.3);}}
+.metric-box h4{{margin:0 0 8px;color:#61dafb;font-size:18px;}}
+.metric-box p{{font-size:28px;margin:0;font-weight:bold;}}
 </style>
 <div class='metric-grid'>
   <div class='metric-box'><h4>ALE Before Controls</h4><p>{ale_before/1e6:.2f}M</p></div>
@@ -120,10 +115,10 @@ st.markdown(f"""
 # === INCIDENT COST BREAKDOWN ===
 st.markdown("<h3 style='text-align:center;margin:10px 0;'>Incident Cost Components</h3>", unsafe_allow_html=True)
 incident_df = pd.DataFrame({
-    'Component':['Base Incident Cost','User Breach Cost','Downtime Cost'],
+    'Component':["Base Incident Cost","User Breach Cost","Downtime Cost"],
     'Millions':[base_sle/1e6,user_breach_cost/1e6,downtime_cost/1e6]
 })
-fig_i, ax_i = plt.subplots(figsize=(6,3) if compact_mode else (8,4), facecolor='none')
+fig_i, ax_i = plt.subplots(figsize=(6,3) if compact_mode else (8,4))
 ax_i.barh(incident_df['Component'], incident_df['Millions'], color=['#EF553B','#00CC96','#AB63FA'])
 for v,c in zip(incident_df['Millions'], incident_df['Component']):
     ax_i.text(v+0.1, c, f"{v:.2f}M", va='center', color=text_color)
@@ -140,22 +135,9 @@ if not executive_mode:
 """, unsafe_allow_html=True)
 
     spend_df = pd.DataFrame({
-        'Category':['Current Budget','Benchmark','Risk Reduction'],
+        'Category':["Current Budget","Benchmark","Risk Reduction"],
         'Millions':[controls_cost/1e6, benchmark_budget/1e6, risk_reduction/1e6]
     })
 
-    fig_s, ax_s = plt.subplots(figsize=(6,3) if compact_mode else (8,4), facecolor='none')
-    bars = ax_s.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA','#FFA15A','#00CC96'])
-    ax_s.set_xticklabels(spend_df['Category'], rotation=0, ha='center')
-    for b,v in zip(bars, spend_df['Millions']):
-        ax_s.text(b.get_x()+b.get_width()/2, v+0.1, f"{v:.2f}M", ha='center', color=text_color)
-    ax_s.set_ylabel('Millions $'); apply_theme(ax_s); fig_s.tight_layout(); st.pyplot(fig_s, transparent=True)
-
-        delta = controls_cost - benchmark_budget
-    if delta >= 0:
-        msg = f"🔎 Your current cybersecurity budget is **{delta/1e6:.2f}M** above the 0.5% benchmark."
-        col = '#00cc96'
-    else:
-        msg = f"⚠️ Your current cybersecurity budget is **{abs(delta)/1e6:.2f}M** below the 0.5% benchmark. Consider increasing investment."
-        col = '#ef553b'
-    st.markdown(f"<p style='text-align:center;font-size:16px;font-weight:bold;color:{col};margin-top:10px'>{msg}</p>", unsafe_allow_html=True)(f"<p style='text-align:center;font-size:16px;font-weight:bold;color:{col};margin-top:10px'>{msg}</p>", unsafe_allow_html=True)
+    fig_s, ax_s = plt.subplots(figsize=(6,3) if compact_mode else (8,4))
+    bars = ax_s.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA','#FFA15A','#00CC
