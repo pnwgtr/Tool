@@ -156,6 +156,7 @@ def apply_theme_style(ax):
 
 # === COST COMPONENT BREAKDOWN (ALWAYS VISIBLE) ===
 # === INCIDENT COST BREAKDOWN CHART ===
+# === INCIDENT COST BREAKDOWN CHART ===
 st.subheader("Incident Cost Components")
 incident_cost_data = pd.DataFrame({
     "Component": [
@@ -187,6 +188,11 @@ ax_incident.invert_yaxis()
 ax_incident.set_xlabel("Millions $")
 apply_theme_style(ax_incident)
 st.pyplot(fig_incident, transparent=True)
+
+# Display total cost below the chart
+total_incident_cost = base_sle + user_breach_cost + downtime_cost
+st.markdown(f"<p style='text-align:center; font-size:16px; color:{text_color};'><b>Total Estimated Incident Cost:</b> {total_incident_cost / 1_000_000:.2f}M</p>", unsafe_allow_html=True)
+
 
 # === ADDITIONAL CHARTS IF EXEC MODE DISABLED ===
 if not executive_mode:
