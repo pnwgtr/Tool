@@ -28,8 +28,24 @@ st.sidebar.header("Input Parameters")
 # Program
 maturity_level = st.sidebar.select_slider(
     "Cybersecurity Program Maturity",
-    ["Initial","Developing","Defined","Managed","Optimized"],
+    ["Initial", "Developing", "Defined", "Managed", "Optimized"],
     value="Initial")
+
+# High‑level maturity descriptions
+with st.sidebar.expander("ℹ️ What do these maturity levels mean?", False):
+    st.markdown(
+        """
+**Initial** – Ad‑hoc and reactive; processes are informal or not documented.
+
+**Developing** – Basic policies in place; some repeatable practices but still largely siloed.
+
+**Defined** – Processes are documented, standardized, and communicated across the organization.
+
+**Managed** – Controls are actively measured, monitored, and optimized; management uses metrics to make decisions.
+
+**Optimized** – Continuous improvement culture with automated, adaptive controls aligned to business objectives.
+        """
+    )
 controls_cost_m = st.sidebar.slider("Cybersecurity Budget ($M)",0.0,10.0,1.1,0.1)
 controls_cost = controls_cost_m*1_000_000
 revenue_m = st.sidebar.slider("Annual Revenue ($M)",0.0,1000.0,500.0,10.0)
