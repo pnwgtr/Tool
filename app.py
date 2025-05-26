@@ -174,7 +174,7 @@ benchmark_pct = 0.005
 benchmark_budget = revenue * benchmark_pct  # 0.5% of revenue
 
 if not executive_mode:
-        st.markdown("<h3 style='text-align:center;'>Cybersecurity Program Spend vs Benchmark</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align:center;'>Cybersecurity Program Spend vs Benchmark <span title='Benchmark = 0.5% of annual revenue (industry median for similar organizations)' style='cursor:help;'>ℹ️</span></h3>", unsafe_allow_html=True)
 
         spend_df = pd.DataFrame({
             'Category': ['Current CS Budget', 'Benchmark', 'Risk Reduction'],
