@@ -177,7 +177,7 @@ if not executive_mode:
     st.markdown("<h3 style='text-align:center;'>Cybersecurity Program Spend vs Benchmark</h3>", unsafe_allow_html=True)
 
     spend_df = pd.DataFrame({
-        'Category': ['Current Cybersecurity Budget', 'Benchmark (3% of Revenue)', 'Risk Reduction'],
+        'Category': ['Current CS Budget', 'Benchmark', 'Risk Reduction'],
         'Millions': [controls_cost/1e6, benchmark_budget/1e6, risk_reduction/1e6]
     })
 
