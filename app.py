@@ -94,49 +94,50 @@ roi_color = "#e06c75" if roi_pct < 100 else "#e5c07b" if roi_pct < 200 else "#00
 st.markdown("<h1 style='margin-top: 10px; text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
 # === KPI METRIC BOXES ===
+# === KPI METRIC BOXES ===
 st.markdown(f"""
 <style>
-.metric-grid {{
+.metric-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin: 30px 0;
-}}
-.metric-box {{
+}
+.metric-box {
   background-color: #1f1f1f;
   border-radius: 10px;
   padding: 20px;
   text-align: center;
   color: white;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}}
-.metric-box h4 {{
+}
+.metric-box h4 {
   margin: 0 0 8px 0;
   color: #61dafb;
   font-size: 18px;
-}}
-.metric-box p {{
+}
+.metric-box p {
   font-size: 28px;
   margin: 0;
   font-weight: bold;
-}}
+}
 </style>
 <div class="metric-grid">
   <div class="metric-box">
     <h4>ALE Before Controls</h4>
-    <p>{{ale_before / 1_000_000:.2f}}M</p>
+    <p>{ale_before / 1_000_000:.2f}M</p>
   </div>
   <div class="metric-box">
     <h4>ALE After Controls</h4>
-    <p>{{ale_after / 1_000_000:.2f}}M</p>
+    <p>{ale_after / 1_000_000:.2f}M</p>
   </div>
   <div class="metric-box">
     <h4>Risk Reduction</h4>
-    <p>{{risk_reduction / 1_000_000:.2f}}M</p>
+    <p>{risk_reduction / 1_000_000:.2f}M</p>
   </div>
   <div class="metric-box">
     <h4>ROI</h4>
-    <p style="color:{{roi_color}};">{{roi_pct:.1f}}%</p>
+    <p style="color:{roi_color};">{roi_pct:.1f}%</p>
   </div>
 </div>
 <p style='text-align: center; margin-top: 15px; font-size: 14px; color: #aaa;'>
