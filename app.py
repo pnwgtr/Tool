@@ -94,33 +94,34 @@ roi_color = "#e06c75" if roi_pct < 100 else "#e5c07b" if roi_pct < 200 else "#00
 st.markdown("<h1 style='margin-top: 10px; text-align: center;'>Cyber Risk ROI Calculator</h1>", unsafe_allow_html=True)
 
 # === KPI METRIC BOXES ===
-# === KPI METRIC BOXES ===
+# This section displays summary KPIs (ALE, ROI, etc.) and their calculation formulas.
+# Ensure values like ale_before and roi_pct are defined prior to this block.
 st.markdown(f"""
 <style>
-.metric-grid {{
+.metric-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin: 30px 0;
-}}
-.metric-box {{
+}
+.metric-box {
   background-color: #1f1f1f;
   border-radius: 10px;
   padding: 20px;
   text-align: center;
   color: white;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}}
-.metric-box h4 {{
+}
+.metric-box h4 {
   margin: 0 0 8px 0;
   color: #61dafb;
   font-size: 18px;
-}}
-.metric-box p {{
+}
+.metric-box p {
   font-size: 28px;
   margin: 0;
   font-weight: bold;
-}}
+}
 </style>
 <div class="metric-grid">
   <div class="metric-box">
@@ -145,21 +146,8 @@ st.markdown(f"""
 </p>
 """, unsafe_allow_html=True)
 
-
-# === THEME-STYLING HELPER ===
-def apply_theme_style(ax):
-    ax.set_facecolor("none")
-    for label in ax.get_xticklabels() + ax.get_yticklabels():
-        label.set_color(text_color)
-    ax.xaxis.label.set_color(text_color)
-    ax.yaxis.label.set_color(text_color)
-    for spine in ax.spines.values():
-        spine.set_visible(False)
-
-# === COST COMPONENT BREAKDOWN (ALWAYS VISIBLE) ===
 # === INCIDENT COST BREAKDOWN CHART ===
-# === INCIDENT COST BREAKDOWN CHART ===
-st.subheader("Incident Cost Components")
+st.markdown("<h3 style='text-align: center;'>Incident Cost Components</h3>", unsafe_allow_html=True)
 incident_cost_data = pd.DataFrame({
     "Component": [
         "Base Incident Cost",
@@ -193,7 +181,8 @@ st.pyplot(fig_incident, transparent=True)
 
 # Display total cost below the chart
 total_incident_cost = base_sle + user_breach_cost + downtime_cost
-st.markdown(f"<p style='text-align:center; font-size:16px; color:{text_color};'><b>Total Estimated Incident Cost:</b> {total_incident_cost / 1_000_000:.2f}M</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align:center; font-size:22px; color:{text_color}; font-weight: bold; margin-top: 10px;'><b>Total Estimated Incident Cost:</b> {total_incident_cost / 1_000_000:.2f}M</p>", unsafe_allow_html=True)
+
 
 
 # === ADDITIONAL CHARTS IF EXEC MODE DISABLED ===
