@@ -142,7 +142,9 @@ def apply_theme_style(ax):
         spine.set_visible(False)
 
 # === INCIDENT COST BREAKDOWN ===
-st.markdown("<h3 style='text-align:center;'>Incident Cost Components</h3>", unsafe_allow_html=True)
+st.markdown(
+    "<h3 style='text-align:center;margin:10px 0;'>Incident Cost Components</h3>",
+    unsafe_allow_html=True)
 incident_df = pd.DataFrame({
     'Component':['Base Incident Cost','User Breach Cost','Downtime Cost'],
     'Millions':[base_sle/1e6,user_breach_cost/1e6,downtime_cost/1e6]
