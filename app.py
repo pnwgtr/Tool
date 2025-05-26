@@ -166,4 +166,4 @@ st.markdown(f"<p style='text-align:center;font-size:22px;font-weight:bold;color:
 # === CYBERSECURITY PROGRAM SPEND ===
 if not executive_mode:
     st.markdown("<h3 style='text-align:center;'>Cybersecurity Program Spend</h3>", unsafe_allow_html=True)
-    spend_df = pd.DataFrame({'Category':['Cybersecurity Budget','Risk Reduction'],'Millions':[controls_cost/
+    spend_df = pd.DataFrame({'Category':['Cybersecurity Budget','Risk Reduction'],'Millions':[controls_cost/]
