@@ -182,7 +182,7 @@ if not executive_mode:
     })
 
     fig_spend, ax_spend = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4), facecolor='none')
-     bars = ax_spend.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA', '#FFA15A', '#00CC96'])
+    bars = ax_spend.bar(spend_df['Category'], spend_df['Millions'], color=['#636EFA', '#FFA15A', '#00CC96'])
 
     # Rotate x‑axis labels to avoid overlap
     ax_spend.set_xticklabels(spend_df['Category'], rotation=15, ha='right')
