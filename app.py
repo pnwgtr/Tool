@@ -1,11 +1,11 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP (CONDENSED + SMALLER TEXT + BIG INCIDENT COST) ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (LARGER HEADERS) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 
-# === GLOBAL STYLING FOR TIGHTER LAYOUT & SMALLER TEXT ===
+# === GLOBAL STYLING FOR TIGHTER LAYOUT & HEADER SIZES ===
 st.markdown("""
 <style>
     .block-container {
@@ -17,12 +17,12 @@ st.markdown("""
     h1 {
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
-        font-size:24px !important;
+        font-size:28px !important;
     }
     h3 {
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
-        font-size:16px !important;
+        font-size:22px !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -52,7 +52,7 @@ maturity_level = st.sidebar.select_slider(
     ["Initial", "Developing", "Defined", "Managed", "Optimized"],
     value="Initial")
 
-with st.sidebar.expander("What do these maturity levels mean?", False):
+with st.sidebar.expander("ℹ️ What do these maturity levels mean?", False):
     st.markdown(
         """
 **Initial** – Ad-hoc and reactive; processes are informal or not documented.
@@ -116,7 +116,7 @@ def style_ax(ax):
     ax.set_facecolor('none')
     for lbl in ax.get_xticklabels() + ax.get_yticklabels():
         lbl.set_color(text_color)
-        lbl.set_fontsize(8)  # Smaller tick labels
+        lbl.set_fontsize(8)
     ax.xaxis.label.set_color(text_color)
     ax.xaxis.label.set_fontsize(9)
     ax.yaxis.label.set_color(text_color)
@@ -124,7 +124,7 @@ def style_ax(ax):
     for s in ax.spines.values():
         s.set_visible(False)
 
-# === KPI GRID (CONDENSED + SMALLER TEXT) ===
+# === KPI GRID ===
 st.markdown(f"""
 <style>
 .metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:12px 0;}}
@@ -173,7 +173,7 @@ st.markdown(f"""
 <div style='text-align:center;margin:20px 0;'>
     <span style='display:inline-block;background:#EF553B;border-radius:8px;padding:16px 32px;
     font-size:32px;font-weight:900;color:white;box-shadow:0 4px 10px rgba(0,0,0,0.3);'>
-    Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M
+    💰 Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M
     </span>
 </div>
 """, unsafe_allow_html=True)
