@@ -130,14 +130,22 @@ if not executive_mode:
     <h3 style='text-align:center;margin:5px 0;'>Cybersecurity Program Spend vs Benchmark
     <span style='font-size:14px;color:#aaa;' title='The benchmark is set at 0.5% of annual revenue, based on industry median cybersecurity spending for comparable organizations.'> ⓘ</span>
     </h3>
-    """,unsafe_allow_html=True)
-    spend_df = pd.DataFrame({"Category":["Current Budget","Benchmark","Risk Reduction"],"Millions":[controls_cost/1e6,benchmark_budget/1e6,risk_reduction/1e6]})
-    fig_s, ax_s = plt.subplots(figsize=(4,2))
-    bars = ax_s.bar(spend_df["Category"],spend_df["Millions"],color=["#636EFA", "#FFA15A", "#00CC96"])
+    """, unsafe_allow_html=True)
+
+    spend_df = pd.DataFrame({
+        "Category": ["Current Budget", "Benchmark", "Risk Reduction"],
+        "Millions": [controls_cost / 1e6, benchmark_budget / 1e6, risk_reduction / 1e6]
+    })
+
+    fig_s, ax_s = plt.subplots(figsize=(4, 2))
+    bars = ax_s.bar(spend_df["Category"], spend_df["Millions"], color=["#636EFA", "#FFA15A", "#00CC96"])
     ax_s.set_xticklabels(spend_df["Category"], rotation=0, ha="center", fontsize=8, color=text_color)
+
     for bar, val in zip(bars, spend_df["Millions"]):
-        ax_s.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha="center", color=text_color, fontsize=8)
-    ax_s.set_ylabel("Millions $", color=text_color); ax_s.yaxis.label.set_fontsize(9)
+        ax_s.text(bar.get_x() + bar.get_width() / 2, val + 0.05, f"{val:.2f}M", ha="center", color=text_color, fontsize=8)
+
+    ax_s.set_ylabel("Millions $", color=text_color)
+    ax_s.yaxis.label.set_fontsize(9)
     style_chart(ax_s)
     fig_s.tight_layout()
     st.pyplot(fig_s, transparent=True)
@@ -149,7 +157,6 @@ if not executive_mode:
     else:
         msg = f" Your current cybersecurity budget is **{abs(delta) / 1e6:.2f}M** below the 0.5% benchmark. Consider increasing investment."
         col = "#ef553b"
-    st.markdown(f"<p style='text-align:center;font-size:13px;font-weight:bold;color:{col};margin-top:5px'>{msg}</p>",unsafe_allow_html=True)
 
-        col = "#ef553b"
-    st.markdown(f"<p style='text-align:center;font-size:13px;font-weight:bold;color:{col};margin-top:5px'>{msg}</p>",unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align:center;font-size:13px;font-weight:bold;color:{col};margin-top:5px'>{msg}</p>", unsafe_allow_html=True)
+
