@@ -136,7 +136,7 @@ risk_df = pd.DataFrame({
     'Stage': ["Before Controls", "After Controls"],
     'Millions': [ale_before/1e6, ale_after/1e6]
 })
-fig_r, ax_r = plt.subplots(figsize=(5,3))
+fig_r, ax_r = plt.subplots(figsize=(4,2))
 bars = ax_r.bar(risk_df['Stage'], risk_df['Millions'], color=["#EF553B","#00CC96"])
 for bar, val in zip(bars, risk_df['Millions']):
     ax_r.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', color=text_color)
@@ -148,7 +148,7 @@ st.markdown("<h3 style='text-align:center;margin:10px 0;'>Incident Cost Componen
 inc_df = pd.DataFrame({
     'Component':["Base Incident Cost","User Breach Cost","Downtime Cost"],
     'Millions':[base_sle/1e6,user_breach_cost/1e6,downtime_cost/1e6]})
-fig_i, ax_i = plt.subplots(figsize=(6,3) if compact_mode else (8,4))
+fig_i, ax_i = plt.subplots(figsize=(5,2) if compact_mode else (8,4))
 ax_i.barh(inc_df['Component'],inc_df['Millions'],color=['#EF553B','#00CC96','#AB63FA'])
 for v,c in zip(inc_df['Millions'],inc_df['Component']):
     ax_i.text(v+0.1,c,f"{v:.2f}M",va='center',color=text_color)
@@ -174,7 +174,7 @@ if not executive_mode:
         }
     )
 
-    fig_s, ax_s = plt.subplots(figsize=(6, 3) if compact_mode else (8, 4))
+    fig_s, ax_s = plt.subplots(figsize=(5, 2) if compact_mode else (8, 4))
     bars = ax_s.bar(
         spend_df["Category"],
         spend_df["Millions"],
