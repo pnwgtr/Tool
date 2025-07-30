@@ -1,4 +1,4 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP (COMPACT MODE OPTIMIZED FOR ONE-SCREEN VIEW) ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (COMPACT MODE OPTIMIZED FOR ONE-SCREEN VIEW WITH SHRUNK AXIS TITLES) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -91,15 +91,18 @@ def style_chart(ax):
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.grid(False)
+    ax.xaxis.label.set_size(6)
+    ax.yaxis.label.set_size(6)
     for lbl in ax.get_xticklabels()+ax.get_yticklabels():
         lbl.set_color(text_color)
+        lbl.set_fontsize(6)
 
 st.markdown("<h3 style='text-align:center;'>Risk Exposure: Before vs After Controls</h3>", unsafe_allow_html=True)
 risk_df = pd.DataFrame({"Stage":["Before Controls","After Controls"],"Millions":[ale_before/1e6,ale_after/1e6]})
 fig_r, ax_r = plt.subplots(figsize=chart_size, facecolor='none')
 bars = ax_r.bar(risk_df['Stage'], risk_df['Millions'], color=["#EF553B","#00CC96"])
 for bar, val in zip(bars, risk_df['Millions']):
-    ax_r.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha='center', color=text_color, fontsize=7)
+    ax_r.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha='center', color=text_color, fontsize=6)
 ax_r.set_ylabel("Millions $", color=text_color)
 style_chart(ax_r)
 st.pyplot(fig_r, transparent=True)
@@ -109,7 +112,7 @@ inc_df = pd.DataFrame({"Component":["Base Incident Cost","User Breach Cost","Dow
 fig_i, ax_i = plt.subplots(figsize=chart_size, facecolor='none')
 ax_i.barh(inc_df['Component'], inc_df['Millions'], color=['#EF553B','#00CC96','#AB63FA'])
 for v,c in zip(inc_df['Millions'],inc_df['Component']):
-    ax_i.text(v+0.1,c,f"{v:.2f}M",va='center',color=text_color,fontsize=7)
+    ax_i.text(v+0.1,c,f"{v:.2f}M",va='center',color=text_color,fontsize=6)
 ax_i.invert_yaxis(); ax_i.set_xlabel('Millions $', color=text_color)
 style_chart(ax_i)
 st.pyplot(fig_i, transparent=True)
