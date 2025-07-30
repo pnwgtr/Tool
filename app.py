@@ -52,7 +52,7 @@ maturity_level = st.sidebar.select_slider(
     ["Initial", "Developing", "Defined", "Managed", "Optimized"],
     value="Initial")
 
-with st.sidebar.expander("ℹ️ What do these maturity levels mean?", False):
+with st.sidebar.expander("What do these maturity levels mean?", False):
     st.markdown(
         """
 **Initial** – Ad-hoc and reactive; processes are informal or not documented.
@@ -173,7 +173,7 @@ st.markdown(f"""
 <div style='text-align:center;margin:20px 0;'>
     <span style='display:inline-block;background:#EF553B;border-radius:8px;padding:16px 32px;
     font-size:32px;font-weight:900;color:white;box-shadow:0 4px 10px rgba(0,0,0,0.3);'>
-    💰 Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M
+    Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M
     </span>
 </div>
 """, unsafe_allow_html=True)
