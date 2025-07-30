@@ -129,8 +129,8 @@ st.markdown(f"""
 <style>
 .metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:12px 0;}}
 .metric-box{{background:#1f1f1f;border-radius:8px;padding:12px;text-align:center;color:white;box-shadow:0 0 6px rgba(0,0,0,0.25);}}
-.metric-box h4{{margin:0 0 4px;color:#61dafb;font-size:14px;}}
-.metric-box p{{font-size:20px;margin:0;font-weight:bold;}}
+.metric-box h4{margin:0 0 4px;color:#61dafb;font-size:16px;}
+.metric-box p{font-size:28px;margin:0;font-weight:bold;}
 </style>
 <div class='metric-grid'>
     <div class='metric-box'><h4>Estimated Annual Loss (Before)</h4><p>{ale_before/1e6:.2f}M</p></div>
