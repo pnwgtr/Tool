@@ -1,4 +1,4 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP (WITH PROGRAM SPEND VS BENCHMARK) ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (WITH PROGRAM SPEND VS BENCHMARK & FIXED TICK COLORS) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -14,7 +14,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-text_color = "black" if st.get_option("theme.base") == "light" else "white"
+text_color = "white"
 
 # === SIDEBAR INPUTS ===
 st.sidebar.header("Input Parameters")
@@ -93,6 +93,7 @@ def style_chart(ax):
     ax.set_facecolor('none')
     for spine in ax.spines.values():
         spine.set_visible(False)
+    ax.tick_params(colors=text_color)
     ax.grid(False)
     ax.xaxis.label.set_size(6)
     ax.yaxis.label.set_size(6)
@@ -128,10 +129,10 @@ if not executive_mode:
     spend_df = pd.DataFrame({"Category":["Current Budget","Benchmark","Risk Reduction"],"Millions":[controls_cost/1e6,benchmark_budget/1e6,risk_reduction/1e6]})
     fig_s, ax_s = plt.subplots(figsize=(4,2))
     bars = ax_s.bar(spend_df["Category"],spend_df["Millions"],color=["#636EFA", "#FFA15A", "#00CC96"])
-    ax_s.set_xticklabels(spend_df["Category"], rotation=0, ha="center", fontsize=8)
+    ax_s.set_xticklabels(spend_df["Category"], rotation=0, ha="center", fontsize=8, color=text_color)
     for bar, val in zip(bars, spend_df["Millions"]):
         ax_s.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha="center", color=text_color, fontsize=8)
-    ax_s.set_ylabel("Millions $"); ax_s.yaxis.label.set_fontsize(9)
+    ax_s.set_ylabel("Millions $", color=text_color); ax_s.yaxis.label.set_fontsize(9)
     style_chart(ax_s)
     fig_s.tight_layout()
     st.pyplot(fig_s, transparent=True)
