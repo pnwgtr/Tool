@@ -1,4 +1,4 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP (COMPACT MODE + SMALLER CHARTS + TIGHTER KPI) ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (COMPACT MODE OPTIMIZED FOR ONE-SCREEN VIEW) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -8,9 +8,9 @@ st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
 # === GLOBAL STYLING ===
 st.markdown("""
 <style>
-    .block-container {padding:1rem 2rem;}
-    h1 {font-size:28px !important;}
-    h3 {font-size:20px !important;}
+    .block-container {padding:0.5rem 1rem;}
+    h1 {font-size:24px !important; margin-bottom:4px;}
+    h3 {font-size:16px !important; margin:4px 0;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -57,13 +57,13 @@ total_incident_cost = sle
 st.markdown("<h1 style='text-align:center;'>Cyber Risk ROI Calculator</h1>",unsafe_allow_html=True)
 
 # === KPI GRID ===
-metric_padding = "4px" if compact_mode else "8px"
-metric_font = "24px" if compact_mode else "28px"
+metric_padding = "2px" if compact_mode else "8px"
+metric_font = "20px" if compact_mode else "28px"
 st.markdown(f"""
 <style>
-.metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0;}}
-.metric-box{{background:#1f1f1f;border-radius:6px;padding:{metric_padding};text-align:center;color:white;}}
-.metric-box h4{{font-size:14px;margin:0 0 2px;color:#61dafb;}}
+.metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin:4px 0;}}
+.metric-box{{background:#1f1f1f;border-radius:4px;padding:{metric_padding};text-align:center;color:white;}}
+.metric-box h4{{font-size:12px;margin:0;color:#61dafb;}}
 .metric-box p{{font-size:{metric_font};margin:0;font-weight:bold;}}
 </style>
 <div class='metric-grid'>
@@ -76,30 +76,40 @@ st.markdown(f"""
 
 # === BIG TOTAL COST BANNER ===
 st.markdown(f"""
-<div style='text-align:center;margin:12px 0;'>
-    <span style='display:inline-block;background:#EF553B;border-radius:6px;padding:10px 20px;font-size:28px;font-weight:900;color:white;'>
+<div style='text-align:center;margin:8px 0;'>
+    <span style='display:inline-block;background:#EF553B;border-radius:4px;padding:6px 12px;font-size:22px;font-weight:900;color:white;'>
      Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M
     </span>
 </div>
 """,unsafe_allow_html=True)
 
-# === CHARTS ===
-chart_size = (3,1.8) if compact_mode else (5,3)
+# === CHARTS (DARK BORDERLESS & COMPACT) ===
+chart_size = (2.5,1.3) if compact_mode else (5,3)
+
+def style_chart(ax):
+    ax.set_facecolor('none')
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    ax.grid(False)
+    for lbl in ax.get_xticklabels()+ax.get_yticklabels():
+        lbl.set_color(text_color)
 
 st.markdown("<h3 style='text-align:center;'>Risk Exposure: Before vs After Controls</h3>", unsafe_allow_html=True)
 risk_df = pd.DataFrame({"Stage":["Before Controls","After Controls"],"Millions":[ale_before/1e6,ale_after/1e6]})
-fig_r, ax_r = plt.subplots(figsize=chart_size)
+fig_r, ax_r = plt.subplots(figsize=chart_size, facecolor='none')
 bars = ax_r.bar(risk_df['Stage'], risk_df['Millions'], color=["#EF553B","#00CC96"])
 for bar, val in zip(bars, risk_df['Millions']):
-    ax_r.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha='center', color=text_color, fontsize=8)
-ax_r.set_ylabel("Millions $");
-st.pyplot(fig_r)
+    ax_r.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha='center', color=text_color, fontsize=7)
+ax_r.set_ylabel("Millions $", color=text_color)
+style_chart(ax_r)
+st.pyplot(fig_r, transparent=True)
 
 st.markdown("<h3 style='text-align:center;'>Incident Cost Components</h3>", unsafe_allow_html=True)
 inc_df = pd.DataFrame({"Component":["Base Incident Cost","User Breach Cost","Downtime Cost"],"Millions":[base_sle/1e6,user_breach_cost/1e6,downtime_cost/1e6]})
-fig_i, ax_i = plt.subplots(figsize=chart_size)
+fig_i, ax_i = plt.subplots(figsize=chart_size, facecolor='none')
 ax_i.barh(inc_df['Component'], inc_df['Millions'], color=['#EF553B','#00CC96','#AB63FA'])
 for v,c in zip(inc_df['Millions'],inc_df['Component']):
-    ax_i.text(v+0.1,c,f"{v:.2f}M",va='center',color=text_color,fontsize=8)
-ax_i.invert_yaxis(); ax_i.set_xlabel('Millions $')
-st.pyplot(fig_i)
+    ax_i.text(v+0.1,c,f"{v:.2f}M",va='center',color=text_color,fontsize=7)
+ax_i.invert_yaxis(); ax_i.set_xlabel('Millions $', color=text_color)
+style_chart(ax_i)
+st.pyplot(fig_i, transparent=True)
