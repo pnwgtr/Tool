@@ -1,4 +1,4 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP (CONDENSED + SMALLER TEXT) ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (CONDENSED + SMALLER TEXT + BIG INCIDENT COST) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -168,15 +168,20 @@ for v,c in zip(inc_df['Millions'],inc_df['Component']):
 ax_i.invert_yaxis(); ax_i.set_xlabel('Millions $'); style_ax(ax_i)
 st.pyplot(fig_i, transparent=True)
 
-st.markdown(f"<div style='text-align:center;margin:12px 0;'><span style='display:inline-block;background:#EF553B;border-radius:6px;padding:10px 20px;font-size:20px;font-weight:800;color:white;box-shadow:0 3px 6px rgba(0,0,0,0.25);'>💰 Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M</span></div>", unsafe_allow_html=True)
+# === BIG TOTAL COST BANNER ===
+st.markdown(f"""
+<div style='text-align:center;margin:20px 0;'>
+    <span style='display:inline-block;background:#EF553B;border-radius:8px;padding:16px 32px;
+    font-size:32px;font-weight:900;color:white;box-shadow:0 4px 10px rgba(0,0,0,0.3);'>
+    💰 Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M
+    </span>
+</div>
+""", unsafe_allow_html=True)
 
 # === PROGRAM SPEND VS BENCHMARK (ONLY IF NOT EXEC MODE) ===
 if not executive_mode:
     st.markdown(
-        """
-<h3 style='text-align:center;margin:5px 0;'>Cybersecurity Program Spend vs Benchmark</h3>
-<p style='text-align:center;font-size:12px;color:#aaa;margin-bottom:4px;'>Benchmark is set at <b>0.5% of annual revenue</b> (industry median).</p>
-""",
+        "<h3 style='text-align:center;margin:5px 0;'>Cybersecurity Program Spend vs Benchmark</h3>",
         unsafe_allow_html=True,
     )
 
