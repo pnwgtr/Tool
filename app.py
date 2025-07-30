@@ -1,4 +1,4 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP (UPDATED KPI GRID & HEADERS) ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (WITH PROGRAM SPEND VS BENCHMARK) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -40,6 +40,7 @@ st.sidebar.markdown("### Incident Likelihood")
 aro_before_pct = st.sidebar.slider("Likelihood Before Controls (%)",0,100,30)
 aro_after_pct = st.sidebar.slider("Likelihood After Controls (%)",0,100,10)
 compact_mode = st.sidebar.checkbox("Enable Compact Mode",True)
+executive_mode = st.sidebar.checkbox("Enable Executive Mode",True)
 
 # === CALCULATIONS ===
 mod = {"Initial":1.3,"Developing":1.15,"Defined":1.0,"Managed":0.85,"Optimized":0.7}
@@ -52,6 +53,8 @@ risk_reduction = ale_before-ale_after
 roi_pct = (risk_reduction/controls_cost*100) if controls_cost else 0
 roi_color = "#e06c75" if roi_pct<100 else "#e5c07b" if roi_pct<200 else "#00cc96"
 total_incident_cost = sle
+benchmark_pct = 0.005
+benchmark_budget = revenue*benchmark_pct
 
 # === TITLE ===
 st.markdown("<h1 style='text-align:center;'>Cyber Risk ROI Calculator</h1>",unsafe_allow_html=True)
@@ -118,3 +121,26 @@ for bar, val in zip(bars, risk_df['Millions']):
 ax_r.set_ylabel("Millions $", color=text_color)
 style_chart(ax_r)
 st.pyplot(fig_r, transparent=True)
+
+# === PROGRAM SPEND VS BENCHMARK ===
+if not executive_mode:
+    st.markdown("<h3 style='text-align:center;margin:5px 0;'>Cybersecurity Program Spend vs Benchmark</h3>",unsafe_allow_html=True)
+    spend_df = pd.DataFrame({"Category":["Current Budget","Benchmark","Risk Reduction"],"Millions":[controls_cost/1e6,benchmark_budget/1e6,risk_reduction/1e6]})
+    fig_s, ax_s = plt.subplots(figsize=(4,2))
+    bars = ax_s.bar(spend_df["Category"],spend_df["Millions"],color=["#636EFA", "#FFA15A", "#00CC96"])
+    ax_s.set_xticklabels(spend_df["Category"], rotation=0, ha="center", fontsize=8)
+    for bar, val in zip(bars, spend_df["Millions"]):
+        ax_s.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha="center", color=text_color, fontsize=8)
+    ax_s.set_ylabel("Millions $"); ax_s.yaxis.label.set_fontsize(9)
+    style_chart(ax_s)
+    fig_s.tight_layout()
+    st.pyplot(fig_s, transparent=True)
+
+    delta = controls_cost - benchmark_budget
+    if delta >= 0:
+        msg = f" Your current cybersecurity budget is **{delta / 1e6:.2f}M** above the 0.5% benchmark."
+        col = "#00cc96"
+    else:
+        msg = f" Your current cybersecurity budget is **{abs(delta) / 1e6:.2f}M** below the 0.5% benchmark. Consider increasing investment."
+        col = "#ef553b"
+    st.markdown(f"<p style='text-align:center;font-size:13px;font-weight:bold;color:{col};margin-top:5px'>{msg}</p>",unsafe_allow_html=True)
