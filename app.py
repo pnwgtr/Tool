@@ -1,9 +1,25 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (CONDENSED) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 
 st.set_page_config(page_title="Cyber Risk ROI", layout="wide")
+
+# === GLOBAL STYLING FOR TIGHTER LAYOUT ===
+st.markdown("""
+<style>
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    h1, h3 {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # === THEME ===
 text_color = "black" if st.get_option("theme.base") == "light" else "white"
@@ -111,13 +127,13 @@ def style_ax(ax):
     for s in ax.spines.values():
         s.set_visible(False)
 
-# === KPI GRID (CFO-FRIENDLY) ===
+# === KPI GRID (CONDENSED) ===
 st.markdown(f"""
 <style>
-.metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin:30px 0;}}
-.metric-box{{background:#1f1f1f;border-radius:10px;padding:20px;text-align:center;color:white;box-shadow:0 0 10px rgba(0,0,0,0.3);}}
-.metric-box h4{{margin:0 0 8px;color:#61dafb;font-size:18px;}}
-.metric-box p{{font-size:28px;margin:0;font-weight:bold;}}
+.metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin:15px 0;}}
+.metric-box{{background:#1f1f1f;border-radius:10px;padding:15px;text-align:center;color:white;box-shadow:0 0 8px rgba(0,0,0,0.25);}}
+.metric-box h4{{margin:0 0 5px;color:#61dafb;font-size:16px;}}
+.metric-box p{{font-size:24px;margin:0;font-weight:bold;}}
 </style>
 <div class='metric-grid'>
     <div class='metric-box'><h4>Estimated Annual Loss (Before)</h4><p>{ale_before/1e6:.2f}M</p></div>
@@ -125,13 +141,13 @@ st.markdown(f"""
     <div class='metric-box'><h4>Risk Reduction (Avoided Loss)</h4><p>{risk_reduction/1e6:.2f}M</p></div>
     <div class='metric-box'><h4>Return on Investment</h4><p style='color:{roi_color};'>{roi_pct:.1f}%</p></div>
 </div>
-<p style='text-align:center;font-size:14px;color:#aaa;margin-top:15px'>
+<p style='text-align:center;font-size:13px;color:#aaa;margin-top:10px'>
 Estimates the annualized financial impact of cyber risk before and after current controls.
 </p>
 """, unsafe_allow_html=True)
 
 # === QUICK BAR CHART: BEFORE VS AFTER ===
-st.markdown("<h3 style='text-align:center;margin:10px 0;'>Risk Exposure: Before vs After Controls</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align:center;margin:5px 0;'>Risk Exposure: Before vs After Controls</h3>", unsafe_allow_html=True)
 risk_df = pd.DataFrame({
     'Stage': ["Before Controls", "After Controls"],
     'Millions': [ale_before/1e6, ale_after/1e6]
@@ -139,30 +155,30 @@ risk_df = pd.DataFrame({
 fig_r, ax_r = plt.subplots(figsize=(4,2))
 bars = ax_r.bar(risk_df['Stage'], risk_df['Millions'], color=["#EF553B","#00CC96"])
 for bar, val in zip(bars, risk_df['Millions']):
-    ax_r.text(bar.get_x() + bar.get_width()/2, val + 0.1, f"{val:.2f}M", ha='center', color=text_color)
+    ax_r.text(bar.get_x() + bar.get_width()/2, val + 0.05, f"{val:.2f}M", ha='center', color=text_color)
 ax_r.set_ylabel("Millions $"); style_ax(ax_r)
 st.pyplot(fig_r, transparent=True)
 
 # === INCIDENT COST COMPONENTS ===
-st.markdown("<h3 style='text-align:center;margin:10px 0;'>Incident Cost Components</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align:center;margin:5px 0;'>Incident Cost Components</h3>", unsafe_allow_html=True)
 inc_df = pd.DataFrame({
     'Component':["Base Incident Cost","User Breach Cost","Downtime Cost"],
     'Millions':[base_sle/1e6,user_breach_cost/1e6,downtime_cost/1e6]})
-fig_i, ax_i = plt.subplots(figsize=(5,2) if compact_mode else (8,4))
+fig_i, ax_i = plt.subplots(figsize=(4,2))
 ax_i.barh(inc_df['Component'],inc_df['Millions'],color=['#EF553B','#00CC96','#AB63FA'])
 for v,c in zip(inc_df['Millions'],inc_df['Component']):
     ax_i.text(v+0.1,c,f"{v:.2f}M",va='center',color=text_color)
 ax_i.invert_yaxis(); ax_i.set_xlabel('Millions $'); style_ax(ax_i)
 st.pyplot(fig_i, transparent=True)
 
-st.markdown(f"<div style='text-align:center;margin:25px 0;'><span style='display:inline-block;background:#EF553B;border-radius:10px;padding:14px 28px;font-size:30px;font-weight:800;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.25);'>💰 Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M</span></div>", unsafe_allow_html=True)
+st.markdown(f"<div style='text-align:center;margin:15px 0;'><span style='display:inline-block;background:#EF553B;border-radius:8px;padding:12px 24px;font-size:24px;font-weight:800;color:white;box-shadow:0 3px 8px rgba(0,0,0,0.25);'>💰 Total Estimated Incident Cost: {total_incident_cost/1e6:.2f}M</span></div>", unsafe_allow_html=True)
 
 # === PROGRAM SPEND VS BENCHMARK (ONLY IF NOT EXEC MODE) ===
 if not executive_mode:
     st.markdown(
         """
-<h3 style='text-align:center;'>Cybersecurity Program Spend vs Benchmark</h3>
-<p style='text-align:center;font-size:14px;color:#aaa;margin-bottom:6px;'>Benchmark is set at <b>0.5% of annual revenue</b> (industry median).</p>
+<h3 style='text-align:center;margin:5px 0;'>Cybersecurity Program Spend vs Benchmark</h3>
+<p style='text-align:center;font-size:13px;color:#aaa;margin-bottom:4px;'>Benchmark is set at <b>0.5% of annual revenue</b> (industry median).</p>
 """,
         unsafe_allow_html=True,
     )
@@ -174,26 +190,21 @@ if not executive_mode:
         }
     )
 
-    fig_s, ax_s = plt.subplots(figsize=(5, 2) if compact_mode else (8, 4))
+    fig_s, ax_s = plt.subplots(figsize=(4,2))
     bars = ax_s.bar(
         spend_df["Category"],
         spend_df["Millions"],
         color=["#636EFA", "#FFA15A", "#00CC96"],
     )
-
-    # Centered labels
     ax_s.set_xticklabels(spend_df["Category"], rotation=0, ha="center")
-
-    # Annotate bars
     for bar, val in zip(bars, spend_df["Millions"]):
         ax_s.text(
             bar.get_x() + bar.get_width() / 2,
-            val + 0.1,
+            val + 0.05,
             f"{val:.2f}M",
             ha="center",
             color=text_color,
         )
-
     ax_s.set_ylabel("Millions $")
     style_ax(ax_s)
     fig_s.tight_layout()
@@ -202,17 +213,13 @@ if not executive_mode:
     # Exec commentary
     delta = controls_cost - benchmark_budget
     if delta >= 0:
-        msg = (
-            f"🔎 Your current cybersecurity budget is **{delta / 1e6:.2f}M** above the 0.5% benchmark."
-        )
+        msg = f"🔎 Your current cybersecurity budget is **{delta / 1e6:.2f}M** above the 0.5% benchmark."
         col = "#00cc96"
     else:
-        msg = (
-            f"⚠️ Your current cybersecurity budget is **{abs(delta) / 1e6:.2f}M** below the 0.5% benchmark. Consider increasing investment."
-        )
+        msg = f"⚠️ Your current cybersecurity budget is **{abs(delta) / 1e6:.2f}M** below the 0.5% benchmark. Consider increasing investment."
         col = "#ef553b"
 
     st.markdown(
-        f"<p style='text-align:center;font-size:16px;font-weight:bold;color:{col};margin-top:10px'>{msg}</p>",
+        f"<p style='text-align:center;font-size:14px;font-weight:bold;color:{col};margin-top:5px'>{msg}</p>",
         unsafe_allow_html=True,
     )
