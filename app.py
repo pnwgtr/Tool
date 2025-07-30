@@ -87,6 +87,10 @@ risk_reduction = ale_before-ale_after
 roi_pct = (risk_reduction/controls_cost*100) if controls_cost else 0
 roi_color = "#e06c75" if roi_pct<100 else "#e5c07b" if roi_pct<200 else "#00cc96"
 
+# Control Effectiveness (%)
+control_effectiveness_pct = (1 - (aro_after / aro_before)) * 100 if aro_before > 0 else 0
+control_color = "#e06c75" if control_effectiveness_pct < 30 else "#e5c07b" if control_effectiveness_pct < 60 else "#00cc96"
+
 total_incident_cost = sle
 benchmark_pct = 0.005
 benchmark_budget = revenue*benchmark_pct
@@ -95,7 +99,6 @@ benchmark_budget = revenue*benchmark_pct
 st.markdown("<h1 style='text-align:center;margin-top:10px;'>Cyber Risk ROI Calculator</h1>",unsafe_allow_html=True)
 
 # === HELPER ===
-
 def style_ax(ax):
     ax.set_facecolor('none')
     for lbl in ax.get_xticklabels()+ax.get_yticklabels():
@@ -108,7 +111,7 @@ def style_ax(ax):
 # === KPI GRID ===
 st.markdown(f"""
 <style>
-.metric-grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin:30px 0;}}
+.metric-grid{{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:30px 0;}}
 .metric-box{{background:#1f1f1f;border-radius:10px;padding:20px;text-align:center;color:white;box-shadow:0 0 10px rgba(0,0,0,0.3);}}
 .metric-box h4{{margin:0 0 8px;color:#61dafb;font-size:18px;}}
 .metric-box p{{font-size:28px;margin:0;font-weight:bold;}}
@@ -116,11 +119,13 @@ st.markdown(f"""
 <div class='metric-grid'>
     <div class='metric-box'><h4>ALE Before Controls</h4><p>{ale_before/1e6:.2f}M</p></div>
     <div class='metric-box'><h4>ALE After Controls</h4><p>{ale_after/1e6:.2f}M</p></div>
+    <div class='metric-box'><h4>Control Effectiveness</h4><p style='color:{control_color};'>{control_effectiveness_pct:.1f}%</p></div>
     <div class='metric-box'><h4>Risk Reduction</h4><p>{risk_reduction/1e6:.2f}M</p></div>
     <div class='metric-box'><h4>ROI</h4><p style='color:{roi_color};'>{roi_pct:.1f}%</p></div>
 </div>
 <p style='text-align:center;font-size:14px;color:#aaa;margin-top:15px'>📘 Calculations: ALE = SLE × ARO — ROI = Risk Reduction ÷ Cybersecurity Budget</p>
 """,unsafe_allow_html=True)
+
 
 # === INCIDENT COST COMPONENTS ===
 st.markdown("<h3 style='text-align:center;margin:10px 0;'>Incident Cost Components</h3>",unsafe_allow_html=True)
