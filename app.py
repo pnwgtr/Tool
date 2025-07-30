@@ -1,4 +1,4 @@
-# === FULL CFO-FRIENDLY CYBER RISK ROI APP (COMPACT MODE OPTIMIZED FOR ONE-SCREEN VIEW WITH SHRUNK AXIS TITLES) ===
+# === FULL CFO-FRIENDLY CYBER RISK ROI APP (HIGH DPI FOR CRISP CHARTS) ===
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -83,7 +83,7 @@ st.markdown(f"""
 </div>
 """,unsafe_allow_html=True)
 
-# === CHARTS (DARK BORDERLESS & COMPACT) ===
+# === CHARTS (HIGH DPI) ===
 chart_size = (2.5,1.3) if compact_mode else (5,3)
 
 def style_chart(ax):
@@ -99,7 +99,7 @@ def style_chart(ax):
 
 st.markdown("<h3 style='text-align:center;'>Risk Exposure: Before vs After Controls</h3>", unsafe_allow_html=True)
 risk_df = pd.DataFrame({"Stage":["Before Controls","After Controls"],"Millions":[ale_before/1e6,ale_after/1e6]})
-fig_r, ax_r = plt.subplots(figsize=chart_size, facecolor='none')
+fig_r, ax_r = plt.subplots(figsize=chart_size, dpi=150, facecolor='none')
 bars = ax_r.bar(risk_df['Stage'], risk_df['Millions'], color=["#EF553B","#00CC96"])
 for bar, val in zip(bars, risk_df['Millions']):
     ax_r.text(bar.get_x()+bar.get_width()/2, val+0.05, f"{val:.2f}M", ha='center', color=text_color, fontsize=6)
@@ -109,7 +109,7 @@ st.pyplot(fig_r, transparent=True)
 
 st.markdown("<h3 style='text-align:center;'>Incident Cost Components</h3>", unsafe_allow_html=True)
 inc_df = pd.DataFrame({"Component":["Base Incident Cost","User Breach Cost","Downtime Cost"],"Millions":[base_sle/1e6,user_breach_cost/1e6,downtime_cost/1e6]})
-fig_i, ax_i = plt.subplots(figsize=chart_size, facecolor='none')
+fig_i, ax_i = plt.subplots(figsize=chart_size, dpi=150, facecolor='none')
 ax_i.barh(inc_df['Component'], inc_df['Millions'], color=['#EF553B','#00CC96','#AB63FA'])
 for v,c in zip(inc_df['Millions'],inc_df['Component']):
     ax_i.text(v+0.1,c,f"{v:.2f}M",va='center',color=text_color,fontsize=6)
