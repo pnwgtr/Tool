@@ -127,9 +127,7 @@ st.pyplot(fig_r, transparent=True)
 # Add tooltip to benchmark section
 if not executive_mode:
     st.markdown("""
-    <h3 style='text-align:center;margin:5px 0;'>Cybersecurity Program Spend vs Benchmark
-    <span style='font-size:14px;color:#aaa;' title='The benchmark is set at 0.5% of annual revenue, based on industry median cybersecurity spending for comparable organizations.'> ⓘ</span>
-    </h3>
+    <h3 style='text-align:center;margin:5px 0;'>Cybersecurity Program Spend vs Benchmark</h3>
     """, unsafe_allow_html=True)
 
     spend_df = pd.DataFrame({
@@ -158,5 +156,6 @@ if not executive_mode:
         msg = f" Your current cybersecurity budget is **{abs(delta) / 1e6:.2f}M** below the 0.5% benchmark. Consider increasing investment."
         col = "#ef553b"
 
-    st.markdown(f"<p style='text-align:center;font-size:13px;font-weight:bold;color:{col};margin-top:5px'>{msg}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align:center;font-size:13px;font-weight:bold;color:{col};margin-top:5px'>{msg} <span style='font-size:14px;color:#aaa;' title='The benchmark is set at 0.5% of annual revenue, based on industry median cybersecurity spending for comparable organizations.'>ⓘ</span></p>", unsafe_allow_html=True)
+
 
